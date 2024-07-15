@@ -1,0 +1,219 @@
+return {
+    {
+        "nvim-tree/nvim-tree.lua",
+        version = "*",
+        lazy = false,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            {
+                's1n7ax/nvim-window-picker',
+                name = 'window-picker',
+                version = '2.*',
+                opts = {
+                    filter_rules = {
+                        bo = {
+                            filetype = { "fidget", "NvimTree" },
+                            buftype = { "terminal" }
+                        }
+                    },
+                    picker_config = { statusline_winbar_picker = { use_winbar = "smart" } },
+                    hint = 'floating-big-letter',
+                },
+                config = function(_, opts)
+                    require("window-picker").setup(opts)
+                end,
+            },
+        },
+        keys = { { "<C-b>", "<CMD>NvimTreeToggle<CR>", desc = "Toggle nvim-tree" } },
+        config = function()
+            require("nvim-tree").setup({
+                sort = {
+                    sorter = "modification_time"
+                },
+                filters = {
+                    custom = {
+                        "*.aux", "*.bcf", "*.fdb_latexmk",
+                        "*.fls", "*.idx", "*.ilg", "*.log",
+                        "*.out", "*.xml", "*.ind", "*.synctex",
+                        "*.blg", "*.bbl"
+                    }
+                },
+                actions = {
+                    open_file = {
+                        window_picker = {
+                            enable = true,
+                            picker = require("window-picker").pick_window
+                        },
+                        quit_on_open = true,
+                    },
+                }
+            })
+        end
+    },
+    {
+        "nvim-telescope/telescope.nvim",
+        cmd = "Telescope",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "debugloop/telescope-undo.nvim",
+        },
+        keys = {
+            { "<leader>ff", "<cmd>Telescope find_files<cr>",   desc = "Find files(root dir)" },
+            { "<leader>fg", "<cmd>Telescope live_grep<cr>",    desc = "Grep(root dir)" },
+            { "<leader>fb", "<cmd>Telescope buffers<cr>",      desc = "Find buffer" },
+            { "<leader>fh", "<cmd>Telescope help_tags<cr>",    desc = "Help tags" },
+            { "<leader>fr", "<cmd>Telescope oldfiles<cr>",     desc = "Recent" },
+            { "<leader>u",  "<cmd>Telescope undo<cr>",         desc = "Undo history", },
+            { "<leader>gc", "<cmd>Telescope git_commits<CR>",  desc = "Git commits" },
+            { "<leader>gb", "<cmd>Telescope git_branches<CR>", desc = "Git branch" },
+            { "<leader>gs", "<cmd>Telescope git_status<CR>",   desc = "Git status" },
+        },
+        config = function()
+            local actions = require("telescope.actions")
+            local config = require("telescope.config")
+            local action_layout = require("telescope.actions.layout")
+            local vimgrep_arguments = { unpack(config.values.vimgrep_arguments) }
+            require("telescope").setup({
+                defaults = {
+                    vimgrep_arguments = vimgrep_arguments,
+                    mappings = {
+                        i = {
+                            ["<C-u>"] = false,
+                            ["<M-p>"] = action_layout.toggle_preview,
+                            ["<C-s>"] = actions.cycle_previewers_next,
+                            ["<C-a>"] = actions.cycle_previewers_prev
+                        },
+                        n = {
+                            ["<M-p>"] = action_layout.toggle_preview
+                        }
+                    }
+                },
+                extensions = {
+                    undo = {},
+                },
+            })
+            require("telescope").load_extension("undo")
+        end
+    },
+    {
+        "akinsho/toggleterm.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("toggleterm").setup {
+                size = function(term)
+                    if term.direction == "horizontal" then
+                        return 10
+                    elseif term.direction == "vertical" then
+                        return vim.o.columns * 0.4
+                    end
+                end,
+                open_mapping = [[<c-\>]],
+                direction = "horizontal",
+            }
+        end
+    },
+    {
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        ---@type Flash.Config
+        keys = {
+            {
+                "<C-j>",
+                mode = { "n", "o", "x" },
+                function() require("flash").jump() end,
+                desc = "Flash"
+            },
+            {
+                "<C-s>",
+                mode = { "n", "o", "x" },
+                function() require("flash").treesitter() end,
+                desc = "Flash Treesitter"
+            }
+        },
+        config = function()
+            require("flash").setup()
+            vim.api.nvim_set_hl(0, "FlashLabel", { fg = "#000000", bg = "#FFFF00" })
+            vim.api.nvim_set_hl(0, "FlashCursor", { underline = true })
+        end
+    },
+    {
+        "windwp/nvim-autopairs",
+        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
+        config = require("plugins.specified.autopairs").config
+    },
+    {
+        "kylechui/nvim-surround",
+        version = "*",
+        event = "BufRead",
+        opts = {},
+    },
+    {
+        'numToStr/Comment.nvim',
+        optional = true,
+        lazy = false,
+        opts = {},
+    },
+    {
+        "kevinhwang91/nvim-bqf",
+        event = "VeryLazy",
+    },
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 300
+        end,
+        opts = {
+            defaults = {
+                ["<localLeader>l"] = { name = "+vimtex" },
+            },
+        }
+    },
+    {
+        "folke/todo-comments.nvim",
+        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {}
+    },
+    {
+        "hedyhli/outline.nvim",
+        lazy = true,
+        cmd = { "Outline", "OutlineOpen" },
+        keys = {
+            { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
+        },
+        opts = {},
+    },
+    {
+        'echasnovski/mini.bufremove',
+        keys = {
+            {
+                "<leader>bd",
+                function()
+                    local bd = require("mini.bufremove").delete
+                    if vim.bo.modified then
+                        local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()),
+                            "&Yes\n&No\n&Cancel")
+                        if choice == 1 then
+                            vim.cmd.write()
+                            bd(0)
+                        elseif choice == 2 then
+                            bd(0, true)
+                        end
+                    else
+                        bd(0)
+                    end
+                end,
+                desc = "Delete Buffer",
+            }, },
+        version = false,
+        opts = {}
+    },
+    { 'echasnovski/mini.comment', version = false, opts = {} },
+    {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        dependencies = { "nvim-lua/plenary.nvim" }
+    }
+}
