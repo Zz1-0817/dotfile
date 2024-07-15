@@ -1,5 +1,4 @@
--- local colorscheme = utils.startup.check_colorscheme()
-local colorscheme = "nightfox"
+local colorscheme = utils.startup.check_colorscheme()
 return {
     {
         "folke/tokyonight.nvim",

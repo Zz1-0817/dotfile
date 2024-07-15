@@ -48,6 +48,35 @@ return {
                     },
                 }
             })
+            -- Make :bd and :q behave as usual when tree is visible
+            vim.api.nvim_create_autocmd({ 'BufEnter', 'QuitPre' }, {
+                nested = false,
+                callback = function(e)
+                    local tree = require('nvim-tree.api').tree
+
+                    if not tree.is_visible() then
+                        return
+                    end
+
+                    local winCount = 0
+                    for _, winId in ipairs(vim.api.nvim_list_wins()) do
+                        if vim.api.nvim_win_get_config(winId).focusable then
+                            winCount = winCount + 1
+                        end
+                    end
+
+                    if e.event == 'QuitPre' and winCount == 2 then
+                        vim.api.nvim_cmd({ cmd = 'qall' }, {})
+                    end
+
+                    if e.event == 'BufEnter' and winCount == 1 then
+                        vim.defer_fn(function()
+                            tree.toggle({ find_file = true, focus = true })
+                            tree.toggle({ find_file = true, focus = false })
+                        end, 10)
+                    end
+                end
+            })
         end
     },
     {
@@ -213,7 +242,45 @@ return {
     { 'echasnovski/mini.comment', version = false, opts = {} },
     {
         "ThePrimeagen/harpoon",
+        dependencies = { "nvim-lua/plenary.nvim" },
         branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" }
+        opts = {
+            menu = {
+                width = vim.api.nvim_win_get_width(0) - 4,
+            },
+            settings = {
+                save_on_toggle = true,
+            },
+        },
+        keys = function()
+            local keys = {
+                {
+                    "<leader>H",
+                    function()
+                        require("harpoon"):list():add()
+                    end,
+                    desc = "Harpoon File",
+                },
+                {
+                    "<leader>h",
+                    function()
+                        local harpoon = require("harpoon")
+                        harpoon.ui:toggle_quick_menu(harpoon:list())
+                    end,
+                    desc = "Harpoon Quick Menu",
+                },
+            }
+
+            for i = 1, 5 do
+                table.insert(keys, {
+                    "<leader>" .. i,
+                    function()
+                        require("harpoon"):list():select(i)
+                    end,
+                    desc = "Harpoon to File " .. i,
+                })
+            end
+            return keys
+        end,
     }
 }

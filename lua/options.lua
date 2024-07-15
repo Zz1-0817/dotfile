@@ -25,7 +25,14 @@ opt.foldcolumn = '1'
 opt.foldlevel = 64
 opt.foldlevelstart = 64
 opt.foldenable = true
-opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+opt.fillchars = {
+    foldopen = "",
+    foldclose = "",
+    fold = " ",
+    foldsep = " ",
+    diff = "╱",
+    eob = " ",
+}
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
