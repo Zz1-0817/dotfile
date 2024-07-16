@@ -23,7 +23,7 @@ local function copy_text(args, _, _)
     return args[1][1]
 end
 
-local function selected_text(args, snip)
+local function selected_text(_, snip)
     local res, env = {}, snip.env
     for _, e in ipairs(env.LS_SELECT_RAW) do
         table.insert(res, e)
@@ -31,7 +31,7 @@ local function selected_text(args, snip)
     return res
 end
 
-local function indent_selected_text(args, snip)
+local function indent_selected_text(_, snip)
     local res, env = {}, snip.env
     for _, e in ipairs(env.LS_SELECT_RAW) do
         table.insert(res, "\t" .. e)
@@ -110,6 +110,20 @@ ls.add_snippets("tex", {
         show_condition = in_mathzone
     }, {
         t("\\textmd{"), f(selected_text, {}), i(0), t("}")
+    }),
+    s({
+        trig = "ol",
+        docstring = "overline",
+        show_condition = in_mathzone
+    }, {
+        t("\\overline{"), f(selected_text, {}), i(0), t("}")
+    }),
+    s({
+        trig = "wt",
+        docstring = "widetilde",
+        show_condition = in_mathzone
+    }, {
+        t("\\widetilde{"), f(selected_text, {}), i(0), t("}")
     }),
     s({
         trig = "bra",
@@ -228,5 +242,14 @@ ls.add_snippets("tex", {
         t("\\begin{proof}"),
         t({ "", "" }), f(indent_selected_text, {}),
         i(0), t({ "", "\\end{proof}" })
+    }),
+    s({
+        trig = "alg",
+        docstring = "align environment",
+        show_condition = amsthm_show_condition
+    }, {
+        t("\\begin{align*}"),
+        t({ "", "" }), f(indent_selected_text, {}),
+        i(0), t({ "", "\\end{align*}" })
     }),
 })

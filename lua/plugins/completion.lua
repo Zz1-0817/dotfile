@@ -155,7 +155,13 @@ return {
                     { name = "vimtex" },
                     { name = "luasnip",  keyword_length = 2 },
                     { name = "nvim_lsp", keyword_length = 2 },
-                    { name = "buffer",   keyword_length = 3 },
+                    {
+                        name = "buffer",
+                        option = {
+                            keyword_pattern = [[[a-zA-Z0-9]\+]]
+                        },
+                        keyword_length = 3
+                    },
                 }
             })
             cmp.setup.filetype("markdown", {

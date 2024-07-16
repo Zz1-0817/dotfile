@@ -107,13 +107,13 @@ return {
                     vimgrep_arguments = vimgrep_arguments,
                     mappings = {
                         i = {
-                            ["<C-u>"] = false,
-                            ["<M-p>"] = action_layout.toggle_preview,
-                            ["<C-s>"] = actions.cycle_previewers_next,
-                            ["<C-a>"] = actions.cycle_previewers_prev
+                            ["<C-f>"] = actions.preview_scrolling_down,
+                            ["<C-b>"] = actions.preview_scrolling_up,
+                            ["<C-Down>"] = actions.cycle_history_next,
+                            ["<C-Up>"] = actions.cycle_history_prev,
                         },
                         n = {
-                            ["<M-p>"] = action_layout.toggle_preview
+                            ["q"] = actions.close,
                         }
                     }
                 },
