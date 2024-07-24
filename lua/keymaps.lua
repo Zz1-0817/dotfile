@@ -6,8 +6,8 @@ keyset('i', "<C-b>", "<left>", opts)
 keyset('i', "<C-n>", "<down>", opts)
 keyset('i', "<C-p>", "<up>", opts)
 
-keyset('i', "<M-f>", "<C-o>e<C-o>l", opts)
-keyset('i', "<M-b>", "<C-o>b", opts)
+keyset('i', "<M-f>", utils.move.moveForwardWord, opts)
+keyset('i', "<M-b>", utils.move.moveInverseWord, opts)
 
 keyset('i', "<C-l>", "<C-o>zz", opts)
 keyset('i', "<C-e>", "<End>", opts)
