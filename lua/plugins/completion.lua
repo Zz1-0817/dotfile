@@ -10,7 +10,10 @@ return {
         version = "2.*",
         build = "make install_jsregexp",
         keys = {},
-        opts = { store_selection_keys = "<Tab>" },
+        opts = {
+            store_selection_keys = "<Tab>",
+            enable_autosnippets = true
+        },
         config = function(_, opts)
             local luasnip = require("luasnip")
             luasnip.setup(opts)
