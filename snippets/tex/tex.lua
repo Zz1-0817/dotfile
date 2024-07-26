@@ -50,7 +50,7 @@ local function indent_selected_text(_, snip)
     return res
 end
 
-local in_mathzone = function()
+local in_math = function()
     return vim.fn['vimtex#syntax#in_mathzone']() == 1
 end
 
@@ -64,13 +64,13 @@ local in_env = function(name)
 end
 
 local amsthm_show_condition = function()
-    if in_mathzone() then
+    if in_math() then
         return false
     end
-    local amsthm_list = {
+    local thm_env = {
         "definition", "lemma", "theorem", "proposition",
         "corollary", "example", "remark", "proof" }
-    for _, name in ipairs(amsthm_list) do
+    for _, name in ipairs(thm_env) do
         if in_env(name) then
             return false
         end
@@ -78,29 +78,42 @@ local amsthm_show_condition = function()
     return true
 end
 
+local in_itemenv = function ()
+    if in_math() then
+        return false
+    end
+    local item_env = { "description", "itemize", "enumerate" }
+    for _, name in ipairs(item_env) do
+        if in_env(name) then
+            return true
+        end
+    end
+    return false
+end
+
 local dynamic_postfix = function(_, parent, _, user_arg1, user_arg2)
     local capture = parent.snippet.env.POSTFIX_MATCH
     if #capture > 0 then
         return sn(nil, fmta([[
-        <><><><>
+        <><><>
         ]],
             { t(user_arg1), t(capture), t(user_arg2) }))
     else
         local visual_placeholder = parent.snippet.env.SELECT_RAW
         return sn(nil, fmta([[
-        <><><><>
+        <><><>
         ]],
-            { t(user_arg1), i(1, visual_placeholder), t(user_arg2), i(0) }))
+            { t(user_arg1), i(1, visual_placeholder), t(user_arg2) }))
     end
 end
 
-ls.add_snippets("tex", {
+return {
     postfix({
             trig = "vec",
             snippetType = "autosnippet",
             match_pattern = "\\?[%w%.%_%-]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\vec{", "}" } }) }
     ),
@@ -108,8 +121,8 @@ ls.add_snippets("tex", {
             trig = "fk",
             snippetType = "autosnippet",
             match_pattern = "[%a]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\mathfrak{", "}" } }) }
     ),
@@ -117,8 +130,8 @@ ls.add_snippets("tex", {
             trig = "scr",
             snippetType = "autosnippet",
             match_pattern = "[%a]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\mathscr{", "}" } }) }
     ),
@@ -126,8 +139,8 @@ ls.add_snippets("tex", {
             trig = "bb",
             snippetType = "autosnippet",
             match_pattern = "[%a]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\mathbb{", "}" } }) }
     ),
@@ -135,8 +148,8 @@ ls.add_snippets("tex", {
             trig = "cal",
             snippetType = "autosnippet",
             match_pattern = "[%a]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\mathcal{", "}" } }) }
     ),
@@ -144,8 +157,8 @@ ls.add_snippets("tex", {
             trig = "bar",
             snippetType = "autosnippet",
             match_pattern = "\\?[%w%.%_%-]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\overline{", "}" } }) }
     ),
@@ -153,15 +166,37 @@ ls.add_snippets("tex", {
             trig = "td",
             snippetType = "autosnippet",
             match_pattern = "\\?[%w%.%_%-]*$",
-            condition = in_mathzone,
-            show_condition = in_mathzone
+            condition = in_math,
+            show_condition = in_math
         },
         { d(1, dynamic_postfix, {}, { user_args = { "\\widetilde{", "}" } }) }
     ),
     s({
+        trig = "enm",
+        snippetType = "autosnippet",
+        condition = in_text
+    }, fmta([[
+    \begin{enumerate}
+      \item <>
+    \end{enumerate}
+    ]], {i(0)})),
+    s({
+        trig = "itm",
+        snippetType = "autosnippet",
+        condition = in_text
+    }, fmta([[
+    \begin{itemize}
+      \item <>
+    \end{itemize}
+    ]], {i(0)})),
+    s({
+        trig = "mm",
+        snippetType = "autosnippet",
+        condition = in_itemenv
+    }, t("\\item")),
+    s({
         trig = "jj",
         snippetType = "autosnippet",
-        show_condition = in_text,
         condition = in_text
     }, fmta([[
     \( <><> \)<>
@@ -198,33 +233,87 @@ ls.add_snippets("tex", {
     \paragraph{<>}<>
     ]], { i(1), i(0) })),
     s({
-        trig = "to",
-        condition = in_mathzone,
+        trig = "\\?to",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\to")),
     s({
-        trig = "!>",
-        condition = in_mathzone,
+        trig = "\\?!>",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\mapsto")),
     s({
-        trig = "in",
-        condition = in_mathzone,
+        trig = "\\?iff",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\iff")),
+    s({
+        trig = "\\?cap",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\cap")),
+    s({
+        trig = "\\?bcap",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\bigcap")),
+    s({
+        trig = "\\?bcup",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\bigcup")),
+    s({
+        trig = "\\?cup",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\cup")),
+    s({
+        trig = "\\?=>",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\implies")),
+    s({
+        trig = "\\?in",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\in")),
     s({
-        trig = "notin",
-        condition = in_mathzone,
+        trig = "\\?notin",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\notin")),
     s({
-        trig = "AA",
-        condition = in_mathzone,
+        trig = "\\?AA",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\forall")),
     s({
-        trig = "EE",
-        condition = in_mathzone,
+        trig = "\\?vphi",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\varphi")),
+    s({
+        trig = "\\?xx",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\times")),
+    s({
+        trig = "\\?EE",
+        condition = in_math,
+        trigEngine = "pattern",
         snippetType = "autosnippet"
     }, t("\\exists")),
     s({
@@ -245,14 +334,14 @@ ls.add_snippets("tex", {
     s({
         trig = "md",
         docstring = "textmd",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, {
         t("\\textmd{"), f(selected_text, {}), i(0), t("}")
     }),
     s({
         trig = "bra",
         docstring = "surrounding brace or left brace",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, c(1, {
         sn(nil, { t("\\left\\lbrace "), i(1), t(" \\right\\rbrace") }),
         sn(nil, { t("\\left\\lbrace "), i(1), t(" \\right.") }),
@@ -260,7 +349,7 @@ ls.add_snippets("tex", {
     s({
         trig = "vt",
         docstring = "surrounding vert or right vert",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, c(1, {
         sn(nil, { t("\\left\\vert "), i(1), t(" \\right\\vert") }),
         sn(nil, { t("\\left. "), i(1), t(" \\right\\vert") }),
@@ -268,21 +357,21 @@ ls.add_snippets("tex", {
     s({
         trig = "nm",
         docstring = "norm",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, {
         t("\\left\\Vert "), f(selected_text, {}), i(1), t(" \\right\\Vert")
     }),
     s({
         trig = "ang",
         docstring = "surrounding angle",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, {
         t("\\left\\langle "), f(selected_text, {}), i(1), t(" \\right\\rangle")
     }),
     s({
         trig = "fpar",
         docstring = "partial fraction",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, c(1, {
         sn(nil, { t("\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}") }),
         sn(nil, { t("\\left.\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}\\right\\vert") })
@@ -290,7 +379,7 @@ ls.add_snippets("tex", {
     s({
         trig = "fdif",
         docstring = "differential fraction",
-        show_condition = in_mathzone
+        show_condition = in_math
     }, c(1, {
         sn(nil, { t("\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}") }),
         sn(nil, { t("\\left.\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}\\right\\vert") })
@@ -375,5 +464,5 @@ ls.add_snippets("tex", {
         t("\\begin{align*}"),
         t({ "", "" }), f(indent_selected_text, {}),
         i(0), t({ "", "\\end{align*}" })
-    }),
-})
+    })
+}

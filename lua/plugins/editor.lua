@@ -88,8 +88,8 @@ return {
         },
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<cr>",   desc = "Find files(root dir)" },
+            { "<leader>fb", "<cmd>Telescope file_browser<CR>", desc = "File browser" },
             { "<leader>fg", "<cmd>Telescope live_grep<cr>",    desc = "Grep(root dir)" },
-            { "<leader>fb", "<cmd>Telescope buffers<cr>",      desc = "Find buffer" },
             { "<leader>fh", "<cmd>Telescope help_tags<cr>",    desc = "Help tags" },
             { "<leader>fr", "<cmd>Telescope oldfiles<cr>",     desc = "Recent" },
             { "<leader>u",  "<cmd>Telescope undo<cr>",         desc = "Undo history", },
@@ -122,7 +122,12 @@ return {
                 },
             })
             require("telescope").load_extension("undo")
+            require("telescope").load_extension("file_browser")
         end
+    },
+    {
+        "nvim-telescope/telescope-file-browser.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
     },
     {
         "akinsho/toggleterm.nvim",

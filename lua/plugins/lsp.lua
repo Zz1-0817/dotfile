@@ -56,10 +56,10 @@ return {
                     },
                     signs = {
                         text = {
-                            [vim.diagnostic.severity.ERROR] = utils.icons.Error,
-                            [vim.diagnostic.severity.WARN] = utils.icons.Warn,
-                            [vim.diagnostic.severity.HINT] = utils.icons.Hint,
-                            [vim.diagnostic.severity.INFO] = utils.icons.Info,
+                            [vim.diagnostic.severity.ERROR] = utils.icons.diagnostics.Error,
+                            [vim.diagnostic.severity.WARN] = utils.icons.diagnostics.Warn,
+                            [vim.diagnostic.severity.HINT] = utils.icons.diagnostics.Hint,
+                            [vim.diagnostic.severity.INFO] = utils.icons.diagnostics.Info,
                         }
                     },
                     linehl = {

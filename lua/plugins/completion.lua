@@ -15,9 +15,9 @@ return {
             enable_autosnippets = true
         },
         config = function(_, opts)
-            local luasnip = require("luasnip")
-            luasnip.setup(opts)
-            require("plugins.specified.snippets")
+            local ls = require("luasnip")
+            ls.setup(opts)
+            require("luasnip.loaders.from_lua").load({ paths = { "~/AppData/Local/nvim/snippets" } })
             --https://github.com/L3MON4D3/LuaSnip/issues/656
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
@@ -27,8 +27,8 @@ return {
                 desc = "Forget the current snippet when leaving the insert mode",
                 callback = function(evt)
                     while true do
-                        if luasnip.session and luasnip.session.current_nodes[evt.buf] and not luasnip.session.jump_active then
-                            luasnip.unlink_current()
+                        if ls.session and ls.session.current_nodes[evt.buf] and not ls.session.jump_active then
+                            ls.unlink_current()
                         else
                             break
                         end
