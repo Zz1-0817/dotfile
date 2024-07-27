@@ -31,18 +31,12 @@ local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" }
 
 local generate_postfix_dynamicnode = function(_, parent, _, user_arg1, user_arg2)
     local capture = parent.snippet.env.POSTFIX_MATCH
-    if #capture > 0 then
-        return sn(nil, fmta([[
+    return sn(nil,
+        fmta([[
         <><><>
         ]],
-            { t(user_arg1), t(capture), t(user_arg2) }))
-    else
-        local visual_placeholder = parent.snippet.env.SELECT_RAW
-        return sn(nil, fmta([[
-        <><><>
-        ]],
-            { t(user_arg1), i(1, visual_placeholder), t(user_arg2) }))
-    end
+            { t(user_arg1), t(capture), t(user_arg2) })
+    )
 end
 
 M.postfix_snippet = function(context, command, opts)
@@ -53,8 +47,7 @@ M.postfix_snippet = function(context, command, opts)
     context.dscr = context.dscr or command
     context.name = context.name or context.dscr
     context.docstring = command.pre .. [[(POSTFIX_MATCH|VISUAL|<1>)]] .. command.post
-    context.match_pattern = context.match_pattern or [[[%w%.%_%-%"%']*$]]
-    context.snippetType = "autosnippet"
+    context.match_pattern = context.match_pattern or [[[%w%.%_%-%"%']+$]]
     local start, _ = string.find(command.pre, context.trig)
     if start == 2 then
         context.trigEngine = "pattern"
@@ -63,6 +56,27 @@ M.postfix_snippet = function(context, command, opts)
     return postfix(context, { d(1, generate_postfix_dynamicnode, {}, { user_args = { command.pre, command.post } }) },
         opts)
 end
+
+M._postfix_snippet = function(context, command, opts)
+    opts = opts or {}
+    if not context.trig then
+        error("context doesn't include a `trig` key which is mandatory", 2)
+    end
+    context.dscr = (context.dscr or command) .. "(normal)"
+    context.name = context.name or context.dscr
+    context.docstring = command.pre .. [[(POSTFIX_MATCH|VISUAL|<1>)]] .. command.post .. "(normal)"
+    local start, _ = string.find(command.pre, context.trig)
+    if start == 2 then
+        context.trigEngine = "pattern"
+        context.trig = "\\?" .. context.trig
+    end
+    return s(context, fmta([[
+    <><><><>
+    ]], { t(command.pre), f(function(_, snip)
+        return snip.env.LS_SELECT_RAW
+    end), i(0), t(command.post) }, opts))
+end
+
 
 M.simpleenv_snippet = function(context, opts)
     opts = opts or {}

@@ -10,8 +10,8 @@ local symbol_snippet = require("snippets.tex.utils.scaffolding").symbol_snippet
 local enum_snippet = require("snippets.tex.utils.scaffolding").enum_snippet
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
 
-local get_visual = function(_, parent)
-    return sn(nil, i(1, parent.snippet.env.SELECT_RAW))
+local get_selected_text = function(_, snip)
+    return snip.env.LS_SELECT_RAW
 end
 
 local case = function(_, snip)
@@ -48,7 +48,7 @@ local M = {
         { trig = "jj", dscr = "inline math" },
         fmta([[
         \( <><> \)
-    ]], { d(1, get_visual), i(0) }),
+    ]], { f(get_selected_text, {}), i(0) }),
         { condition = tex.in_text }
     ),
     autosnippet(
@@ -86,7 +86,7 @@ local M = {
                 end
                 return brackets[cap][1]
             end),
-                d(1, get_visual),
+                d(1, get_selected_text),
                 f(function(_, snip)
                     local cap = snip.captures[1]
                     if brackets[cap] == nil then
@@ -347,7 +347,7 @@ local postfix_math_specs = {
         context = {
             name = "operatorname",
             dscr = "operatorname",
-            match_pattern = [[[%a]*$]]
+            match_pattern = [[[%a]+$]]
         },
         command = {
             pre = [[\operatorname{]],
@@ -366,10 +366,20 @@ local postfix_math_specs = {
     }
 }
 local postfix_math_snippets = {}
+local _postfix_math_snippets = {}
+local _postfix_math_snippet = require("snippets.tex.utils.scaffolding")._postfix_snippet
 for k, v in pairs(postfix_math_specs) do
     table.insert(
         postfix_math_snippets,
         postfix_snippet(
+            vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
+            v.command,
+            { condition = tex.in_math }
+        )
+    )
+    table.insert(
+        postfix_math_snippets,
+        _postfix_math_snippet(
             vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
             v.command,
             { condition = tex.in_math }
