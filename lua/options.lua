@@ -1,4 +1,5 @@
 local opt = vim.opt
+opt.swapfile = false
 opt.splitright = true
 opt.list = true
 opt.number = true

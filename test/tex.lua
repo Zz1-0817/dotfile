@@ -109,9 +109,10 @@ end
 
 return {
     postfix({
-            trig = "vec",
+            trig = "\\?vec",
             snippetType = "autosnippet",
-            match_pattern = "\\?[%w%.%_%-]*$",
+            match_pattern = "[%w%.%_%-]*$",
+            trigEngine = "pattern",
             condition = in_math,
             show_condition = in_math
         },
@@ -281,6 +282,12 @@ return {
         snippetType = "autosnippet"
     }, t("\\implies")),
     s({
+        trig = "\\?<=",
+        condition = in_math,
+        trigEngine = "pattern",
+        snippetType = "autosnippet"
+    }, t("\\impliesby")),
+    s({
         trig = "\\?in",
         condition = in_math,
         trigEngine = "pattern",
@@ -319,7 +326,8 @@ return {
     s({
         trig = "em",
         docstring = "emph",
-        show_condition = in_text,
+        condition = in_text,
+        show_condition = in_text
     }, {
         t("\\emph{"), f(selected_text, {}), i(0), t("}")
     }),
@@ -349,7 +357,7 @@ return {
     s({
         trig = "vt",
         docstring = "surrounding vert or right vert",
-        show_condition = in_math
+        show_condition = in_math,
     }, c(1, {
         sn(nil, { t("\\left\\vert "), i(1), t(" \\right\\vert") }),
         sn(nil, { t("\\left. "), i(1), t(" \\right\\vert") }),

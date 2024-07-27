@@ -17,7 +17,7 @@ return {
         config = function(_, opts)
             local ls = require("luasnip")
             ls.setup(opts)
-            require("luasnip.loaders.from_lua").load({ paths = { "~/AppData/Local/nvim/snippets" } })
+            require("luasnip.loaders.from_lua").load({ paths = { "~/AppData/Local/nvim/lua/snippets" } })
             --https://github.com/L3MON4D3/LuaSnip/issues/656
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
@@ -51,7 +51,7 @@ return {
         },
         opts = function()
             local cmp = require("cmp")
-            local luasnip = require("luasnip")
+            local ls = require("luasnip")
             local compare = require("cmp.config.compare")
             return {
                 performance = {
@@ -102,8 +102,8 @@ return {
                     ["<C-n>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-                        elseif luasnip.choice_active() then
-                            luasnip.change_choice(1)
+                        elseif ls.choice_active() then
+                            ls.change_choice(1)
                         else
                             fallback()
                         end
@@ -111,8 +111,8 @@ return {
                     ["<C-p>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-                        elseif luasnip.choice_active() then
-                            luasnip.change_choice(-1)
+                        elseif ls.choice_active() then
+                            ls.change_choice(-1)
                         else
                             fallback()
                         end
@@ -127,8 +127,10 @@ return {
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.confirm({ select = true })
-                        elseif luasnip.locally_jumpable(1) then
-                            luasnip.jump(1)
+                        elseif ls.locally_jumpable(1) then
+                            ls.jump(1)
+                        elseif ls.expandable() then
+                            ls.expand()
                         elseif has_words_before() then
                             cmp.complete()
                         else
@@ -163,7 +165,7 @@ return {
                         option = {
                             keyword_pattern = [[[a-zA-Z0-9]\+]]
                         },
-                        keyword_length = 3
+                        keyword_length = 4
                     },
                 }
             })
