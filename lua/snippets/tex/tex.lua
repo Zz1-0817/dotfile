@@ -77,7 +77,7 @@ local M = {
     autosnippet(
         { trig = "lr([abpvBV])", name = "left right", dscr = "left right delimiters", trigEngine = "pattern", hidden = true },
         fmta([[
-    \left<> <> \right<>
+    \left<> <><> \right<>
     ]],
             { f(function(_, snip)
                 local cap = snip.captures[1]
@@ -86,7 +86,8 @@ local M = {
                 end
                 return brackets[cap][1]
             end),
-                d(1, get_selected_text),
+                f(get_selected_text, {}),
+                i(0),
                 f(function(_, snip)
                     local cap = snip.captures[1]
                     if brackets[cap] == nil then
@@ -162,7 +163,7 @@ local M = {
     s({ trig = "env", name = "begin env", dscr = "begin/end environment" },
         fmta([[
     \begin{<>}
-    <>
+      <>
     \end{<>}
     ]],
             { i(1), i(0), rep(1) })
@@ -225,21 +226,21 @@ local text_command_specs = {
             name = "emph",
             dscr = "emph text"
         },
-        command = [[\\emph]],
+        command = [[\emph]],
     },
     it = {
         context = {
             name = "textit",
             dscr = "italic text"
         },
-        command = [[\\textit]],
+        command = [[\textit]],
     },
     bf = {
         context = {
             name = "textit",
             dscr = "bold text"
         },
-        command = [[\\textit]],
+        command = [[\textit]],
     },
     sc = {
         context = {
@@ -363,10 +364,29 @@ local postfix_math_specs = {
             pre = [[\left. ]],
             post = [[ \right\vert]]
         }
+    },
+    mod = {
+        context = {
+            name = "modulo",
+            dscr = "modulo"
+        },
+        command = {
+            pre = [[\mod{]],
+            post = [[}]]
+        }
+    },
+    pmod = {
+        context = {
+            name = "modulo with bracket",
+            dscr = "modulo with bracket"
+        },
+        command = {
+            pre = [[\pmod{]],
+            post = [[}]]
+        }
     }
 }
 local postfix_math_snippets = {}
-local _postfix_math_snippets = {}
 local _postfix_math_snippet = require("snippets.tex.utils.scaffolding")._postfix_snippet
 for k, v in pairs(postfix_math_specs) do
     table.insert(
@@ -393,8 +413,9 @@ local auto_backslash_specs = {
     "dif",
     "notin",
     "to",
-    "pm",
-    "mp",
+    "mid",
+    "iff",
+    "quad",
     "arcsin",
     "sin",
     "arccos",
@@ -427,10 +448,10 @@ end
 vim.list_extend(M, auto_backslash_snippets)
 
 local symbol_specs = {
+    pi = { context = { name = "π" }, command = [[\pi]] },
     vphi = { context = { name = "φ" }, command = [[\varphi]] },
     inn = { context = { name = "∈" }, command = [[\in]] },
-    pm = { context = { name = "±" }, command = [[\pm]] },
-    mp = { context = { name = "∓" }, command = [[\mp]] },
+    xx = { context = { name = "×" }, command = [[\times]] },
     NN = { context = { name = "ℕ" }, command = [[\mathbb{N}]] },
     ZZ = { context = { name = "ℤ" }, command = [[\mathbb{Z}]] },
     QQ = { context = { name = "ℚ" }, command = [[\mathbb{Q}]] },
@@ -440,8 +461,15 @@ local symbol_specs = {
     geq = { context = { name = "≥" }, command = [[\geq]] },
     AA = { context = { name = "∀" }, command = [[\forall]] },
     EE = { context = { name = "∃" }, command = [[\exists]] },
+    cap = { context = { name = "∩" }, command = [[\cap]] },
+    bcap = { context = { name = "∩" }, command = [[\bcap]] },
+    cup = { context = { name = "∪" }, command = [[\cup]] },
+    bcup = { context = { name = "∪" }, command = [[\bcup]] },
+    neq = { context = { name = "!=" }, command = [[\neq]] },
+    ["+-"] = { context = { name = "±" }, command = [[\pm]] },
+    ["-+"] = { context = { name = "∓" }, command = [[\mp]] },
     ["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
-    [":="] = { context = { name = "≔" }, command = [[\definedas]] },
+    [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
     ["!+"] = { context = { name = "⊕" }, command = [[\oplus]] },
     ["!*"] = { context = { name = "⊗" }, command = [[\otimes]] },
     ["=>"] = { context = { name = "⇒" }, command = [[\implies]] },
@@ -502,6 +530,18 @@ local thm_specs = {
         context = {
             name = "remark",
             dscr = "remark",
+        },
+    },
+    pf = {
+        context = {
+            name = "proof",
+            dscr = "proof",
+        },
+    },
+    spf = {
+        context = {
+            name = "sketchproof",
+            dscr = "sketchproof",
         },
     },
 }
