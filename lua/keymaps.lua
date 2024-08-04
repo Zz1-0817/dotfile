@@ -12,7 +12,7 @@ keyset('i', "<M-b>", utils.move.moveInverseWord, opts)
 keyset('i', "<C-l>", "<C-o>zz", opts)
 keyset('i', "<C-e>", "<End>", opts)
 keyset('i', "<C-a>", "<Home>", opts)
-keyset('i', "<C-y>", "<C-o>p", opts)
+keyset('i', "<C-y>", "<C-o>h<C-o>p", opts)
 keyset("n", "<leader>w", "<CMD>w<CR>", opts)
 keyset('i', "<C-space>", " ", opts) -- for gui, avoid touching by mistake
 

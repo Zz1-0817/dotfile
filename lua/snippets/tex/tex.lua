@@ -2,12 +2,7 @@ local ls = require("luasnip")
 local tex = require("snippets.tex.utils.conditions")
 
 local line_begin = require("luasnip.extras.conditions.expand").line_begin
-local single_command_snippet = require("snippets.tex.utils.scaffolding").single_command_snippet
-local simpleenv_snippet = require("snippets.tex.utils.scaffolding").simpleenv_snippet
-local postfix_snippet = require("snippets.tex.utils.scaffolding").postfix_snippet
-local auto_backslash_snippet = require("snippets.tex.utils.scaffolding").auto_backslash_snippet
-local symbol_snippet = require("snippets.tex.utils.scaffolding").symbol_snippet
-local enum_snippet = require("snippets.tex.utils.scaffolding").enum_snippet
+local scaffolding = require("snippets.tex.utils.scaffolding")
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
 
 local get_selected_text = function(_, snip)
@@ -162,11 +157,11 @@ local M = {
     ),
     s({ trig = "env", name = "begin env", dscr = "begin/end environment" },
         fmta([[
-    \begin{<>}
+    \begin{<>}<>
       <>
     \end{<>}
     ]],
-            { i(1), i(0), rep(1) })
+            { i(1), i(2), i(0), rep(1) })
     ),
 }
 
@@ -211,7 +206,7 @@ local section_snippets = {}
 for k, v in pairs(section_specs) do
     table.insert(
         section_snippets,
-        single_command_snippet(
+        scaffolding.single_command_snippet(
             vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
             v.command,
             { condition = line_begin }
@@ -254,7 +249,7 @@ local text_command_snippets = {}
 for k, v in pairs(text_command_specs) do
     table.insert(
         text_command_snippets,
-        single_command_snippet(
+        scaffolding.single_command_snippet(
             vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
             v.command,
             { condition = tex.in_text }
@@ -387,11 +382,10 @@ local postfix_math_specs = {
     }
 }
 local postfix_math_snippets = {}
-local _postfix_math_snippet = require("snippets.tex.utils.scaffolding")._postfix_snippet
 for k, v in pairs(postfix_math_specs) do
     table.insert(
         postfix_math_snippets,
-        postfix_snippet(
+        scaffolding.postfix_snippet(
             vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
             v.command,
             { condition = tex.in_math }
@@ -399,7 +393,7 @@ for k, v in pairs(postfix_math_specs) do
     )
     table.insert(
         postfix_math_snippets,
-        _postfix_math_snippet(
+        scaffolding._postfix_snippet(
             vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
             v.command,
             { condition = tex.in_math }
@@ -409,6 +403,17 @@ end
 vim.list_extend(M, postfix_math_snippets)
 
 local auto_backslash_specs = {
+    "pi",
+    "nu",
+    "xi",
+    "mu",
+    "cap",
+    "cup",
+    "neq",
+    "leq",
+    "geq",
+    "sum",
+    "prod",
     "int",
     "dif",
     "notin",
@@ -443,13 +448,20 @@ local auto_backslash_specs = {
 }
 local auto_backslash_snippets = {}
 for _, v in pairs(auto_backslash_specs) do
-    table.insert(auto_backslash_snippets, auto_backslash_snippet({ trig = v }, { condition = tex.in_math }))
+    table.insert(
+        auto_backslash_snippets,
+        scaffolding.auto_backslash_snippet({ trig = v },
+            { condition = tex.in_math }
+        )
+    )
 end
 vim.list_extend(M, auto_backslash_snippets)
 
 local symbol_specs = {
-    pi = { context = { name = "π" }, command = [[\pi]] },
-    vphi = { context = { name = "φ" }, command = [[\varphi]] },
+    ve = { context = { name = "ε" }, command = [[\varepsilon]] },
+    vp = { context = { name = "φ" }, command = [[\varphi]] },
+    ph = { context = { name = "φ" }, command = [[\phi]] },
+    ps = { context = { name = "Ψ" }, command = [[\psi]] },
     inn = { context = { name = "∈" }, command = [[\in]] },
     xx = { context = { name = "×" }, command = [[\times]] },
     NN = { context = { name = "ℕ" }, command = [[\mathbb{N}]] },
@@ -457,21 +469,15 @@ local symbol_specs = {
     QQ = { context = { name = "ℚ" }, command = [[\mathbb{Q}]] },
     RR = { context = { name = "ℝ" }, command = [[\mathbb{R}]] },
     CC = { context = { name = "ℂ" }, command = [[\mathbb{C}]] },
-    leq = { context = { name = "≤" }, command = [[\leq]] },
-    geq = { context = { name = "≥" }, command = [[\geq]] },
     AA = { context = { name = "∀" }, command = [[\forall]] },
     EE = { context = { name = "∃" }, command = [[\exists]] },
-    cap = { context = { name = "∩" }, command = [[\cap]] },
-    bcap = { context = { name = "∩" }, command = [[\bcap]] },
-    cup = { context = { name = "∪" }, command = [[\cup]] },
-    bcup = { context = { name = "∪" }, command = [[\bcup]] },
-    neq = { context = { name = "!=" }, command = [[\neq]] },
+    bcap = { context = { name = "∩" }, command = [[\bigcap]] },
+    bcup = { context = { name = "∪" }, command = [[\bigcup]] },
     ["+-"] = { context = { name = "±" }, command = [[\pm]] },
     ["-+"] = { context = { name = "∓" }, command = [[\mp]] },
     ["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
     [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
-    ["!+"] = { context = { name = "⊕" }, command = [[\oplus]] },
-    ["!*"] = { context = { name = "⊗" }, command = [[\otimes]] },
+    ["o+"] = { context = { name = "⊕" }, command = [[\oplus]] },
     ["=>"] = { context = { name = "⇒" }, command = [[\implies]] },
     ["<="] = { context = { name = "⇐" }, command = [[\impliedby]] },
     ["!>"] = { context = { name = "→" }, command = [[\mapsto]] },
@@ -484,10 +490,51 @@ local symbol_snippets = {}
 for k, v in pairs(symbol_specs) do
     table.insert(
         symbol_snippets,
-        symbol_snippet(vim.tbl_deep_extend("keep", { trig = k }, v.context), v.command, { condition = tex.in_math })
+        scaffolding.symbol_snippet(
+            vim.tbl_deep_extend("keep", { trig = v.trig or k }, v.context),
+            v.command,
+            { condition = tex.in_math }
+        )
     )
 end
 vim.list_extend(M, symbol_snippets)
+
+local imap_specs = {
+    a = { context = { name = "alpha", } },
+    b = { context = { name = "beta", } },
+    c = { context = { name = "chi", } },
+    d = { context = { name = "delta", } },
+    e = { context = { name = "epsilon", } },
+    g = { context = { name = "gamma", }, alternates = "Gamma" },
+    h = { context = { name = "eta", } },
+    i = { context = { name = "iota", } },
+    k = { context = { name = "kappa", } },
+    l = { context = { name = "lambda", }, alternates = "Lambda" },
+    n = { context = { name = "nabla", } },
+    p = { context = { name = "partial", } },
+    q = { context = { name = "theta", }, alternates = "Theta" },
+    r = { context = { name = "rho", }, },
+    s = { context = { name = "sigma", }, alternates = "Sigma" },
+    t = { context = { name = "tau", }, },
+    u = { context = { name = "upsilon", } },
+    w = { context = { name = "omega", }, alternates = "Omega" },
+    x = { context = { name = "xi", }, alternates = "Xi" },
+    z = { context = { name = "zeta", } },
+    ['*'] = { context = { name = "times" }, alternates = "otimes" },
+}
+local imap_snippets = {}
+for k, v in pairs(imap_specs) do
+    table.insert(
+        imap_snippets,
+        scaffolding.imap_snippet(
+            vim.tbl_deep_extend("keep",
+                { trig = '`' .. k, snippetType = "autosnippet" }, v.context),
+            v.alternates or {},
+            { condition = tex.in_math }
+        )
+    )
+end
+vim.list_extend(M, imap_snippets)
 
 local thm_specs = {
     def = {
@@ -549,7 +596,7 @@ local thm_snippets = {}
 for k, v in pairs(thm_specs) do
     table.insert(
         thm_snippets,
-        simpleenv_snippet(
+        scaffolding.optionenv_snippet(
             vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
             v.opts or { condition = tex.notin_thm }
         )
@@ -581,7 +628,7 @@ local enum_snippets = {}
 for k, v in pairs(enum_specs) do
     table.insert(
         enum_snippets,
-        enum_snippet(
+        scaffolding.enum_snippet(
             vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context,
                 v.opts or { condition = tex.in_text }
             )

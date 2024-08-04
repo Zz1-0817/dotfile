@@ -36,26 +36,9 @@ return {
                 "You have requested",
                 "Overfull"
             }
+            vim.g.vimtex_imaps_enabled = false
         end,
         config = function()
-            vim.fn['vimtex#imaps#add_map']({ lhs = "n", rhs = "\\nabla", wrapper = "vimtex#imaps#wrap_math" })
-            vim.fn['vimtex#imaps#add_map']({ lhs = "p", rhs = "\\partial", wrapper = "vimtex#imaps#wrap_math" })
-            vim.fn['vimtex#imaps#add_map']({ lhs = "x", rhs = "\\otimes", wrapper = "vimtex#imaps#wrap_math" })
-            vim.fn['vimtex#imaps#add_map']({ lhs = "o", rhs = "\\oplus", wrapper = "vimtex#imaps#wrap_math" })
-            vim.fn['vimtex#imaps#add_map']({
-                lhs = "s",
-                rhs = 'vimtex#imaps#style_math("mathscr")',
-                expr = 1,
-                leader = "#",
-                wrapper = "vimtex#imaps#wrap_math"
-            })
-            vim.fn['vimtex#imaps#add_map']({
-                lhs = "F",
-                rhs = 'vimtex#imaps#style_math("mathfrak")',
-                expr = 1,
-                leader = "#",
-                wrapper = "vimtex#imaps#wrap_math"
-            })
         end
     },
     {
