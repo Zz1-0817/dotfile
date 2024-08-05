@@ -134,6 +134,40 @@ M.optionenv_snippet = function(context, opts)
     )
 end
 
+M.starredenv_snippet = function(context, extra_suffix, opts)
+    opts = opts or {}
+    if not context.trig then
+        error("context doesn't include a `trig` key which is mandatory", 2)
+    end
+    local choices = { t("*"), t("") }
+    local env_name = context.name or context.trig
+    context.name = env_name
+    context.name = context.name .. "(|*"
+    context.dscr = context.dscr or context.name or ""
+    if extra_suffix then
+        if type(extra_suffix) == "string" then
+            table.insert(choices, t(extra_suffix))
+            context.name = context.name .. "|" .. extra_suffix
+        elseif type(extra_suffix) == "table" then
+            for _, v in ipairs(extra_suffix) do
+                table.insert(choices, t(v))
+                context.name = context.name .. "|" .. v
+            end
+        else
+            error("suffix should be a string or a table")
+        end
+        context.name = context.name .. ")"
+    end
+    return s(context,
+        fmta([[
+            \begin{<><>}
+              <>
+            \end{<><>}
+    ]],
+            { t(env_name), c(1, choices), i(2), t(env_name), rep(1) }),
+        opts)
+end
+
 M.symbol_snippet = function(context, command, opts)
     opts = opts or {}
     if not context.trig then
@@ -153,15 +187,6 @@ M.single_command_snippet = function(context, command, opts)
     context.dscr = context.dscr or command
     context.name = context.name or context.dscr
     context.docstring = context.docstring or command
-    context.trigEngine = trigEngine
-    local start, _ = string.find(command, context.trig)
-    if start == 2 then
-        if trigEngine == "ecma" then
-            context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-        elseif trigEngine == "pattern" then
-            context.trig = "\\?" .. context.trig
-        end
-    end
     return s(
         context,
         fmta(command .. "{<><>}", { f(function(_, snip) return snip.env.LS_SELECT_RAW end), i(0) }),

@@ -125,33 +125,6 @@ local M = {
         { condition = tex.in_math, show_condition = tex.in_math }
     ),
     autosnippet({ trig = "inv", wordTrig = false }, { t("^{-1}") }, { condition = tex.in_math }),
-    autosnippet({ trig = "alg", name = "align(|*|ed)", dscr = "align math" },
-        fmta([[
-    \begin{align<>}
-    <>
-    \end{align<>}
-    ]],
-            { c(1, { t("*"), t(""), t("ed") }), i(2), rep(1) }), -- in order of least-most used
-        { condition = line_begin, show_condition = line_begin }
-    ),
-    autosnippet({ trig = "gat", name = "gather(|*|ed)", dscr = "gather math" },
-        fmta([[
-    \begin{gather<>}
-    <>
-    \end{gather<>}
-    ]],
-            { c(1, { t("*"), t(""), t("ed") }), i(2), rep(1) }),
-        { condition = line_begin, show_condition = line_begin }
-    ),
-    autosnippet({ trig = "eqn", name = "equation(|*)", dscr = "equation math" },
-        fmta([[
-    \begin{equation<>}<>
-    <>
-    \end{equation<>}
-    ]],
-            { c(1, { t("*"), t("") }), c(2, { t(""), fmta([[\tag{<>}<>]], { i(1), i(0) }) }), i(3), rep(1) }),
-        { condition = line_begin, show_condition = line_begin }
-    ),
     autosnippet({ trig = "(%d?)cases", name = "cases", dscr = "cases", trigEngine = "pattern", hidden = true },
         fmta([[
     \begin{cases}
@@ -170,6 +143,38 @@ local M = {
             { i(1), i(2), i(0), rep(1) })
     ),
 }
+
+local starredenv_specs = {
+    alg = {
+        context = {
+            name = "align",
+        },
+        extra_suffix = "ed",
+    },
+    gat = {
+        context = {
+            name = "gather",
+        },
+        extra_suffix = "ed",
+    },
+    eqn = {
+        context = {
+            name = "equation",
+        },
+    },
+}
+local starredenv_snippets = {}
+for k, v in pairs(starredenv_specs) do
+    table.insert(
+        starredenv_snippets,
+        scaffolding.starredenv_snippet(
+            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
+            v.extra_suffix or nil,
+            { condition = line_begin }
+        )
+    )
+end
+vim.list_extend(M, starredenv_snippets)
 
 local section_specs = {
     ["#"] = {
@@ -238,10 +243,10 @@ local text_command_specs = {
     },
     bf = {
         context = {
-            name = "textit",
+            name = "textbf",
             dscr = "bold text"
         },
-        command = [[\textit]],
+        command = [[\textbf]],
     },
     sc = {
         context = {
@@ -526,7 +531,9 @@ local imap_specs = {
     w = { context = { name = "omega", }, alternates = "Omega" },
     x = { context = { name = "xi", }, alternates = "Xi" },
     z = { context = { name = "zeta", } },
+    ['8'] = { context = { name = "infty" } },
     ['*'] = { context = { name = "times" }, alternates = "otimes" },
+    ['.'] = { context = { name = "cdot" } },
 }
 local imap_snippets = {}
 for k, v in pairs(imap_specs) do
@@ -534,7 +541,7 @@ for k, v in pairs(imap_specs) do
         imap_snippets,
         scaffolding.imap_snippet(
             vim.tbl_deep_extend("keep",
-                { trig = '`' .. k, snippetType = "autosnippet" }, v.context),
+                { trig = '`' .. k, snippetType = "autosnippet", wordTrig = false }, v.context),
             v.alternates or {},
             { condition = tex.in_math }
         )

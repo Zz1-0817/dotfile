@@ -127,10 +127,10 @@ return {
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.confirm({ select = true })
-                        elseif ls.locally_jumpable(1) then
-                            ls.jump(1)
                         elseif ls.expandable() then
                             ls.expand()
+                        elseif ls.locally_jumpable(1) then
+                            ls.jump(1)
                         elseif has_words_before() then
                             cmp.complete()
                         else
