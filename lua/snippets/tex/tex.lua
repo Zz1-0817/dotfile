@@ -31,11 +31,11 @@ end
 
 local brackets = { -- recall that [b,p,v,B,V]matrix
     a = { "\\langle", "\\rangle" },
-    b = { "\\lbrack", "\\rbrack" },
+    b = { "[", "]" },
     p = { "(", ")" },
-    v = { "\\vert", "\\vert" },
+    v = { "\\lvert", "\\rvert" },
     B = { "\\lbrace", "\\rbrace" },
-    V = { "\\Vert", "\\Vert" },
+    V = { "\\lVert", "\\rVert" },
 }
 
 local M = {
@@ -70,7 +70,13 @@ local M = {
         { condition = tex.in_enum }
     ),
     autosnippet(
-        { trig = "lr([abpvBV])", name = "left right", dscr = "left right delimiters", trigEngine = "pattern", hidden = true },
+        {
+            trig = "lr([abpvBV])",
+            name = "left right",
+            dscr = "left right delimiters",
+            trigEngine = "pattern",
+            hidden = true
+        },
         fmta([[
     \left<> <><> \right<>
     ]],
@@ -123,7 +129,7 @@ local M = {
         fmta([[
     \begin{align<>}
     <>
-    .\end{align<>}
+    \end{align<>}
     ]],
             { c(1, { t("*"), t(""), t("ed") }), i(2), rep(1) }), -- in order of least-most used
         { condition = line_begin, show_condition = line_begin }
@@ -132,7 +138,7 @@ local M = {
         fmta([[
     \begin{gather<>}
     <>
-    .\end{gather<>}
+    \end{gather<>}
     ]],
             { c(1, { t("*"), t(""), t("ed") }), i(2), rep(1) }),
         { condition = line_begin, show_condition = line_begin }
@@ -141,7 +147,7 @@ local M = {
         fmta([[
     \begin{equation<>}<>
     <>
-    .\end{equation<>}
+    \end{equation<>}
     ]],
             { c(1, { t("*"), t("") }), c(2, { t(""), fmta([[\tag{<>}<>]], { i(1), i(0) }) }), i(3), rep(1) }),
         { condition = line_begin, show_condition = line_begin }
@@ -150,12 +156,12 @@ local M = {
         fmta([[
     \begin{cases}
     <>
-    .\end{cases}
+    \end{cases}
     ]],
             { d(1, case) }),
         { condition = tex.in_math, show_condition = tex.in_math }
     ),
-    s({ trig = "env", name = "begin env", dscr = "begin/end environment" },
+    s({ trig = "env", hidden = true, name = "begin env", dscr = "begin/end environment" },
         fmta([[
     \begin{<>}<>
       <>

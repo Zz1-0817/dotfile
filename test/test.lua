@@ -18,9 +18,3 @@
 -- vim.print(cliptext)
 -- local npairs = require("nvim-autopairs")
 -- vim.print(npairs.get_rule('"'))
-local tmp = nil
-if not tmp then
-    vim.print("1")
-else
-    vim.print("2")
-end

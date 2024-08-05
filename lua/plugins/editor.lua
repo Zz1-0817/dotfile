@@ -172,7 +172,9 @@ return {
     {
         "windwp/nvim-autopairs",
         event = { "bufreadpost", "bufwritepost", "bufnewfile" },
-        config = require("plugins.specified.autopairs").config
+        config = function()
+            require("plugins.specified.autopairs")
+        end
     },
     {
         "kylechui/nvim-surround",
