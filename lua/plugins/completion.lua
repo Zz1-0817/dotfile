@@ -17,7 +17,8 @@ return {
         config = function(_, opts)
             local ls = require("luasnip")
             ls.setup(opts)
-            require("luasnip.loaders.from_lua").load({ paths = { "~/AppData/Local/nvim/lua/snippets" } })
+            local snippets_path = vim.fn.stdpath('config') .. [[\lua\snippets]]
+            require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
             --https://github.com/L3MON4D3/LuaSnip/issues/656
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {

@@ -74,7 +74,32 @@ return {
                     },
                 },
                 servers = {
-                    lua_ls = {},
+                    lua_ls = {
+                        settings = {
+                            Lua = {
+                                workspace = {
+                                    checkThirdParty = false,
+                                },
+                                codeLens = {
+                                    enable = true,
+                                },
+                                completion = {
+                                    callSnippet = "Replace",
+                                },
+                                doc = {
+                                    privateName = { "^_" },
+                                },
+                                hint = {
+                                    enable = true,
+                                    setType = false,
+                                    paramType = true,
+                                    paramName = "Disable",
+                                    semicolon = "Disable",
+                                    arrayIndex = "Disable",
+                                },
+                            },
+                        }
+                    },
                     clangd = {},
                     pyright = {},
                     marksman = {},
@@ -125,7 +150,6 @@ A language server for librime
                 local server_opts = vim.tbl_deep_extend("force", {
                     capabilities = vim.deepcopy(capabilities),
                 }, servers[server] or {})
-
 
                 if opts.setup[server] then
                     if opts.setup[server](server_opts) then
