@@ -8,9 +8,10 @@ local brackets = {
 }
 npairs.setup({
     disable_filetype = { "TelescopePrompt" },
+    enable_moveright = false,
     map_c_h = true,
     map_c_w = true,
-    map_cr = false,
+    map_cr = true,
 })
 npairs.add_rules {
     Rule(' ', ' ')
@@ -34,6 +35,8 @@ npairs.add_rules {
             }, context)
         end)
 }
+
+
 npairs.add_rules {
     Rule('<', '>')
         :with_pair(cond.none())
@@ -42,22 +45,7 @@ npairs.add_rules {
         :with_del(cond.none())
         :use_key('>')
 }
-npairs.add_rules({
-    Rule('', '\\}', { "tex", "latex" })
-        :with_pair(cond.none())
-        :with_move(function(opts) return opts.char == '}' end)
-        :with_cr(cond.none())
-        :with_del(cond.none())
-        :use_key('}')
-})
-npairs.add_rules({
-    Rule('', '\\)', { "tex", "latex" })
-        :with_pair(cond.none())
-        :with_move(function(opts) return opts.char == ')' end)
-        :with_cr(cond.none())
-        :with_del(cond.none())
-        :use_key(')')
-})
+
 npairs.add_rules({
         Rule("$", "$", { "tex", "latex" })
             :with_pair(function(opts)
@@ -67,22 +55,13 @@ npairs.add_rules({
                     return false
                 end
             end)
-            :with_move(function(opts) return opts.char == '$' end)
+            :with_move(function(opts) return opts.char == '$' end) -- no work, since disable rightmove
             :with_del(cond.not_after_regex("xx"))
             :with_cr(cond.none())
     },
     Rule("a", "a", "-vim")
 )
-for _, bracket in pairs(brackets) do
-    npairs.add_rules {
-        Rule('', ' ' .. bracket[2])
-            :with_pair(cond.none())
-            :with_move(function(opts) return opts.char == bracket[2] end)
-            :with_cr(cond.none())
-            :with_del(cond.none())
-            :use_key(bracket[2])
-    }
-end
+
 npairs.get_rule("'")[1].not_filetypes = { "tex", "latex" }
 npairs.get_rule('"')[1].not_filetypes = { "tex", "latex" }
 npairs.get_rule('`').not_filetypes = { "tex", "latex" }

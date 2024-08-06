@@ -16,5 +16,5 @@
 -- })
 -- local cliptext = vim.fn.getreg(':')
 -- vim.print(cliptext)
--- local npairs = require("nvim-autopairs")
--- vim.print(npairs.get_rule('"'))
+local npairs = require("nvim-autopairs")
+vim.print(npairs)
