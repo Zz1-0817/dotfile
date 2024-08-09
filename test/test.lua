@@ -16,5 +16,6 @@
 -- })
 -- local cliptext = vim.fn.getreg(':')
 -- vim.print(cliptext)
-local npairs = require("nvim-autopairs")
-vim.print(npairs)
+-- local npairs = require("nvim-autopairs")
+-- vim.print(npairs)
+vim.print(vim.fn.strftime("%Y %b %d"))
