@@ -1,4 +1,5 @@
-return {
+---@class utils.icons
+local M = {
     lualine = {
         separator = '▊',
         server = ' ',
@@ -59,3 +60,4 @@ return {
         Variable      = "󰀫 ",
     },
 }
+return M

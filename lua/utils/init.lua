@@ -1,6 +1,7 @@
 ---@class utils utils core
 ---@field move utils.move
 ---@field startup utils.startup
+---@field icons utils.icons
 local M = {}
 
 setmetatable(M, {
