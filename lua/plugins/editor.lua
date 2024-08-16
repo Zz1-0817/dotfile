@@ -148,7 +148,6 @@ return {
     {
         "folke/flash.nvim",
         event = "VeryLazy",
-        ---@type Flash.Config
         keys = {
             {
                 "<C-j>",
@@ -189,9 +188,14 @@ return {
         opts = {},
     },
     {
-        "kevinhwang91/nvim-bqf",
-        event = "VeryLazy",
+        'stevearc/quicker.nvim',
+        event = "FileType qf",
+        opts = {}
     },
+    -- {
+    --     "kevinhwang91/nvim-bqf",
+    --     event = "VeryLazy",
+    -- },
     {
         "folke/which-key.nvim",
         event = "VeryLazy",

@@ -68,6 +68,7 @@
 5. 设置默认键位绑定`default-mappings`和默认自动命令`default-autocmds`以及创建弹出菜单`popup-menu`(一个菜单, 其在鼠标右键时显示), 见[default-mappings](https://neovim.io/doc/user/vim_diff.html#default-mappings), [default-autocmds](https://neovim.io/doc/user/vim_diff.html#default-autocmds) 和 [popup-menu](https://neovim.io/doc/user/gui.html#popup-menu).
 
 6. 启动 `filetype` 和 `indent` 插件, 等价于
+
 ```vim
 :runtime! ftplugin.vim indent.vim
 ```
@@ -141,6 +142,7 @@ Neovim 提供了一个 LSP 客户端, 但其服务端由第三方提供.
     [参考](https://microsoft.github.io/language-server-protocol/implementors/servers/).
 
 2. 当对应文件打开时, 使用命令(`lua`) `vim.lsp.start()` 开启或绑定一个lsp. 例如
+
 ```lua
 -- Create an event handler for the FileType autocommand
 vim.api.nvim_create_autocmd('FileType', {

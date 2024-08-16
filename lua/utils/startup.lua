@@ -1,3 +1,4 @@
+---@class utils.startup
 local M = {}
 
 M.check_colorscheme = function()

@@ -1,6 +1,10 @@
+---@class utils.move
 local M = {}
-local ptn = "[%w%p]+"
+local ptn = "[\u{4e00}-\u{9fa5}%w%p]+"
 
+---@param str string original string
+---@param _init integer initial position
+---@param pattern string pattern to match
 local function findPatternReverse(str, _init, pattern)
     local reversedStr = string.reverse(str)
     local init = string.len(str) - _init + 1
@@ -12,6 +16,7 @@ local function findPatternReverse(str, _init, pattern)
     return originalPos
 end
 
+---@param forward boolean true for forward search, vice versa.
 local function moveSingleWord(forward)
     local current_win = vim.api.nvim_get_current_win()
     local current_buf = vim.api.nvim_win_get_buf(current_win)

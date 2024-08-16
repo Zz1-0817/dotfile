@@ -22,18 +22,6 @@ opt.pumblend = 15
 opt.laststatus = 3
 opt.splitkeep = "screen"
 opt.mousemoveevent = true
-opt.foldcolumn = '1'
-opt.foldlevel = 64
-opt.foldlevelstart = 64
-opt.foldenable = true
-opt.fillchars = {
-    foldopen = "",
-    foldclose = "",
-    fold = " ",
-    foldsep = " ",
-    diff = "╱",
-    eob = " ",
-}
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
