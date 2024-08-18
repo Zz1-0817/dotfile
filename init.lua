@@ -18,5 +18,3 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({ { import = "plugins" } })
-
-vim.o.guifont = "JetBrainsMonoNL Nerd Font Mono:h14"

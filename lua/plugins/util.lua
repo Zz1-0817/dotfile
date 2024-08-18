@@ -7,4 +7,5 @@ return {
         end,
     },
     { "nvim-lua/plenary.nvim", lazy = true },
+    { "mkropat/vim-ezguifont" }
 }

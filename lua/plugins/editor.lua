@@ -26,6 +26,24 @@ return {
         },
         keys = { { "<C-b>", "<CMD>NvimTreeToggle<CR>", desc = "Toggle nvim-tree" } },
         config = function()
+            local function change_root_to_global_cwd()
+                local api = require("nvim-tree.api")
+                local global_cwd = vim.fn.getcwd(-1, -1)
+                api.tree.change_root(global_cwd)
+            end
+
+            local function on_attach(bufnr)
+                local api = require "nvim-tree.api"
+
+                local function opts(desc)
+                    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+                end
+
+                api.config.mappings.default_on_attach(bufnr)
+
+                vim.keymap.set('n', '<C-c>', change_root_to_global_cwd, opts('Change Root To Global CWD'))
+            end
+
             require("nvim-tree").setup({
                 sort = {
                     sorter = "modification_time"
@@ -46,7 +64,8 @@ return {
                         },
                         quit_on_open = true,
                     },
-                }
+                },
+                on_attach = on_attach
             })
             -- Make :bd and :q behave as usual when tree is visible
             vim.api.nvim_create_autocmd({ 'BufEnter', 'QuitPre' }, {
@@ -86,6 +105,7 @@ return {
             "nvim-lua/plenary.nvim",
             "debugloop/telescope-undo.nvim",
             "nvim-telescope/telescope-file-browser.nvim",
+            "nvim-telescope/telescope-project.nvim"
         },
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<cr>",   desc = "Find files(root dir)" },
@@ -120,30 +140,41 @@ return {
                         }
                     }
                 },
-                extensions = {
-                    undo = {},
-                },
             })
             require("telescope").load_extension("undo")
             require("telescope").load_extension("file_browser")
+            require("telescope").load_extension('project')
         end
     },
     {
         "akinsho/toggleterm.nvim",
         event = "VeryLazy",
-        config = function()
-            require("toggleterm").setup {
-                size = function(term)
-                    if term.direction == "horizontal" then
-                        return 10
-                    elseif term.direction == "vertical" then
-                        return vim.o.columns * 0.4
-                    end
-                end,
-                open_mapping = [[<c-\>]],
-                direction = "horizontal",
+        init = function()
+            local powershell_options = {
+                shell = vim.fn.executable "pwsh" == 1 and "pwsh" or "powershell",
+                shellcmdflag =
+                "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+                shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+                shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+                shellquote = "",
+                shellxquote = "",
             }
-        end
+
+            for option, value in pairs(powershell_options) do
+                vim.opt[option] = value
+            end
+        end,
+        opts = {
+            size = function(term)
+                if term.direction == "horizontal" then
+                    return 10
+                elseif term.direction == "vertical" then
+                    return vim.o.columns * 0.4
+                end
+            end,
+            open_mapping = [[<c-\>]],
+            direction = "horizontal",
+        }
     },
     {
         "folke/flash.nvim",
