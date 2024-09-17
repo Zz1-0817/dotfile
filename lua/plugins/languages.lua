@@ -10,14 +10,6 @@ return {
         end
     },
     {
-        "OXY2DEV/markview.nvim",
-        lazy = false,
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-            "nvim-tree/nvim-web-devicons"
-        }
-    },
-    {
         "lervag/vimtex",
         init = function()
             vim.g.vimtex_compiler_progname = 'nvr'

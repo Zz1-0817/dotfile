@@ -1,7 +1,7 @@
 return {
     {
         "nvim-tree/nvim-tree.lua",
-        version = "*",
+        --version = "*",
         lazy = false,
         dependencies = {
             "nvim-tree/nvim-web-devicons",
@@ -12,7 +12,7 @@ return {
                 opts = {
                     filter_rules = {
                         bo = {
-                            filetype = { "fidget", "NvimTree" },
+                            filetype = { "fidget", "NvimTree", "screenkey" },
                             buftype = { "terminal" }
                         }
                     },
@@ -28,7 +28,7 @@ return {
         config = function()
             local function change_root_to_global_cwd()
                 local api = require("nvim-tree.api")
-                local global_cwd = vim.fn.getcwd(-1, -1)
+                local global_cwd = vim.fn.getcwd()
                 api.tree.change_root(global_cwd)
             end
 
@@ -113,6 +113,7 @@ return {
             { "<leader>fg", "<cmd>Telescope live_grep<cr>",    desc = "Grep(root dir)" },
             { "<leader>fh", "<cmd>Telescope help_tags<cr>",    desc = "Help tags" },
             { "<leader>fr", "<cmd>Telescope oldfiles<cr>",     desc = "Recent" },
+            { "<leader>fp", "<cmd>Telescope project<cr>",      desc = "Project" },
             { "<leader>u",  "<cmd>Telescope undo<cr>",         desc = "Undo history", },
             { "<leader>gc", "<cmd>Telescope git_commits<CR>",  desc = "Git commits" },
             { "<leader>gb", "<cmd>Telescope git_branches<CR>", desc = "Git branch" },
