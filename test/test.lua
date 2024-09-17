@@ -1,10 +1,23 @@
-local ts_utils = require("nvim-treesitter.ts_utils")
+
+-- local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+-- vim.print(row, col)
+local col = vim.fn.col('.')
+local row = vim.fn.line('.')
+local line = vim.fn.getline(row)
+if string.find(line, "$$", 0, true) then
+    vim.print("1")
+end
+-- vim.print(vim.fn.getline(row))
+-- local current_char = vim.fn.getline('.'):sub(col, col)
+-- print(current_char)
+
 
 -- Plugin Treesitter Method
-local cursor_node = ts_utils.get_node_at_cursor()
-if cursor_node ~= nil then
-    vim.print(cursor_node:type())
-end
+-- local ts_utils = require("nvim-treesitter.ts_utils")
+-- local cursor_node = ts_utils.get_node_at_cursor()
+-- if cursor_node ~= nil then
+--     vim.print(cursor_node:type())
+-- end
 
 -- Builtin Neovim Method
 -- local cursor_node = vim.treesitter.get_node()
