@@ -65,4 +65,4 @@ npairs.add_rules({
 npairs.get_rule("'")[1].not_filetypes = { "tex", "latex" }
 npairs.get_rule('"')[1].not_filetypes = { "tex", "latex" }
 npairs.get_rule('[').not_filetypes = { "tex", "latex" }
-npairs.get_rule('`').not_filetypes = { "tex", "latex" }
+npairs.get_rule('`').not_filetypes = { "tex", "latex", "markdown" }

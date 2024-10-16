@@ -531,10 +531,12 @@ local imap_specs = {
     w = { context = { name = "omega", }, alternates = "Omega" },
     x = { context = { name = "xi", }, alternates = "Xi" },
     z = { context = { name = "zeta", } },
+    ['0'] = { context = { name = "varnothing" } },
     ['8'] = { context = { name = "infty" } },
     ['.'] = { context = { name = "cdot" } },
     ['['] = { context = { name = "subseteq" } },
     [']'] = { context = { name = "supseteq" } },
+    ['='] = { context = { name = "equiv" } },
 }
 local imap_snippets = {}
 for k, v in pairs(imap_specs) do

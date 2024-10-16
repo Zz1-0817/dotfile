@@ -162,7 +162,13 @@ return {
             cmp.setup(opts)
             cmp.setup.filetype({ "tex", "bib", "sty", "cls" }, {
                 sources = {
-                    { name = "vimtex" },
+                    {
+                        name = "vimtex",
+                        entry_filter = function()
+                            local ls = require("luasnip")
+                            return not ls.choice_active()
+                        end
+                    },
                     { name = "luasnip",  keyword_length = 2 },
                     { name = "nvim_lsp", keyword_length = 2 },
                     {

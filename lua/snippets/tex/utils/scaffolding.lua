@@ -91,7 +91,7 @@ M._postfix_snippet = function(context, command, opts)
     <><><><>
     ]], { t(command.pre), f(function(_, snip)
         return snip.env.LS_SELECT_RAW
-    end), i(0), t(command.post) }, opts))
+    end), i(0), t(command.post) }), opts)
 end
 
 

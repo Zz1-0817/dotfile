@@ -14,34 +14,30 @@ local brackets = { -- recall that [b,p,v,B,V]matrix
     V = { "\\lVert", "\\rVert" },
 }
 
-local notin_math = function()
-
-    -- without words
-    -- inline math
+local in_math = function ()
     local col = vim.fn.col('.')
     local row = vim.fn.line('.')
+    local line_cnt = vim.api.nvim_buf_line_count(0)
     local ch = vim.fn.getline('.'):sub(col, col)
     if ch == '$' then
-        return false
+        return true
     end
-    -- display math
-    if row ~= 1 then
+    if row ~= 1 and row ~= line_cnt then
         local last_line = vim.fn.getline(row - 1)
-        if string.find(last_line, "$$", 0, true) then
-            return false
+        local next_line = vim.fn.getline(row + 1)
+        if string.find(last_line, "$$", 0, true) and string.find(next_line, "$$", 0, true) then
+            return true
         end
     end
-
-    -- with words
     local type = ts_utils.get_node_at_cursor():type()
     if string.find(type, "latex") then
-        return false
+        return true
     end
-    return true
+    return false
 end
 
-local in_math = function ()
-    return not notin_math()
+local notin_math = function()
+     return not in_math()
 end
 
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
@@ -86,7 +82,7 @@ local M = {
             hidden = true
         },
         fmta([[
-    \left<> <><> \right<>
+    \left<><><>\right<>
     ]],
             { f(function(_, snip)
                 local cap = snip.captures[1]

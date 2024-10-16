@@ -29,6 +29,9 @@ return {
                 }
             }
             vim.g.vimtex_quickfix_ignore_filters = {
+                "Missing character: There",
+                "Package xeCJK Warning: Undefined",
+                "Package xeCJK Warning: Unknown",
                 "Package xeCJK Warning: Fandol",
                 "Package fontspec Warning: Font",
                 "Package tcolorbox Warning: Using nobreak failed",
@@ -37,6 +40,9 @@ return {
                 "Overfull"
             }
             vim.g.vimtex_imaps_enabled = false
+            vim.g.vimtex_mappings_disable = {
+                i = {"]]"}
+            }
         end,
         config = function()
         end
