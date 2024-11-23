@@ -224,10 +224,6 @@ return {
         event = "FileType qf",
         opts = {}
     },
-    -- {
-    --     "kevinhwang91/nvim-bqf",
-    --     event = "VeryLazy",
-    -- },
     {
         "folke/which-key.nvim",
         event = "VeryLazy",

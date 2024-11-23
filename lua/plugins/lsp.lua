@@ -9,7 +9,9 @@ return {
                 "clangd",
                 "shfmt",
                 "pyright",
-                "marksman"
+                "marksman",
+                "html-lsp",
+                "css-lsp"
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({
@@ -100,10 +102,12 @@ return {
                     clangd = {},
                     pyright = {},
                     marksman = {},
+                    html = {},
+                    cssls = {},
                     rime_ls = specified_lsp.rime_ls
                 },
                 setup = {
-                    rime_ls = function(opts)
+                    rime_ls = function()
                         local configs = require('lspconfig.configs')
                         if not configs.rime_ls then
                             configs.rime_ls = {
@@ -123,7 +127,6 @@ A language server for librime
                                 }
                             }
                         end
-                        require("lspconfig")["rime_ls"].setup(opts)
                     end
                 }
             }

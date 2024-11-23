@@ -86,7 +86,7 @@ return {
         "Bekaboo/dropbar.nvim",
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         keys = { { "<leader>dp", function() require("dropbar.api").pick() end, desc = "Dropbar pick" } },
-        opts = { general = { attach_events = { 'BufEnter' } } }
+        opts = { bar = { attach_events = { 'BufEnter' } } }
     },
     {
         "kevinhwang91/nvim-ufo",

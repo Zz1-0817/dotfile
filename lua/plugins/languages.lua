@@ -41,7 +41,7 @@ return {
             }
             vim.g.vimtex_imaps_enabled = false
             vim.g.vimtex_mappings_disable = {
-                i = {"]]"}
+                i = { "]]" }
             }
         end,
         config = function()

@@ -29,9 +29,16 @@ local in_math = function ()
             return true
         end
     end
-    local type = ts_utils.get_node_at_cursor():type()
-    if string.find(type, "latex") then
-        return true
+    local function in_latex_block()
+        local type = ts_utils.get_node_at_cursor():type()
+        if string.find(type, "latex") then
+            return true
+        end
+        return false
+    end
+    local status, ret= pcall(in_latex_block)
+    if status then
+        return ret
     end
     return false
 end
