@@ -306,7 +306,7 @@ local postfix_math_specs = {
             dscr = "hat",
         },
         command = {
-            pre = [[\hat{]],
+            pre = [[\widehat{]],
             post = [[}]]
         }
     },
@@ -469,11 +469,13 @@ end
 vim.list_extend(M, auto_backslash_snippets)
 
 local symbol_specs = {
+    chi = { context = { name = "χ" }, command = [[\chi]] },
     vep = { context = { name = "ε" }, command = [[\varepsilon]] },
     vph = { context = { name = "φ" }, command = [[\varphi]] },
     phi = { context = { name = "φ" }, command = [[\phi]] },
     psi = { context = { name = "Ψ" }, command = [[\psi]] },
     inn = { context = { name = "∈" }, command = [[\in]] },
+    oo = { context = { name = "○" }, command = [[\circ]] },
     xx = { context = { name = "×" }, command = [[\times]] },
     XX = { context = { name = "⊗" }, command = [[\otimes]] },
     NN = { context = { name = "ℕ" }, command = [[\mathbb{N}]] },
@@ -488,7 +490,7 @@ local symbol_specs = {
     ["+-"] = { context = { name = "±" }, command = [[\pm]] },
     ["-+"] = { context = { name = "∓" }, command = [[\mp]] },
     ["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
-    [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
+    -- [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
     ["o+"] = { context = { name = "⊕" }, command = [[\oplus]] },
     ["=>"] = { context = { name = "⇒" }, command = [[\implies]] },
     ["<="] = { context = { name = "⇐" }, command = [[\impliedby]] },

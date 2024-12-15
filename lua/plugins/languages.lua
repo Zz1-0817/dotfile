@@ -34,6 +34,7 @@ return {
                 "Package xeCJK Warning: Unknown",
                 "Package xeCJK Warning: Fandol",
                 "Package fontspec Warning: Font",
+                "LaTeX Font Warning: Font shape",
                 "Package tcolorbox Warning: Using nobreak failed",
                 "Empty bibliography",
                 "You have requested",

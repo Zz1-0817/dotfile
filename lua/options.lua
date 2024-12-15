@@ -27,7 +27,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.g.python3_host_prog = "C:\\Python311\\python.exe"
+vim.g.python3_host_prog = "C:\\Users\\Zz1\\scoop\\apps\\python\\3.12.1\\python.exe"
 vim.g.rime_enabled = false
 
 if vim.fn.has("nvim-0.10") == 1 then

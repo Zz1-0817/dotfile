@@ -5,13 +5,17 @@ return {
         build = ":MasonUpdate",
         config = function()
             local ensure_installed = {
+                "ruff",
+                "stylua",
+                "black",
                 "lua-language-server",
                 "clangd",
                 "shfmt",
                 "pyright",
                 "marksman",
+                "markdownlint",
                 "html-lsp",
-                "css-lsp"
+                "css-lsp",
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({
@@ -49,10 +53,7 @@ return {
                 diagnostics = {
                     underline = true,
                     update_in_insert = false,
-                    virtual_text = {
-                        spacing = 2,
-                        source = "if_many",
-                    },
+                    virtual_text = false,
                     signs = {
                         text = {
                             [vim.diagnostic.severity.ERROR] = utils.icons.diagnostics.Error,
@@ -102,7 +103,7 @@ return {
                     clangd = {},
                     pyright = {},
                     marksman = {},
-                    html = {},
+                    html = { filetypes = { "html", "htmldjango" } },
                     cssls = {},
                     rime_ls = specified_lsp.rime_ls
                 },
@@ -167,4 +168,30 @@ A language server for librime
             end
         end
     },
+    {
+        'stevearc/conform.nvim',
+        opts = {
+            formatters_by_ft = {
+                python = function(bufnr)
+                    if require("conform").get_formatter_info("ruff_format", bufnr).available then
+                        return { "ruff_format" }
+                    else
+                        return { "isort", "black" }
+                    end
+                end,
+                markdown = { "markdownlint" }
+            },
+            default_format_opts = {
+                lsp_format = "fallback",
+            },
+        },
+    },
+    {
+        "rachartier/tiny-inline-diagnostic.nvim",
+        event = "LspAttach", -- Or `LspAttach`
+        priority = 1000,     -- needs to be loaded in first
+        config = function()
+            require('tiny-inline-diagnostic').setup()
+        end
+    }
 }

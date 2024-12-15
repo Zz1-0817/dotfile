@@ -186,7 +186,6 @@ local symbol_specs = {
     ["+-"] = { context = { name = "±" }, command = [[\pm]] },
     ["-+"] = { context = { name = "∓" }, command = [[\mp]] },
     ["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
-    [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
     ["o+"] = { context = { name = "⊕" }, command = [[\oplus]] },
     ["=>"] = { context = { name = "⇒" }, command = [[\implies]] },
     ["<="] = { context = { name = "⇐" }, command = [[\impliedby]] },

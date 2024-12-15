@@ -139,6 +139,9 @@ return {
                         n = {
                             ["q"] = actions.close,
                         }
+                    },
+                    preview = { -- 避免 Treesitter 疯了一样一直报错
+                        treesitter = false
                     }
                 },
             })
@@ -343,5 +346,5 @@ return {
             { "=p", "<Plug>(YankyPutAfterFilter)",            desc = "Put After Applying a Filter" },
             { "=P", "<Plug>(YankyPutBeforeFilter)",           desc = "Put Before Applying a Filter" },
         }
-    }
+    },
 }
