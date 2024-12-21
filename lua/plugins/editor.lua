@@ -1,102 +1,81 @@
 return {
     {
-        "nvim-tree/nvim-tree.lua",
-        --version = "*",
-        lazy = false,
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-            {
-                's1n7ax/nvim-window-picker',
-                name = 'window-picker',
-                version = '2.*',
-                opts = {
-                    filter_rules = {
-                        bo = {
-                            filetype = { "fidget", "NvimTree", "screenkey" },
-                            buftype = { "terminal" }
+        'stevearc/oil.nvim',
+        ---@module 'oil'
+        ---@type oil.SetupOpts
+        opts = {},
+        config = function(opts)
+            -- helper function to parse output
+            local function parse_output(proc)
+                local result = proc:wait()
+                local ret = {}
+                if result.code == 0 then
+                    for line in vim.gsplit(result.stdout, "\n", { plain = true, trimempty = true }) do
+                        -- Remove trailing slash
+                        line = line:gsub("/$", "")
+                        ret[line] = true
+                    end
+                end
+                return ret
+            end
+
+            -- build git status cache
+            local function new_git_status()
+                return setmetatable({}, {
+                    __index = function(self, key)
+                        local ignore_proc = vim.system(
+                            { "git", "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" },
+                            {
+                                cwd = key,
+                                text = true,
+                            }
+                        )
+                        local tracked_proc = vim.system({ "git", "ls-tree", "HEAD", "--name-only" }, {
+                            cwd = key,
+                            text = true,
+                        })
+                        local ret = {
+                            ignored = parse_output(ignore_proc),
+                            tracked = parse_output(tracked_proc),
                         }
-                    },
-                    picker_config = { statusline_winbar_picker = { use_winbar = "smart" } },
-                    hint = 'floating-big-letter',
-                },
-                config = function(_, opts)
-                    require("window-picker").setup(opts)
-                end,
-            },
-        },
-        keys = { { "<C-b>", "<CMD>NvimTreeToggle<CR>", desc = "Toggle nvim-tree" } },
-        config = function()
-            local function change_root_to_global_cwd()
-                local api = require("nvim-tree.api")
-                local global_cwd = vim.fn.getcwd()
-                api.tree.change_root(global_cwd)
+
+                        rawset(self, key, ret)
+                        return ret
+                    end,
+                })
             end
+            local git_status = new_git_status()
 
-            local function on_attach(bufnr)
-                local api = require "nvim-tree.api"
-
-                local function opts(desc)
-                    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-                end
-
-                api.config.mappings.default_on_attach(bufnr)
-
-                vim.keymap.set('n', '<C-c>', change_root_to_global_cwd, opts('Change Root To Global CWD'))
+            -- Clear git status cache on refresh
+            local refresh = require("oil.actions").refresh
+            local orig_refresh = refresh.callback
+            refresh.callback = function(...)
+                git_status = new_git_status()
+                orig_refresh(...)
             end
-
-            require("nvim-tree").setup({
-                sort = {
-                    sorter = "modification_time"
-                },
-                filters = {
-                    custom = {
-                        "*.aux", "*.bcf", "*.fdb_latexmk",
-                        "*.fls", "*.idx", "*.ilg", "*.log",
-                        "*.out", "*.xml", "*.ind", "*.synctex",
-                        "*.blg", "*.bbl"
-                    }
-                },
-                actions = {
-                    open_file = {
-                        window_picker = {
-                            enable = true,
-                            picker = require("window-picker").pick_window
-                        },
-                        quit_on_open = true,
-                    },
-                },
-                on_attach = on_attach
-            })
-            -- Make :bd and :q behave as usual when tree is visible
-            vim.api.nvim_create_autocmd({ 'BufEnter', 'QuitPre' }, {
-                nested = false,
-                callback = function(e)
-                    local tree = require('nvim-tree.api').tree
-
-                    if not tree.is_visible() then
-                        return
-                    end
-
-                    local winCount = 0
-                    for _, winId in ipairs(vim.api.nvim_list_wins()) do
-                        if vim.api.nvim_win_get_config(winId).focusable then
-                            winCount = winCount + 1
+            require("oil").setup({
+                view_options = {
+                    is_hidden_file = function(name, bufnr)
+                        local dir = require("oil").get_current_dir(bufnr)
+                        local is_dotfile = vim.startswith(name, ".") and name ~= ".."
+                        -- if no local directory (e.g. for ssh connections), just hide dotfiles
+                        if not dir then
+                            return is_dotfile
                         end
-                    end
-
-                    if e.event == 'QuitPre' and winCount == 2 then
-                        vim.api.nvim_cmd({ cmd = 'qall' }, {})
-                    end
-
-                    if e.event == 'BufEnter' and winCount == 1 then
-                        vim.defer_fn(function()
-                            tree.toggle({ find_file = true, focus = true })
-                            tree.toggle({ find_file = true, focus = false })
-                        end, 10)
-                    end
-                end
+                        -- dotfiles are considered hidden unless tracked
+                        if is_dotfile then
+                            return not git_status[dir].tracked[name]
+                        else
+                            -- Check if file is gitignored
+                            return git_status[dir].ignored[name]
+                        end
+                    end,
+                },
             })
-        end
+        end,
+        -- Optional dependencies
+        dependencies = { { "echasnovski/mini.icons", opts = {} } },
+        keys = { { "-", "<CMD>Oil<CR>", mode = { "n" }, desc = "Open parent directory" } }
     },
     {
         "nvim-telescope/telescope.nvim",

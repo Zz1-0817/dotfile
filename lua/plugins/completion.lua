@@ -8,7 +8,11 @@ return {
     {
         "L3MON4D3/LuaSnip",
         version = "2.*",
-        build = "make install_jsregexp",
+        -- build = "make install_jsregexp",
+        build =
+            vim.g.os == "Windows" and
+            "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c NEOVIM_BIN_PATH=C:/Users/Zz1/scoop/apps/neovim-nightly/current/bin"
+            or "make install_jsregexp",
         keys = {},
         opts = {
             store_selection_keys = "<Tab>",

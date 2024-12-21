@@ -29,34 +29,35 @@ local k = require("luasnip.nodes.key_indexer").new_key
 local line_begin = require("luasnip.extras.conditions.expand").line_begin
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
 
-M.has_jsregexp = false
+local jsregexpOk = false
+local trigEngine = jsregexpOk and "ecma" or "pattern"
 
-local trigEngine
-if M.has_jsregexp then
-    trigEngine = "ecma"
-else
-    trigEngine = "pattern"
-end
+------ Helper Functions ------
 
-local generate_postfix_dynamicnode = function(_, parent, _, user_arg1, user_arg2)
+local generatePostfixDynamicNode = function(_, parent, _, user_arg1, user_arg2)
     local capture = parent.snippet.env.POSTFIX_MATCH
-    return sn(nil,
-        fmta([[
-        <><><>
+    if #capture > 0 then
+        return sn(nil, fmta([[
+        <><><><>
         ]],
-            { t(user_arg1), t(capture), t(user_arg2) })
-    )
-end
-
-M.postfix_snippet = function(context, command, opts)
-    opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
+        {t(user_arg1), t(capture), t(user_arg2), i(0)}))
+    else
+        local visual_placeholder = parent.snippet.env.SELECT_RAW
+        return sn(nil, fmta([[
+        <><><><>
+        ]],
+        {t(user_arg1), i(1, visual_placeholder), t(user_arg2), i(0)}))
     end
+end
+------------------------------
+
+M.createPostfixSnippet = function(context, command, opts)
+    opts = opts or {}
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
     context.name = context.name or context.dscr
     context.docstring = command.pre .. [[(POSTFIX_MATCH|VISUAL|<1>)]] .. command.post
-    context.match_pattern = context.match_pattern or [[\?[%w%.%_%-%"%']+$]]
+    context.match_pattern = context.match_pattern or [[[%w%.%_%-%"%']*$]]
     context.trigEngine = trigEngine
     local start, _ = string.find(command.pre, context.trig)
     if start == 2 then
@@ -66,40 +67,13 @@ M.postfix_snippet = function(context, command, opts)
             context.trig = "\\?" .. context.trig
         end
     end
-    return postfix(context, { d(1, generate_postfix_dynamicnode, {}, { user_args = { command.pre, command.post } }) },
+    return postfix(context, { d(1, generatePostfixDynamicNode, {}, { user_args = { command.pre, command.post } }) },
         opts)
 end
 
-M._postfix_snippet = function(context, command, opts)
-    opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
-    context.dscr = (context.dscr or command) .. "(normal)"
-    context.name = context.name or context.dscr
-    context.docstring = command.pre .. [[(POSTFIX_MATCH|VISUAL|<1>)]] .. command.post .. "(normal)"
-    context.trigEngine = trigEngine
-    local start, _ = string.find(command.pre, context.trig)
-    if start == 2 then
-        if trigEngine == "ecma" then
-            context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-        elseif trigEngine == "pattern" then
-            context.trig = "\\?" .. context.trig
-        end
-    end
-    return s(context, fmta([[
-    <><><><>
-    ]], { t(command.pre), f(function(_, snip)
-        return snip.env.LS_SELECT_RAW
-    end), i(0), t(command.post) }), opts)
-end
-
-
-M.optionenv_snippet = function(context, opts)
+M.createOptionEnvSnippet = function(context, opts)
     opts = opts or { stored = { ["user_text"] = i(1, "default_text") } }
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
     context.docstring = context.dscr or ""
@@ -134,22 +108,19 @@ M.optionenv_snippet = function(context, opts)
     )
 end
 
-M.starredenv_snippet = function(context, extra_suffix, opts)
+M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     local choices = { t("*"), t("") }
-    local env_name = context.name or context.trig
-    context.name = env_name
-    context.name = context.name .. "(|*"
+    local envName = context.name or context.trig
+    context.name = envName .. "(|*"
     context.dscr = context.dscr or context.name or ""
-    if extra_suffix then
-        if type(extra_suffix) == "string" then
-            table.insert(choices, t(extra_suffix))
-            context.name = context.name .. "|" .. extra_suffix
-        elseif type(extra_suffix) == "table" then
-            for _, v in ipairs(extra_suffix) do
+    if extraSuffix then
+        if type(extraSuffix) == "string" then
+            table.insert(choices, t(extraSuffix))
+            context.name = context.name .. "|" .. extraSuffix
+        elseif type(extraSuffix) == "table" then
+            for _, v in ipairs(extraSuffix) do
                 table.insert(choices, t(v))
                 context.name = context.name .. "|" .. v
             end
@@ -164,26 +135,22 @@ M.starredenv_snippet = function(context, extra_suffix, opts)
               <>
             \end{<><>}
     ]],
-            { t(env_name), c(1, choices), i(2), t(env_name), rep(1) }),
+            { t(envName), c(1, choices), i(2), t(envName), rep(1) }),
         opts)
 end
 
-M.symbol_snippet = function(context, command, opts)
+M.createSymbolSnippet = function(context, command, opts)
     opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
     context.name = context.name or command
     context.docstring = context.docstring or command
     return autosnippet(context, t(command), opts)
 end
 
-M.single_command_snippet = function(context, command, opts)
+M.createCommandSnippet = function(context, command, opts)
     opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
     context.name = context.name or context.dscr
     context.docstring = context.docstring or command
@@ -194,11 +161,9 @@ M.single_command_snippet = function(context, command, opts)
     )
 end
 
-M.auto_backslash_snippet = function(context, opts)
+M.createAutoBackslashSnippet = function(context, opts)
     opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or (context.trig .. "with automatic backslash")
     context.name = context.name or context.trig
     context.docstring = context.docstring or ([[\]] .. context.trig)
@@ -212,11 +177,9 @@ M.auto_backslash_snippet = function(context, opts)
     return autosnippet(context, { t(text) }, opts)
 end
 
-M.enum_snippet = function(context, opts)
+M.createEnumSnippet = function(context, opts)
     opts = opts or {}
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
     context.docstring = context.dscr or ""
@@ -233,37 +196,27 @@ M.enum_snippet = function(context, opts)
     )
 end
 
-M.imap_snippet = function(context, alternates, opts)
-    if not context.trig then
-        error("context doesn't include a `trig` key which is mandatory", 2)
-    end
+M.createImapSnippet = function(context, alternates, opts)
+    opts = opts or {}
+    assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
+    context.docstring = context.dscr or ""
     if #alternates == 0 then
-        return s(
-            context,
-            t("\\" .. context.name),
-            opts
-        )
+        return s(context, t("\\" .. context.name), opts)
     else
         local choices = { t("\\" .. context.name) }
         if type(alternates) == "string" then
             table.insert(choices, t("\\" .. alternates))
         elseif type(alternates) == "table" then
             for _, alternate in ipairs(alternates) do
-                if type(alternate) ~= "string" then
-                    error("element in alternates should be string if it is a table")
-                end
+                assert(type(alternate) == "string", "element in alternates should be string")
                 table.insert(choices, t("\\" .. alternate))
             end
         else
             error("alternates should be a string or a table of string")
         end
-        return s(
-            context,
-            c(1, choices),
-            opts
-        )
+        return s(context, c(1, choices), opts)
     end
 end
 

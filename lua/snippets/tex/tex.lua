@@ -1,50 +1,21 @@
 local ls = require("luasnip")
-local tex = require("snippets.tex.utils.conditions")
-
 local line_begin = require("luasnip.extras.conditions.expand").line_begin
-local scaffolding = require("snippets.tex.utils.scaffolding")
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
+local conditions = require("snippets.tex.utils.conditions")
+local helper = require("snippets.tex.utils.helper")
+local scaffolding = require("snippets.tex.utils.scaffolding")
 
-local get_selected_text = function(_, snip)
-    return snip.env.LS_SELECT_RAW
-end
-
-local case = function(_, snip)
-    local rows = tonumber(snip.captures[1]) or 2 -- default option 2 for cases
-    local cols = 2                               -- fix to 2 cols
-    local nodes = {}
-    local ins_indx = 1
-    for j = 1, rows do
-        table.insert(nodes, r(ins_indx, tostring(j) .. "x1", i(1)))
-        ins_indx = ins_indx + 1
-        for k = 2, cols do
-            table.insert(nodes, t(" & "))
-            table.insert(nodes, r(ins_indx, tostring(j) .. "x" .. tostring(k), i(1)))
-            ins_indx = ins_indx + 1
-        end
-        table.insert(nodes, t({ "\\\\", "" }))
-    end
-    -- fix last node.
-    table.remove(nodes, #nodes)
-    return sn(nil, nodes)
-end
-
-local brackets = { -- recall that [b,p,v,B,V]matrix
-    a = { "\\langle", "\\rangle" },
-    b = { "[", "]" },
-    p = { "(", ")" },
-    v = { "\\lvert", "\\rvert" },
-    B = { "\\lbrace", "\\rbrace" },
-    V = { "\\lVert", "\\rVert" },
-}
+--- FIX:
+--- 1. snippet `inverse' should be triggerred by `emca'
+--- 
 
 local M = {
     autosnippet(
         { trig = "jj", dscr = "inline math" },
         fmta([[
         \( <><> \)
-    ]], { f(get_selected_text, {}), i(0) }),
-        { condition = tex.in_text }
+    ]], { f(helper.getSelectedText, {}), i(0) }),
+        { condition = conditions.isInTextZone }
     ),
     autosnippet(
         { trig = "kk", dscr = "display math" },
@@ -53,21 +24,27 @@ local M = {
           <>
         \]
         ]], { i(0) }),
-        { condition = tex.in_text }
+        { condition = conditions.isInTextZone }
     ),
     autosnippet(
         { trig = "tt", dscr = "text in math" },
         fmta([[
         \text{<>}
         ]], { i(0) }),
-        { condition = tex.in_math }
+        { condition = conditions.isInMathZone }
     ),
     autosnippet(
         { trig = "mm", dscr = "item in enumerate" },
         fmta([[
         \item
         ]], {}),
-        { condition = tex.in_enum }
+        { condition = conditions.isInEnumerate }
+    ),
+    autosnippet(
+        { trig = "ll", dscr = "label" },
+        fmta([[
+        \label{<><>}
+        ]], { f(helper.getLabelPrefix), i(0) })
     ),
     autosnippet(
         {
@@ -77,27 +54,8 @@ local M = {
             trigEngine = "pattern",
             hidden = true
         },
-        fmta([[
-    \left<> <><> \right<>
-    ]],
-            { f(function(_, snip)
-                local cap = snip.captures[1]
-                if brackets[cap] == nil then
-                    cap = "p"
-                end
-                return brackets[cap][1]
-            end),
-                f(get_selected_text, {}),
-                i(0),
-                f(function(_, snip)
-                    local cap = snip.captures[1]
-                    if brackets[cap] == nil then
-                        cap = "p"
-                    end
-                    return brackets[cap][2]
-                end),
-            }),
-        { condition = tex.in_math, show_condition = tex.in_math }
+        helper.leftRightBracket,
+        { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
     autosnippet(
         { trig = "fpar", name = "partial fraction", dscr = "partial fraction", },
@@ -105,7 +63,7 @@ local M = {
             sn(nil, { t("\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}") }),
             sn(nil, { t("\\left.\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}\\right\\vert") })
         }),
-        { condition = tex.in_math, show_condition = tex.in_math }
+        { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
     autosnippet(
         { trig = "fdif", name = "differential fraction", dscr = "differential fraction" },
@@ -113,26 +71,17 @@ local M = {
             sn(nil, { t("\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}") }),
             sn(nil, { t("\\left.\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}\\right\\vert") })
         }),
-        { condition = tex.in_math, show_condition = tex.in_math }
+        { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
-    autosnippet({ trig = "lim", name = "lim(sup|inf)", dscr = "lim(sup|inf)" },
-        fmta([[
-    \lim<><><>
-    ]],
-            { c(1, { t(""), t("sup"), t("inf") }),
-                c(2, { t(""), fmta([[_{<> \to <>}]], { i(1, "n"), i(2, "\\infty") }) }),
-                i(0) }),
-        { condition = tex.in_math, show_condition = tex.in_math }
-    ),
-    autosnippet({ trig = "inv", wordTrig = false }, { t("^{-1}") }, { condition = tex.in_math }),
+    autosnippet({ trig = "inv", wordTrig = false }, { t("^{-1}") }, { condition = conditions.isInMathZone }),
     autosnippet({ trig = "(%d?)cases", name = "cases", dscr = "cases", trigEngine = "pattern", hidden = true },
         fmta([[
     \begin{cases}
     <>
     \end{cases}
     ]],
-            { d(1, case) }),
-        { condition = tex.in_math, show_condition = tex.in_math }
+            { d(1, helper.cases) }),
+        { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
     s({ trig = "env", hidden = true, name = "begin env", dscr = "begin/end environment" },
         fmta([[
@@ -143,6 +92,8 @@ local M = {
             { i(1), i(2), i(0), rep(1) })
     ),
 }
+
+-------- Snippets created by scaffolding --------
 
 local starredenv_specs = {
     alg = {
@@ -163,18 +114,6 @@ local starredenv_specs = {
         },
     },
 }
-local starredenv_snippets = {}
-for k, v in pairs(starredenv_specs) do
-    table.insert(
-        starredenv_snippets,
-        scaffolding.starredenv_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
-            v.extra_suffix or nil,
-            { condition = line_begin }
-        )
-    )
-end
-vim.list_extend(M, starredenv_snippets)
 
 local section_specs = {
     ["#"] = {
@@ -213,18 +152,6 @@ local section_specs = {
         command = [[\paragraph]],
     },
 }
-local section_snippets = {}
-for k, v in pairs(section_specs) do
-    table.insert(
-        section_snippets,
-        scaffolding.single_command_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
-            v.command,
-            { condition = line_begin }
-        )
-    )
-end
-vim.list_extend(M, section_snippets)
 
 local text_command_specs = {
     em = {
@@ -256,18 +183,6 @@ local text_command_specs = {
         command = [[\textsc]],
     }
 }
-local text_command_snippets = {}
-for k, v in pairs(text_command_specs) do
-    table.insert(
-        text_command_snippets,
-        scaffolding.single_command_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
-            v.command,
-            { condition = tex.in_text }
-        )
-    )
-end
-vim.list_extend(M, text_command_snippets)
 
 local postfix_math_specs = {
     vec = {
@@ -296,7 +211,7 @@ local postfix_math_specs = {
             dscr = "tilde",
         },
         command = {
-            pre = [[\tilde{]],
+            pre = [[\widetilde{]],
             post = [[}]]
         }
     },
@@ -354,7 +269,7 @@ local postfix_math_specs = {
         context = {
             name = "operatorname",
             dscr = "operatorname",
-            match_pattern = [[[%a]+$]]
+            match_pattern = [[[%a]*$]]
         },
         command = {
             pre = [[\operatorname{]],
@@ -392,26 +307,6 @@ local postfix_math_specs = {
         }
     }
 }
-local postfix_math_snippets = {}
-for k, v in pairs(postfix_math_specs) do
-    table.insert(
-        postfix_math_snippets,
-        scaffolding.postfix_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
-            v.command,
-            { condition = tex.in_math }
-        )
-    )
-    table.insert(
-        postfix_math_snippets,
-        scaffolding._postfix_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, snippetType = "autosnippet" }, v.context),
-            v.command,
-            { condition = tex.in_math }
-        )
-    )
-end
-vim.list_extend(M, postfix_math_snippets)
 
 local auto_backslash_specs = {
     "pi",
@@ -457,25 +352,17 @@ local auto_backslash_specs = {
     "deg",
     "angle",
 }
-local auto_backslash_snippets = {}
-for _, v in pairs(auto_backslash_specs) do
-    table.insert(
-        auto_backslash_snippets,
-        scaffolding.auto_backslash_snippet({ trig = v },
-            { condition = tex.in_math }
-        )
-    )
-end
-vim.list_extend(M, auto_backslash_snippets)
 
 local symbol_specs = {
     chi = { context = { name = "χ" }, command = [[\chi]] },
     vep = { context = { name = "ε" }, command = [[\varepsilon]] },
     vph = { context = { name = "φ" }, command = [[\varphi]] },
-    phi = { context = { name = "φ" }, command = [[\phi]] },
+    phi = { context = { name = "ϕ" }, command = [[\phi]] },
+    Phi = { context = { name = "ϕ" }, command = [[\Phi]] },
     psi = { context = { name = "Ψ" }, command = [[\psi]] },
     inn = { context = { name = "∈" }, command = [[\in]] },
     oo = { context = { name = "○" }, command = [[\circ]] },
+    OO = { context = { name = "⊕" }, command = [[\oplus]] },
     xx = { context = { name = "×" }, command = [[\times]] },
     XX = { context = { name = "⊗" }, command = [[\otimes]] },
     NN = { context = { name = "ℕ" }, command = [[\mathbb{N}]] },
@@ -491,7 +378,6 @@ local symbol_specs = {
     ["-+"] = { context = { name = "∓" }, command = [[\mp]] },
     ["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
     -- [":="] = { context = { name = "≔" }, command = [[\coloneq]] },
-    ["o+"] = { context = { name = "⊕" }, command = [[\oplus]] },
     ["=>"] = { context = { name = "⇒" }, command = [[\implies]] },
     ["<="] = { context = { name = "⇐" }, command = [[\impliedby]] },
     ["!>"] = { context = { name = "→" }, command = [[\mapsto]] },
@@ -499,18 +385,6 @@ local symbol_specs = {
     ["-->"] = { context = { name = "⟶", priority = 500 }, command = [[\longrightarrow]] },
     ["<->"] = { context = { name = "↔", priority = 500 }, command = [[\leftrightarrow]] },
 }
-local symbol_snippets = {}
-for k, v in pairs(symbol_specs) do
-    table.insert(
-        symbol_snippets,
-        scaffolding.symbol_snippet(
-            vim.tbl_deep_extend("keep", { trig = v.trig or k }, v.context),
-            v.command,
-            { condition = tex.in_math }
-        )
-    )
-end
-vim.list_extend(M, symbol_snippets)
 
 local imap_specs = {
     a = { context = { name = "alpha", } },
@@ -524,7 +398,6 @@ local imap_specs = {
     k = { context = { name = "kappa", } },
     l = { context = { name = "lambda", } },
     n = { context = { name = "nabla", } },
-    p = { context = { name = "pi", } },
     q = { context = { name = "theta", } },
     r = { context = { name = "rho", }, },
     s = { context = { name = "sigma", } },
@@ -537,6 +410,7 @@ local imap_specs = {
     L = { context = { name = "lambda", } },
     W = { context = { name = "Omega", } },
     X = { context = { name = "Xi", } },
+    ['\\'] = { context = { name = "setminus" } },
     ['0'] = { context = { name = "varnothing" } },
     ['6'] = { context = { name = "partial", } },
     ['8'] = { context = { name = "infty" } },
@@ -545,19 +419,6 @@ local imap_specs = {
     [']'] = { context = { name = "supseteq" } },
     ['='] = { context = { name = "equiv" } },
 }
-local imap_snippets = {}
-for k, v in pairs(imap_specs) do
-    table.insert(
-        imap_snippets,
-        scaffolding.imap_snippet(
-            vim.tbl_deep_extend("keep",
-                { trig = '`' .. k, snippetType = "autosnippet", wordTrig = false }, v.context),
-            v.alternates or {},
-            { condition = tex.in_math }
-        )
-    )
-end
-vim.list_extend(M, imap_snippets)
 
 local thm_specs = {
     def = {
@@ -608,24 +469,7 @@ local thm_specs = {
             dscr = "proof",
         },
     },
-    spf = {
-        context = {
-            name = "sketchproof",
-            dscr = "sketchproof",
-        },
-    },
 }
-local thm_snippets = {}
-for k, v in pairs(thm_specs) do
-    table.insert(
-        thm_snippets,
-        scaffolding.optionenv_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context),
-            v.opts or { condition = tex.notin_thm }
-        )
-    )
-end
-vim.list_extend(M, thm_snippets)
 
 local enum_specs = {
     enm = {
@@ -647,17 +491,25 @@ local enum_specs = {
         }
     }
 }
-local enum_snippets = {}
-for k, v in pairs(enum_specs) do
-    table.insert(
-        enum_snippets,
-        scaffolding.enum_snippet(
-            vim.tbl_deep_extend("keep", { trig = k, hidden = true }, v.context,
-                v.opts or { condition = tex.in_text }
-            )
-        )
-    )
-end
-vim.list_extend(M, enum_snippets)
+
+helper.extendScaffoldingSnippet(M, starredenv_specs, scaffolding.createStarredEnvSnippet, line_begin, "extra_suffix",
+    { hidden = true })
+helper.extendScaffoldingSnippet(M, section_specs, scaffolding.createCommandSnippet, line_begin, "command",
+    { hidden = true })
+helper.extendScaffoldingSnippet(M, text_command_specs, scaffolding.createCommandSnippet, conditions.isInTextZone,
+    "command", { hidden = true })
+helper.extendScaffoldingSnippet(M, postfix_math_specs, scaffolding.createPostfixSnippet, conditions.isInMathZone,
+    "command", { snippetType = "autosnippet" })
+helper.extendScaffoldingSnippet(M, auto_backslash_specs, scaffolding.createAutoBackslashSnippet, conditions.isInMathZone)
+helper.extendScaffoldingSnippet(M, symbol_specs, scaffolding.createSymbolSnippet, conditions.isInMathZone, "command")
+helper.extendScaffoldingSnippet(M, imap_specs, scaffolding.createImapSnippet, conditions.isInMathZone, "",
+    { snippetType = "autosnippet", wordTrig = false }, '`')
+helper.extendScaffoldingSnippet(M, thm_specs, scaffolding.createOptionEnvSnippet, conditions.isNotInTheorem, "",
+    { hidden = true })
+helper.extendScaffoldingSnippet(M, enum_specs, scaffolding.createEnumSnippet, conditions.isInTextZone, "", { hidden = true })
+
+
+
+--------------------------------------------------
 
 return M

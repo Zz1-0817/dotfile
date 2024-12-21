@@ -16,6 +16,7 @@ return {
                 "markdownlint",
                 "html-lsp",
                 "css-lsp",
+                "latexindent"
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({
@@ -179,7 +180,7 @@ A language server for librime
                         return { "isort", "black" }
                     end
                 end,
-                markdown = { "markdownlint" }
+                markdown = { "markdownlint" },
             },
             default_format_opts = {
                 lsp_format = "fallback",

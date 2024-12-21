@@ -20,33 +20,89 @@
 -- vim.print(line_cnt)
 
 -- Get TSnode by plugin treesitter method
-local ts_utils = require("nvim-treesitter.ts_utils")
-local cursor_node = ts_utils.get_node_at_cursor()
-if cursor_node ~= nil then
-    vim.print(cursor_node:type())
-end
+-- local ts_utils = require("nvim-treesitter.ts_utils")
+-- local cursor_node = ts_utils.get_node_at_cursor()
+-- if cursor_node ~= nil then
+--     vim.print(cursor_node:type())
+-- end
 
 -- Get TSnode by builtin neovim method
 -- local cursor_node = vim.treesitter.get_node()
 -- if cursor_node ~= nil then
-    -- vim.print(cursor_node:type())
-    -- vim.print(cursor_node:named())
-    -- vim.print(cursor_node:id())
-    -- vim.print(cursor_node:sexpr())
-    -- vim.print(cursor_node:range())
+-- vim.print(cursor_node:type())
+-- vim.print(cursor_node:named())
+-- vim.print(cursor_node:id())
+-- vim.print(cursor_node:sexpr())
+-- vim.print(cursor_node:range())
 
-    -- Parent
-    -- local parent_node = cursor_node:parent()
-    -- if parent_node ~= nil then
-    --     vim.print(parent_node:type())
-    -- end
-
-    -- Children
-    -- local child_cnt = cursor_node:child_count()
-    -- for i = 1, child_cnt do
-    --     local child_node = cursor_node:child(1)
-    --     if child_node ~= nil then
-    --         vim.print(child_node:type())
-    --     end
-    -- end
+-- Parent
+-- local parent_node = cursor_node:parent()
+-- if parent_node ~= nil then
+--     vim.print(parent_node:type())
 -- end
+
+-- Children
+-- local child_cnt = cursor_node:child_count()
+-- for i = 1, child_cnt do
+--     local child_node = cursor_node:child(1)
+--     if child_node ~= nil then
+--         vim.print(child_node:type())
+--     end
+-- end
+-- end
+--
+-- local jsregexp_ok, jsregexp = pcall(require, "luasnip-jsregexp")
+-- if not jsregexp_ok then
+--     jsregexp_ok, jsregexp = pcall(require, "jsregexp")
+-- end
+-- print(jsregexp_ok)
+
+local tmp = {
+    "pi",
+    "nu",
+    "xi",
+    "mu",
+    "cap",
+    "cup",
+    "neq",
+    "leq",
+    "geq",
+    "sum",
+    "prod",
+    "int",
+    "dif",
+    "notin",
+    "to",
+    "mid",
+    "iff",
+    "quad",
+    "arcsin",
+    "sin",
+    "arccos",
+    "cos",
+    "arctan",
+    "tan",
+    "cot",
+    "csc",
+    "sec",
+    "log",
+    "ln",
+    "exp",
+    "ast",
+    "star",
+    "perp",
+    "sup",
+    "inf",
+    "det",
+    "max",
+    "min",
+    "argmax",
+    "argmin",
+    "deg",
+    "angle",
+}
+
+for k, v in pairs(tmp) do
+    local a = (type(v) == "table" and k or v)
+    print(a)
+end
