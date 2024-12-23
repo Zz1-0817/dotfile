@@ -95,7 +95,7 @@ local M = {
 
 -------- Snippets created by scaffolding --------
 
-local starredenv_specs = {
+local starredEnvSpecs = {
     alg = {
         context = {
             name = "align",
@@ -115,7 +115,7 @@ local starredenv_specs = {
     },
 }
 
-local section_specs = {
+local sectionSpecs = {
     ["#"] = {
         context = {
             name = "section",
@@ -125,21 +125,21 @@ local section_specs = {
     },
     ["#*"] = {
         context = {
-            name = "section",
+            name = "section*",
             dscr = "add a starred section"
         },
         command = [[\section*]],
     },
     ["##"] = {
         context = {
-            name = "section",
+            name = "subsection",
             dscr = "add a section"
         },
         command = [[\subsection]],
     },
     ["##*"] = {
         context = {
-            name = "section",
+            name = "subsection*",
             dscr = "add a section"
         },
         command = [[\subsection*]],
@@ -153,7 +153,7 @@ local section_specs = {
     },
 }
 
-local text_command_specs = {
+local textCommandSpecs = {
     em = {
         context = {
             name = "emph",
@@ -184,7 +184,7 @@ local text_command_specs = {
     }
 }
 
-local postfix_math_specs = {
+local postfixMathSpecs = {
     vec = {
         context = {
             name = "vector",
@@ -308,7 +308,7 @@ local postfix_math_specs = {
     }
 }
 
-local auto_backslash_specs = {
+local autobackslashSpecs = {
     "pi",
     "nu",
     "xi",
@@ -353,7 +353,7 @@ local auto_backslash_specs = {
     "angle",
 }
 
-local symbol_specs = {
+local symbolSpecs = {
     chi = { context = { name = "χ" }, command = [[\chi]] },
     vep = { context = { name = "ε" }, command = [[\varepsilon]] },
     vph = { context = { name = "φ" }, command = [[\varphi]] },
@@ -386,7 +386,7 @@ local symbol_specs = {
     ["<->"] = { context = { name = "↔", priority = 500 }, command = [[\leftrightarrow]] },
 }
 
-local imap_specs = {
+local imapSpecs = {
     a = { context = { name = "alpha", } },
     b = { context = { name = "beta", } },
     c = { context = { name = "chi", } },
@@ -420,7 +420,7 @@ local imap_specs = {
     ['='] = { context = { name = "equiv" } },
 }
 
-local thm_specs = {
+local thmSpecs = {
     def = {
         context = {
             name = "definition",
@@ -471,7 +471,7 @@ local thm_specs = {
     },
 }
 
-local enum_specs = {
+local enumSpecs = {
     enm = {
         context = {
             name = "enumerate",
@@ -492,23 +492,21 @@ local enum_specs = {
     }
 }
 
-helper.extendScaffoldingSnippet(M, starredenv_specs, scaffolding.createStarredEnvSnippet, line_begin, "extra_suffix",
+helper.extendScaffoldingSnippet(M, starredEnvSpecs, scaffolding.createStarredEnvSnippet, line_begin, "extra_suffix",
     { hidden = true })
-helper.extendScaffoldingSnippet(M, section_specs, scaffolding.createCommandSnippet, line_begin, "command",
+helper.extendScaffoldingSnippet(M, sectionSpecs, scaffolding.createCommandSnippet, line_begin, "command",
     { hidden = true })
-helper.extendScaffoldingSnippet(M, text_command_specs, scaffolding.createCommandSnippet, conditions.isInTextZone,
+helper.extendScaffoldingSnippet(M, textCommandSpecs, scaffolding.createCommandSnippet, conditions.isInTextZone,
     "command", { hidden = true })
-helper.extendScaffoldingSnippet(M, postfix_math_specs, scaffolding.createPostfixSnippet, conditions.isInMathZone,
+helper.extendScaffoldingSnippet(M, postfixMathSpecs, scaffolding.createPostfixSnippet, conditions.isInMathZone,
     "command", { snippetType = "autosnippet" })
-helper.extendScaffoldingSnippet(M, auto_backslash_specs, scaffolding.createAutoBackslashSnippet, conditions.isInMathZone)
-helper.extendScaffoldingSnippet(M, symbol_specs, scaffolding.createSymbolSnippet, conditions.isInMathZone, "command")
-helper.extendScaffoldingSnippet(M, imap_specs, scaffolding.createImapSnippet, conditions.isInMathZone, "",
+helper.extendScaffoldingSnippet(M, autobackslashSpecs, scaffolding.createAutoBackslashSnippet, conditions.isInMathZone)
+helper.extendScaffoldingSnippet(M, symbolSpecs, scaffolding.createSymbolSnippet, conditions.isInMathZone, "command")
+helper.extendScaffoldingSnippet(M, imapSpecs, scaffolding.createImapSnippet, conditions.isInMathZone, "",
     { snippetType = "autosnippet", wordTrig = false }, '`')
-helper.extendScaffoldingSnippet(M, thm_specs, scaffolding.createOptionEnvSnippet, conditions.isNotInTheorem, "",
+helper.extendScaffoldingSnippet(M, thmSpecs, scaffolding.createOptionEnvSnippet, conditions.isNotInTheorem, "",
     { hidden = true })
-helper.extendScaffoldingSnippet(M, enum_specs, scaffolding.createEnumSnippet, conditions.isInTextZone, "", { hidden = true })
-
-
+helper.extendScaffoldingSnippet(M, enumSpecs, scaffolding.createEnumSnippet, conditions.isInTextZone, "", { hidden = true })
 
 --------------------------------------------------
 

@@ -195,17 +195,21 @@ return {
         event = "BufRead",
         opts = {},
     },
-    {
-        'numToStr/Comment.nvim',
-        optional = true,
-        lazy = false,
-        opts = {},
-    },
+    -- {
+    --     'numToStr/Comment.nvim',
+    --     optional = true,
+    --     lazy = false,
+    --     opts = {},
+    -- },
     {
         'stevearc/quicker.nvim',
         event = "FileType qf",
         opts = {}
     },
+    -- {
+    --     "kevinhwang91/nvim-bqf",
+    --     opts = { auto_preview = { default = false } }
+    -- },
     {
         "folke/which-key.nvim",
         event = "VeryLazy",

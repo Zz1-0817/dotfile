@@ -16,6 +16,7 @@ return {
                 "markdownlint",
                 "html-lsp",
                 "css-lsp",
+                "eslint-lsp",
                 "latexindent"
             }
             local mason_registry = require("mason-registry")
@@ -105,6 +106,7 @@ return {
                     pyright = {},
                     marksman = {},
                     html = { filetypes = { "html", "htmldjango" } },
+                    eslint = {},
                     cssls = {},
                     rime_ls = specified_lsp.rime_ls
                 },
@@ -171,6 +173,7 @@ A language server for librime
     },
     {
         'stevearc/conform.nvim',
+        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         opts = {
             formatters_by_ft = {
                 python = function(bufnr)

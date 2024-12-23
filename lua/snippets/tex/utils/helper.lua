@@ -98,7 +98,7 @@ M.extendScaffoldingSnippet = function(snippetTable, specs, scaffold, condition, 
     local extendingItems = {}
     for k, v in pairs(specs) do
         local context = { trig = v }
-        local opts = {}
+        local opts = { condition = condition }
         if type(v) == "table" then
             context = vim.tbl_deep_extend(
                 "keep",

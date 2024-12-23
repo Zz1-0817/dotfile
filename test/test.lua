@@ -57,52 +57,88 @@
 -- end
 -- print(jsregexp_ok)
 
-local tmp = {
-    "pi",
-    "nu",
-    "xi",
-    "mu",
-    "cap",
-    "cup",
-    "neq",
-    "leq",
-    "geq",
-    "sum",
-    "prod",
-    "int",
-    "dif",
-    "notin",
-    "to",
-    "mid",
-    "iff",
-    "quad",
-    "arcsin",
-    "sin",
-    "arccos",
-    "cos",
-    "arctan",
-    "tan",
-    "cot",
-    "csc",
-    "sec",
-    "log",
-    "ln",
-    "exp",
-    "ast",
-    "star",
-    "perp",
-    "sup",
-    "inf",
-    "det",
-    "max",
-    "min",
-    "argmax",
-    "argmin",
-    "deg",
-    "angle",
-}
+-- local tmp = {
+--     "pi",
+--     "nu",
+--     "xi",
+--     "mu",
+--     "cap",
+--     "cup",
+--     "neq",
+--     "leq",
+--     "geq",
+--     "sum",
+--     "prod",
+--     "int",
+--     "dif",
+--     "notin",
+--     "to",
+--     "mid",
+--     "iff",
+--     "quad",
+--     "arcsin",
+--     "sin",
+--     "arccos",
+--     "cos",
+--     "arctan",
+--     "tan",
+--     "cot",
+--     "csc",
+--     "sec",
+--     "log",
+--     "ln",
+--     "exp",
+--     "ast",
+--     "star",
+--     "perp",
+--     "sup",
+--     "inf",
+--     "det",
+--     "max",
+--     "min",
+--     "argmax",
+--     "argmin",
+--     "deg",
+--     "angle",
+-- }
+--
+-- for k, v in pairs(tmp) do
+--     local a = (type(v) == "table" and k or v)
+--     print(a)
+-- end
 
-for k, v in pairs(tmp) do
-    local a = (type(v) == "table" and k or v)
-    print(a)
+
+-- 函数：使用 curl 获取数据
+local function fetch_url(url)
+    local handle = io.popen("curl -s \"" .. url .. "\"")
+    local result = handle:read("*a")
+    handle:close()
+    return result
 end
+
+-- 函数：解析 JSON 数据
+local function parse_json(json_str)
+    local json = {}
+    local pos = 1
+    local pattern = '"([%w_]+)"%s*:%s*"(.-)"'
+    for key, value in string.gmatch(json_str, pattern) do
+        json[key] = value
+    end
+    return json
+end
+
+-- 函数：获取日出和日落时间
+local function get_sunrise_sunset(latitude, longitude, date)
+    local url = string.format("https://api.sunrise-sunset.org/json?lat=%f&lng=%f&date=%s&formatted=0", latitude, longitude, date)
+    local response = fetch_url(url)
+    local data = parse_json(response)
+    return data.sunrise, data.sunset
+end
+
+local latitude = 40.7128  -- 替换为你的纬度
+local longitude = -74.0060  -- 替换为你的经度
+local date = "2024-12-22"  -- 替换为你的日期
+
+local sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
+print("日出时间: " .. sunrise)
+print("日落时间: " .. sunset)

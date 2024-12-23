@@ -7,11 +7,11 @@ end
 return {
     {
         "L3MON4D3/LuaSnip",
-        version = "2.*",
+        version = "v2.*",
         -- build = "make install_jsregexp",
         build =
             vim.g.os == "Windows" and
-            "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c NEOVIM_BIN_PATH=C:/Users/Zz1/scoop/apps/neovim-nightly/current/bin"
+            "make install_jsregexp CC=gcc SHELL=sh"
             or "make install_jsregexp",
         keys = {},
         opts = {
@@ -99,8 +99,30 @@ return {
                     }
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    -- ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+                    -- ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    ["<C-b>"] = cmp.mapping(function(fallback)
+                        cmp.scroll_docs(-4)
+                        fallback()
+                    end),
+                    ["<C-f>"] = cmp.mapping(function(fallback)
+                        cmp.scroll_docs(4)
+                        fallback()
+                    end),
+                    ["<C-j>"] = cmp.mapping(function(fallback)
+                        if ls.locally_jumpable(1) then
+                            ls.jump(1)
+                        else
+                            fallback()
+                        end
+                    end),
+                    ["<C-k>"] = cmp.mapping(function(fallback)
+                        if ls.locally_jumpable(-1) then
+                            ls.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end),
                     ['<C-e>'] = cmp.mapping(function(fallback)
                         fallback()
                     end),
@@ -134,8 +156,6 @@ return {
                             cmp.confirm({ select = true })
                         elseif ls.expandable() then
                             ls.expand()
-                        elseif ls.locally_jumpable(1) then
-                            ls.jump(1)
                         elseif has_words_before() then
                             cmp.complete()
                         else
