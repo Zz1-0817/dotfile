@@ -172,12 +172,13 @@ return {
                 desc = "Flash Treesitter"
             }
         },
-        config = function()
-            require("flash").setup()
-            -- TODO: Get these color from the current colorscheme
-            vim.api.nvim_set_hl(0, "FlashLabel", { fg = "#000000", bg = "#FFFF00" })
-            vim.api.nvim_set_hl(0, "FlashCursor", { underline = true })
-        end
+        opts = {
+            highlight = {
+                groups = {
+                    label = "Cursor"
+                }
+            }
+        }
     },
     {
         "windwp/nvim-autopairs",
