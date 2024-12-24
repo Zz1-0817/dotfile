@@ -24,22 +24,22 @@ return {
             local snippets_path = vim.fn.stdpath('config') .. [[\lua\snippets]]
             require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
             --https://github.com/L3MON4D3/LuaSnip/issues/656
-            vim.api.nvim_create_autocmd("ModeChanged", {
-                group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
-                    clear = true,
-                }),
-                pattern = { "s:n", "i:*" },
-                desc = "Forget the current snippet when leaving the insert mode",
-                callback = function(evt)
-                    while true do
-                        if ls.session and ls.session.current_nodes[evt.buf] and not ls.session.jump_active then
-                            ls.unlink_current()
-                        else
-                            break
-                        end
-                    end
-                end,
-            })
+            -- vim.api.nvim_create_autocmd("ModeChanged", {
+            --     group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
+            --         clear = true,
+            --     }),
+            --     pattern = { "s:n", "i:*" },
+            --     desc = "Forget the current snippet when leaving the insert mode",
+            --     callback = function(evt)
+            --         while true do
+            --             if ls.session and ls.session.current_nodes[evt.buf] and not ls.session.jump_active then
+            --                 ls.unlink_current()
+            --             else
+            --                 break
+            --             end
+            --         end
+            --     end,
+            -- })
         end
     },
     {

@@ -7,20 +7,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
     end
 })
 
-vim.api.nvim_create_autocmd({ 'BufLeave', 'WinLeave' }, {
-    callback = function()
-        vim.wo.winbar = ''
-    end,
-    desc = "only show winbar in the window of cursor"
-})
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-    pattern = { "Markdown" },
-    callback = function(event)
-        vim.keymap.set("n", "<leader>ll", "<CMD>MarkdownPreviewToggle<CR>", { buffer = event.buf, silent = true })
-    end
-})
-
 vim.api.nvim_create_autocmd("FileType", {
     pattern = {
         "PlenaryTestPopup",

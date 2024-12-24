@@ -5,13 +5,12 @@ return {
         ---@type oil.SetupOpts
         opts = {},
         config = function(opts)
-            -- helper function to parse output
+            -- https://github.com/stevearc/oil.nvim/blob/master/doc/recipes.md#hide-gitignored-files-and-show-git-tracked-hidden-files
             local function parse_output(proc)
                 local result = proc:wait()
                 local ret = {}
                 if result.code == 0 then
                     for line in vim.gsplit(result.stdout, "\n", { plain = true, trimempty = true }) do
-                        -- Remove trailing slash
                         line = line:gsub("/$", "")
                         ret[line] = true
                     end
@@ -19,7 +18,6 @@ return {
                 return ret
             end
 
-            -- build git status cache
             local function new_git_status()
                 return setmetatable({}, {
                     __index = function(self, key)
@@ -46,7 +44,6 @@ return {
             end
             local git_status = new_git_status()
 
-            -- Clear git status cache on refresh
             local refresh = require("oil.actions").refresh
             local orig_refresh = refresh.callback
             refresh.callback = function(...)
@@ -54,26 +51,25 @@ return {
                 orig_refresh(...)
             end
             require("oil").setup({
+                keymaps = {
+                    ["q"] = { "actions.close", mode = "n" },
+                },
                 view_options = {
                     is_hidden_file = function(name, bufnr)
                         local dir = require("oil").get_current_dir(bufnr)
                         local is_dotfile = vim.startswith(name, ".") and name ~= ".."
-                        -- if no local directory (e.g. for ssh connections), just hide dotfiles
                         if not dir then
                             return is_dotfile
                         end
-                        -- dotfiles are considered hidden unless tracked
                         if is_dotfile then
                             return not git_status[dir].tracked[name]
                         else
-                            -- Check if file is gitignored
                             return git_status[dir].ignored[name]
                         end
                     end,
                 },
             })
         end,
-        -- Optional dependencies
         dependencies = { { "echasnovski/mini.icons", opts = {} } },
         keys = { { "-", "<CMD>Oil<CR>", mode = { "n" }, desc = "Open parent directory" } }
     },
@@ -119,7 +115,7 @@ return {
                             ["q"] = actions.close,
                         }
                     },
-                    preview = { -- 避免 Treesitter 疯了一样一直报错
+                    preview = {
                         treesitter = false
                     }
                 },
@@ -178,6 +174,7 @@ return {
         },
         config = function()
             require("flash").setup()
+            -- TODO: Get these color from the current colorscheme
             vim.api.nvim_set_hl(0, "FlashLabel", { fg = "#000000", bg = "#FFFF00" })
             vim.api.nvim_set_hl(0, "FlashCursor", { underline = true })
         end
@@ -195,21 +192,11 @@ return {
         event = "BufRead",
         opts = {},
     },
-    -- {
-    --     'numToStr/Comment.nvim',
-    --     optional = true,
-    --     lazy = false,
-    --     opts = {},
-    -- },
     {
         'stevearc/quicker.nvim',
         event = "FileType qf",
         opts = {}
     },
-    -- {
-    --     "kevinhwang91/nvim-bqf",
-    --     opts = { auto_preview = { default = false } }
-    -- },
     {
         "folke/which-key.nvim",
         event = "VeryLazy",

@@ -7,6 +7,13 @@ return {
         init = function()
             vim.g.mkdp_browser = [[C:\Program Files\Google\Chrome\Application\chrome.exe]]
             vim.g.mkdp_auto_close = 0
+            vim.api.nvim_create_autocmd({ "FileType" }, {
+                pattern = { "Markdown" },
+                callback = function(event)
+                    vim.keymap.set("n", "<leader>ll", "<CMD>MarkdownPreviewToggle<CR>",
+                        { buffer = event.buf, silent = true })
+                end
+            })
         end
     },
     {

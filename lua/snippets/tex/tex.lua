@@ -7,7 +7,6 @@ local scaffolding = require("snippets.tex.utils.scaffolding")
 
 --- FIX:
 --- 1. snippet `inverse' should be triggerred by `emca'
---- 
 
 local M = {
     autosnippet(
