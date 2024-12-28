@@ -5,7 +5,6 @@ return {
         build = ":MasonUpdate",
         config = function()
             local ensure_installed = {
-                "ruff",
                 "stylua",
                 "black",
                 "lua-language-server",
@@ -16,7 +15,7 @@ return {
                 "markdownlint",
                 "html-lsp",
                 "css-lsp",
-                "eslint-lsp",
+                "typescript-language-server",
                 "latexindent"
             }
             local mason_registry = require("mason-registry")
@@ -104,10 +103,9 @@ return {
                     },
                     clangd = {},
                     pyright = {},
-                    marksman = {},
                     html = { filetypes = { "html", "htmldjango" } },
-                    eslint = {},
                     cssls = {},
+                    ts_ls = {},
                     rime_ls = specified_lsp.rime_ls
                 },
                 setup = {

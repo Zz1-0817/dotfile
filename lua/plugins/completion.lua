@@ -14,27 +14,16 @@ return {
             "make install_jsregexp CC=gcc SHELL=sh"
             or "make install_jsregexp",
         keys = {},
-        opts = {
-            store_selection_keys = "<Tab>",
-            enable_autosnippets = true
-        },
-        config = function(_, opts)
+        config = function()
             local ls = require("luasnip")
-            ls.setup(opts)
+
+            ls.setup({
+                store_selection_keys = "<Tab>",
+                enable_autosnippets = true,
+            })
+
             local snippets_path = vim.fn.stdpath('config') .. [[\lua\snippets]]
             require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
-
-            local types = require('luasnip.util.types')
-
-            ls.config.set_config({
-                ext_opts = {
-                    [types.choiceNode] = {
-                        active = {
-                            virt_text = { { 'Choice Node', 'Comment', }, },
-                        },
-                    },
-                },
-            })
         end
     },
     {

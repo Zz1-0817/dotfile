@@ -7,6 +7,10 @@ local scaffolding = require("snippets.tex.utils.scaffolding")
 
 --- FIX:
 --- 1. snippet `inverse' should be triggerred by `emca'
+--- 2. `sup' conflict with `supp'
+--- 3. `inn` BUG
+--- TODO:
+--- 1. determine whether expand autobackslash snippet after `_`
 
 local M = {
     autosnippet(
@@ -194,6 +198,16 @@ local postfixMathSpecs = {
             post = [[}]]
         }
     },
+    dot = {
+        context = {
+            name = "dot",
+            dscr = "dot",
+        },
+        command = {
+            pre = [[\dot{]],
+            post = [[}]]
+        }
+    },
     bar = {
         context = {
             name = "bar",
@@ -315,6 +329,7 @@ local autobackslashSpecs = {
     "cap",
     "cup",
     "neq",
+    "lim",
     "leq",
     "geq",
     "sum",
@@ -341,7 +356,7 @@ local autobackslashSpecs = {
     "ast",
     "star",
     "perp",
-    "sup",
+    -- "sup",
     "inf",
     "det",
     "max",
@@ -405,6 +420,7 @@ local imapSpecs = {
     w = { context = { name = "omega", } },
     x = { context = { name = "xi", } },
     z = { context = { name = "zeta", } },
+    D = { context = { name = "Delta", } },
     G = { context = { name = "Gamma", } },
     L = { context = { name = "lambda", } },
     W = { context = { name = "Omega", } },
@@ -505,7 +521,8 @@ helper.extendScaffoldingSnippet(M, imapSpecs, scaffolding.createImapSnippet, con
     { snippetType = "autosnippet", wordTrig = false }, '`')
 helper.extendScaffoldingSnippet(M, thmSpecs, scaffolding.createOptionEnvSnippet, conditions.isNotInTheorem, "",
     { hidden = true })
-helper.extendScaffoldingSnippet(M, enumSpecs, scaffolding.createEnumSnippet, conditions.isInTextZone, "", { hidden = true })
+helper.extendScaffoldingSnippet(M, enumSpecs, scaffolding.createEnumSnippet, conditions.isInTextZone, "",
+    { hidden = true })
 
 --------------------------------------------------
 

@@ -111,17 +111,17 @@ end
 M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
-    local choices = { t("*"), t("") }
     local envName = context.name or context.trig
+    local choices = { t(envName .. "*"), t(envName .. "") }
     context.name = envName .. "(|*"
     context.dscr = context.dscr or context.name or ""
     if extraSuffix then
         if type(extraSuffix) == "string" then
-            table.insert(choices, t(extraSuffix))
+            table.insert(choices, t(envName .. extraSuffix))
             context.name = context.name .. "|" .. extraSuffix
         elseif type(extraSuffix) == "table" then
             for _, v in ipairs(extraSuffix) do
-                table.insert(choices, t(v))
+                table.insert(choices, t(envName .. v))
                 context.name = context.name .. "|" .. v
             end
         else
@@ -131,11 +131,11 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     end
     return s(context,
         fmta([[
-            \begin{<><>}
+            \begin{<>}
               <>
-            \end{<><>}
+            \end{<>}
     ]],
-            { t(envName), c(1, choices), i(2), t(envName), rep(1) }),
+            { c(1, choices), i(2), rep(1) }),
         opts)
 end
 

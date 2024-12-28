@@ -85,7 +85,7 @@ M.getLabelPrefix = function(_, snip)
     if conditions.isInLabelEnv() then
         local env_dict = vim.fn["vimtex#env#get_inner"]()
         if env_dict then
-            return env_dict["name"]
+            return env_dict["name"] and env_dict["name"] .. '-' or ""
         end
     end
     return ""

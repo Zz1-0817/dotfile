@@ -193,10 +193,21 @@ return {
         event = "BufRead",
         opts = {},
     },
+    -- {
+    --     'stevearc/quicker.nvim',
+    --     event = "FileType qf",
+    --     opts = {}
+    -- },
     {
-        'stevearc/quicker.nvim',
-        event = "FileType qf",
-        opts = {}
+        "kevinhwang91/nvim-bqf",
+        ft = "qf",
+        config = function()
+            local config = require('bqf.config')
+            config['preview']['border'] = 'shadow'
+            config['preview']['how_scroll_bar'] = false
+            vim.print(config)
+            require("bqf").setup(config)
+        end
     },
     {
         "folke/which-key.nvim",

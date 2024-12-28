@@ -52,8 +52,7 @@ return {
                 i = { "]]" }
             }
         end,
-        config = function()
-        end
+        config = function() end
     },
     {
         "epwalsh/obsidian.nvim",
