@@ -262,7 +262,12 @@ return {
         version = false,
         opts = {}
     },
-    { 'echasnovski/mini.comment', version = false, opts = {} },
+    {
+        'echasnovski/mini.comment',
+        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
+        version = false,
+        opts = {}
+    },
     {
         "ThePrimeagen/harpoon",
         dependencies = { "nvim-lua/plenary.nvim" },

@@ -6,10 +6,10 @@ M.check_colorscheme = function()
     if (hour >= 7 and hour < 16) then
         vim.opt.background = "light"
         return "nightfox"
-        --return "catppuccin"
     else
         vim.opt.background = "dark"
-        return "tokyonight"
+        -- return "tokyonight"
+        return "catppuccin"
     end
 end
 

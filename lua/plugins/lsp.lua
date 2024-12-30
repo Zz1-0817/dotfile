@@ -5,7 +5,6 @@ return {
         build = ":MasonUpdate",
         config = function()
             local ensure_installed = {
-                "stylua",
                 "black",
                 "lua-language-server",
                 "clangd",
@@ -16,7 +15,6 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
-                "latexindent"
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({

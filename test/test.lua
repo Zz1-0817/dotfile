@@ -137,7 +137,7 @@ end
 
 local latitude = 40.7128  -- 替换为你的纬度
 local longitude = -74.0060  -- 替换为你的经度
-local date = "2024-12-22"  -- 替换为你的日期
+local date = "2024-12-29"  -- 替换为你的日期
 
 local sunrise, sunset = get_sunrise_sunset(latitude, longitude, date)
 print("日出时间: " .. sunrise)

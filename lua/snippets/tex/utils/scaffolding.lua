@@ -90,14 +90,6 @@ M.createOptionEnvSnippet = function(context, opts)
             sn(nil, fmta(
                 [[
                 \begin{<>}[<>]
-                  <>
-                \end{<>}
-                ]],
-                { t(context.name), i(1), r(2, "user_text"), t(context.name) }
-            )),
-            sn(nil, fmta(
-                [[
-                \begin{<>}[<>]
                   <><>
                 \end{<>}
                 ]],
@@ -122,12 +114,12 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
         elseif type(extraSuffix) == "table" then
             for _, v in ipairs(extraSuffix) do
                 table.insert(choices, t(envName .. v))
-                context.name = context.name .. "|" .. v
+                context.name = context.name .. '|' .. v .. ')'
             end
         else
             error("suffix should be a string or a table")
         end
-        context.name = context.name .. ")"
+        context.name = context.name .. ')'
     end
     return s(context,
         fmta([[
@@ -196,28 +188,13 @@ M.createEnumSnippet = function(context, opts)
     )
 end
 
-M.createImapSnippet = function(context, alternates, opts)
+M.createImapSnippet = function(context, opts)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
     context.docstring = context.dscr or ""
-    if #alternates == 0 then
-        return s(context, t("\\" .. context.name), opts)
-    else
-        local choices = { t("\\" .. context.name) }
-        if type(alternates) == "string" then
-            table.insert(choices, t("\\" .. alternates))
-        elseif type(alternates) == "table" then
-            for _, alternate in ipairs(alternates) do
-                assert(type(alternate) == "string", "element in alternates should be string")
-                table.insert(choices, t("\\" .. alternate))
-            end
-        else
-            error("alternates should be a string or a table of string")
-        end
-        return s(context, c(1, choices), opts)
-    end
+    return s(context, t("\\" .. context.name), opts)
 end
 
 return M

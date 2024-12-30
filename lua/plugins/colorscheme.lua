@@ -40,7 +40,7 @@ return {
         opts     = {
             background = {
                 light = "latte",
-                dark = "mocha",
+                dark = "Frappe",
             },
         },
         config   = function(_, opts)

@@ -8,11 +8,6 @@ return {
     {
         "L3MON4D3/LuaSnip",
         version = "v2.*",
-        -- build = "make install_jsregexp",
-        build =
-            vim.g.os == "Windows" and
-            "make install_jsregexp CC=gcc SHELL=sh"
-            or "make install_jsregexp",
         keys = {},
         config = function()
             local ls = require("luasnip")
@@ -83,8 +78,6 @@ return {
                     }
                 },
                 mapping = cmp.mapping.preset.insert({
-                    -- ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                    -- ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-b>"] = cmp.mapping(function(fallback)
                         cmp.scroll_docs(-4)
                         fallback()
@@ -170,13 +163,7 @@ return {
             cmp.setup(opts)
             cmp.setup.filetype({ "tex", "bib", "sty", "cls" }, {
                 sources = {
-                    {
-                        name = "vimtex",
-                        entry_filter = function()
-                            local ls = require("luasnip")
-                            return not ls.choice_active()
-                        end
-                    },
+                    { name = "vimtex" },
                     { name = "luasnip",  keyword_length = 2 },
                     { name = "nvim_lsp", keyword_length = 2 },
                     {

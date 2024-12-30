@@ -180,6 +180,7 @@ return {
     },
     {
         "kevinhwang91/nvim-ufo",
+        --TODO: 实现一个自动折叠过长行的办法
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         dependencies = {
             "kevinhwang91/promise-async",
@@ -277,5 +278,5 @@ return {
         "NStefan002/screenkey.nvim",
         lazy = false,
         version = "*", -- or branch = "dev", to use the latest commit
-    }
+    },
 }

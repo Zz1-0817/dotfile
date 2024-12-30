@@ -6,11 +6,11 @@ local helper = require("snippets.tex.utils.helper")
 local scaffolding = require("snippets.tex.utils.scaffolding")
 
 --- FIX:
---- 1. snippet `inverse' should be triggerred by `emca'
---- 2. `sup' conflict with `supp'
---- 3. `inn` BUG
+--- 1. snippet `inverse' should be triggerred by `emca', decide to disable `emca.
+--- 2. `sup' conflict with `supp': type \sup in manual
+--- 3. `inn` BUG, can not be fixed right now, since symbols like '+-' will induce unpredictable BUGs.
 --- TODO:
---- 1. determine whether expand autobackslash snippet after `_`
+--- 1. determine whether expand autobackslash snippet after `_`: environment are complicated, do not expand
 
 local M = {
     autosnippet(
@@ -422,7 +422,7 @@ local imapSpecs = {
     z = { context = { name = "zeta", } },
     D = { context = { name = "Delta", } },
     G = { context = { name = "Gamma", } },
-    L = { context = { name = "lambda", } },
+    L = { context = { name = "Lambda", } },
     W = { context = { name = "Omega", } },
     X = { context = { name = "Xi", } },
     ['\\'] = { context = { name = "setminus" } },
