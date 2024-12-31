@@ -40,15 +40,16 @@ local generatePostfixDynamicNode = function(_, parent, _, user_arg1, user_arg2)
         return sn(nil, fmta([[
         <><><><>
         ]],
-        {t(user_arg1), t(capture), t(user_arg2), i(0)}))
+            { t(user_arg1), t(capture), t(user_arg2), i(0) }))
     else
         local visual_placeholder = parent.snippet.env.SELECT_RAW
         return sn(nil, fmta([[
         <><><><>
         ]],
-        {t(user_arg1), i(1, visual_placeholder), t(user_arg2), i(0)}))
+            { t(user_arg1), i(1, visual_placeholder), t(user_arg2), i(0) }))
     end
 end
+
 ------------------------------
 
 M.createPostfixSnippet = function(context, command, opts)
@@ -104,16 +105,16 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     local envName = context.name or context.trig
-    local choices = { t(envName .. "*"), t(envName .. "") }
+    local choices = { t("*"), t("") }
     context.name = envName .. "(|*"
     context.dscr = context.dscr or context.name or ""
     if extraSuffix then
         if type(extraSuffix) == "string" then
-            table.insert(choices, t(envName .. extraSuffix))
+            table.insert(choices, t(extraSuffix))
             context.name = context.name .. "|" .. extraSuffix
         elseif type(extraSuffix) == "table" then
             for _, v in ipairs(extraSuffix) do
-                table.insert(choices, t(envName .. v))
+                table.insert(choices, t(v))
                 context.name = context.name .. '|' .. v .. ')'
             end
         else
@@ -123,11 +124,11 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     end
     return s(context,
         fmta([[
-            \begin{<>}
+            \begin{<><>}
               <>
-            \end{<>}
+            \end{<><>}
     ]],
-            { c(1, choices), i(2), rep(1) }),
+            { t(envName), c(1, choices), i(2), t(envName), rep(1) }),
         opts)
 end
 

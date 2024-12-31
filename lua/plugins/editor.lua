@@ -79,7 +79,6 @@ return {
         dependencies = {
             "nvim-lua/plenary.nvim",
             "debugloop/telescope-undo.nvim",
-            "nvim-telescope/telescope-file-browser.nvim",
             "nvim-telescope/telescope-project.nvim"
         },
         keys = {
@@ -121,7 +120,6 @@ return {
                 },
             })
             require("telescope").load_extension("undo")
-            require("telescope").load_extension("file_browser")
             require("telescope").load_extension('project')
         end
     },
@@ -205,7 +203,6 @@ return {
             local config = require('bqf.config')
             config['preview']['border'] = 'shadow'
             config['preview']['how_scroll_bar'] = false
-            vim.print(config)
             require("bqf").setup(config)
         end
     },

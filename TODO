@@ -1,0 +1,8 @@
+editor/oil         ->   FileBrowser
+editor/telescope   ->   Telescope
+editor/toggleterm  ->   terminal
+editor/nvim-bqf    ->   quickfix
+editor/outline     ->   lsp
+ui/gitsigns        ->   git
+ui/lsp_signature   ->   git
+ui/dropbar         ->   winbar?

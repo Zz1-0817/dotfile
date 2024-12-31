@@ -79,12 +79,18 @@ return {
                 },
                 mapping = cmp.mapping.preset.insert({
                     ["<C-b>"] = cmp.mapping(function(fallback)
-                        cmp.scroll_docs(-4)
-                        fallback()
+                        if cmp.visible_docs() then
+                            cmp.scroll_docs(-4)
+                        else
+                            fallback()
+                        end
                     end),
                     ["<C-f>"] = cmp.mapping(function(fallback)
-                        cmp.scroll_docs(4)
-                        fallback()
+                        if cmp.visible_docs() then
+                            cmp.scroll_docs(4)
+                        else
+                            fallback()
+                        end
                     end),
                     ["<C-j>"] = cmp.mapping(function(fallback)
                         if ls.locally_jumpable(1) then
@@ -101,7 +107,11 @@ return {
                         end
                     end),
                     ['<C-e>'] = cmp.mapping(function(fallback)
-                        fallback()
+                        if cmp.visible() and ls.choice_active() then
+                            ls.change_choice(1)
+                        else
+                            fallback()
+                        end
                     end),
                     ["<C-n>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then

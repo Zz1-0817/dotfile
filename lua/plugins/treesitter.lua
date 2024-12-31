@@ -1,7 +1,7 @@
 return {
     {
         "nvim-treesitter/nvim-treesitter",
-        event = "VeryLazy",
+        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
         build = ":TSUpdate",
         cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
         dependencies = {

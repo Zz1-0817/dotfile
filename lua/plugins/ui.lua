@@ -213,9 +213,12 @@ return {
             vim.o.foldenable = true
         end,
         opts = function()
+            local ftMap = {
+                tex = { 'indent' },
+            }
             return {
-                provider_selector = function()
-                    return { 'treesitter', 'indent' }
+                provider_selector = function(bufnr, filetype, buftype)
+                    return ftMap[filetype] or { 'treesitter', 'indent' }
                 end,
                 fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
                     local newVirtText = {}
