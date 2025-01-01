@@ -1,8 +1,25 @@
-editor/oil         ->   FileBrowser
-editor/telescope   ->   Telescope
-editor/toggleterm  ->   terminal
-editor/nvim-bqf    ->   quickfix
-editor/outline     ->   lsp
-ui/gitsigns        ->   git
-ui/lsp_signature   ->   git
-ui/dropbar         ->   winbar?
+plugins' files rearange
+    editor/oil             ->    filebrowser
+    editor/telescope       ->    telescope
+    editor/toggleterm      ->    terminal
+    editor/nvim-bqf        ->    quickfix
+    editor/outline         ->    lsp
+    editor/flash           ->    motion
+    editor/which-key       ->    miscellaneous? info? hint?
+    editor/yanky           ->    paste?
+    editor/autopairs       ->    pairs
+    editor/surround        ->    pairs
+    ui/gitsigns            ->    git
+    ui/lsp_signature       ->    git
+    ui/dropbar             ->    winbar?
+    ui/bufferline          ->    tab
+    ui/lualine             ->    statusline
+    ui/nvim-ufo            ->    fold
+    ui/fidget              ->    miscellaneous? info? hint?
+    ui/indent-blankline    ->    indent? miscellaneous? info? hint?
+    ui/nvim-hlslens        ->    miscellaneous? info? hint?
+    ui/vim-cool            ->    miscellaneous? info? hint?
+    ui/screenkey           ->    miscellaneous
+    util/startuptime       ->    miscellaneous
+
+Docs editing
