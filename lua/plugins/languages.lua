@@ -5,7 +5,6 @@ return {
         build = "cd app && yarn install",
         ft = { "markdown" },
         init = function()
-            vim.g.mkdp_browser = [[C:\Program Files\Google\Chrome\Application\chrome.exe]]
             vim.g.mkdp_auto_close = 0
             vim.api.nvim_create_autocmd({ "FileType" }, {
                 pattern = { "Markdown" },

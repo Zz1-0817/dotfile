@@ -1,8 +1,8 @@
 return {
     {
-        "folke/todo-comments.nvim",
+        'echasnovski/mini.comment',
         event = { "bufreadpost", "bufwritepost", "bufnewfile" },
-        dependencies = { "nvim-lua/plenary.nvim" },
+        version = false,
         opts = {}
     },
 }
