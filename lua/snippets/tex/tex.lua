@@ -50,6 +50,20 @@ local M = {
         ]], { f(helper.getLabelPrefix), i(0) })
     ),
     autosnippet(
+        { trig = "ff", dscr = "fractional" },
+        fmta([[
+        \frac{<>}{<>}
+        ]], { i(1), i(0) }),
+        { condition = conditions.isInMathZone }
+    ),
+    autosnippet(
+        { trig = "ss", dscr = "root" },
+        fmta([[
+        \sqrt{<>}
+        ]], { i(0) }),
+        { condition = conditions.isInMathZone }
+    ),
+    autosnippet(
         {
             trig = "lr([abpvBV])",
             name = "left right",

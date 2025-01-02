@@ -33,7 +33,6 @@ return {
             "hrsh7th/cmp-path",
             "micangl/cmp-vimtex",
             "saadparwaiz1/cmp_luasnip",
-            "L3MON4D3/LuaSnip",
         },
         opts = function()
             local cmp = require("cmp")
@@ -69,11 +68,11 @@ return {
                 },
                 sorting = {
                     comparators = {
+                        compare.recently_used,
                         compare.sort_text,
                         compare.offset,
                         compare.exact,
                         compare.score,
-                        compare.recently_used,
                         compare.kind,
                         compare.length,
                         compare.order,
