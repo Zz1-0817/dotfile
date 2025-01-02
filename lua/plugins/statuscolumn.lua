@@ -1,24 +1,37 @@
 return {
     {
+        "luukvbaal/statuscol.nvim",
+        init = function()
+            vim.o.fillchars = [[eob: ,fold: ,foldopen:󰅀,foldsep: ,foldclose:]]
+            vim.o.foldcolumn = "1"
+            vim.o.foldlevel = 64
+            vim.o.foldlevelstart = 64
+            vim.o.foldenable = true
+        end,
+        config = function()
+            local builtin = require("statuscol.builtin")
+            require("statuscol").setup({
+                relculright = true,
+                segments = {
+                    { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+                    { text = { builtin.lnumfunc }, click = "v:lua.ScLa" },
+                    {
+                        sign = { namespace = { "gitsigns" } },
+                        click = "v:lua.ScSa"
+                    },
+                    {
+                        sign = { namespace = { "diagnostic/signs" }, colwidth = 1, auto = true },
+                        click = "v:lua.ScSa"
+                    },
+                },
+            })
+        end,
+    },
+    {
         "kevinhwang91/nvim-ufo",
-        --TODO: 实现一个自动折叠过长行的办法
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         dependencies = {
             "kevinhwang91/promise-async",
-            {
-                "luukvbaal/statuscol.nvim",
-                config = function()
-                    local builtin = require("statuscol.builtin")
-                    require("statuscol").setup({
-                        relculright = true,
-                        segments = {
-                            { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
-                            { text = { "%s" },                  click = "v:lua.ScSa" },
-                            { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
-                        },
-                    })
-                end,
-            },
         },
         keys = {
             { "zR", function() require('ufo').openAllFolds() end,         desc = "Ufo Open All Folds" },
@@ -26,13 +39,6 @@ return {
             { "zr", function() require('ufo').openFoldsExceptKinds() end, desc = "Ufo Folds Except Kinds" },
             { "zm", function() require('ufo').closeFoldsWith() end,       desc = "Ufo Close Folds With" },
         },
-        init = function()
-            vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-            vim.o.foldcolumn = "1"
-            vim.o.foldlevel = 64
-            vim.o.foldlevelstart = 64
-            vim.o.foldenable = true
-        end,
         opts = function()
             local ftMap = {
                 tex = '',
