@@ -35,7 +35,7 @@ return {
         end,
         opts = function()
             local ftMap = {
-                tex = { 'indent' },
+                tex = '',
             }
             return {
                 provider_selector = function(bufnr, filetype, buftype)
