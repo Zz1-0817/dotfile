@@ -7,10 +7,10 @@ end
 return {
     {
         "L3MON4D3/LuaSnip",
+        lazy = true,
         build = jit.os == "Windows" and
             "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
             or "make install_jsregexp",
-        keys = {},
         config = function()
             local ls = require("luasnip")
 
@@ -156,15 +156,9 @@ return {
                     { name = "luasnip" },
                     { name = "buffer" },
                     { name = "path" },
-                    {
-                        name = "lazydev",
-                        group_index = 0,
-                    }
                 },
                 experimental = {
-                    ghost_text = {
-                        hl_group = "CmpGhostText",
-                    }
+                    ghost_text = { hl_group = "CmpGhostText", }
                 }
             }
         end,
@@ -192,6 +186,14 @@ return {
                     { name = "nvim_lsp" },
                     { name = "buffer" },
                     { name = "obsidian.nvim" }
+                }
+            })
+            cmp.setup.filetype("lua", {
+                sources = {
+                    { name = "lazydev" },
+                    { name = "luasnip" },
+                    { name = "nvim_lsp" },
+                    { name = "buffer" },
                 }
             })
         end
