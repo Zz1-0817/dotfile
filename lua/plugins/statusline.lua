@@ -122,7 +122,7 @@ return {
                                 local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
                                 local latex_files = { "tex", "bib", "cls", "sty" }
                                 for _, name in ipairs(latex_files) do
-                                    if buf_ft == name then
+                                    if buf_ft == name and vim.g.vimtex_compiler_enabled then
                                         return "vimtex"
                                     end
                                 end
@@ -145,7 +145,7 @@ return {
                     },
                     lualine_x = {
                         {
-                            'o:encoding', -- option component same as &encoding in viml
+                            'o:encoding',       -- option component same as &encoding in viml
                             fmt = string.upper, -- I'm not sure why it's upper case either ;)
                             cond = conditions.hide_in_width,
                             color = { fg = colors.green, gui = 'bold' },
@@ -177,13 +177,14 @@ return {
                         },
                         {
                             function()
-                                return utils.icons.lualine.clock .. os.date("%R")
+                                os.setlocale("C", "time")
+                                return utils.icons.lualine.week .. os.date("%A")
                             end,
                             color = { fg = colors.purple }
                         },
                         {
                             function()
-                                return '▊'
+                                return utils.icons.lualine.separator
                             end,
                             color = separator_color,
                             padding = { left = 1 },

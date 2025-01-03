@@ -3,7 +3,7 @@ local M = {
     lualine = {
         separator = '▊',
         server = ' ',
-        clock = '󰅐 '
+        week = '󱨴 '
     },
     git = {
         branch = '',
