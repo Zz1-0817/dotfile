@@ -20,7 +20,7 @@ return {
                         click = "v:lua.ScSa"
                     },
                     {
-                        sign = { namespace = { "diagnostic/signs" }, colwidth = 1, auto = true },
+                        sign = { namespace = { "diagnostic/signs" } },
                         click = "v:lua.ScSa"
                     },
                 },
