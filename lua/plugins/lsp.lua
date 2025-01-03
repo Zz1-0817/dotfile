@@ -169,7 +169,7 @@ A language server for librime
     },
     {
         'stevearc/conform.nvim',
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+        event = "LspAttach",
         opts = {
             formatters_by_ft = {
                 python = function(bufnr)
@@ -188,8 +188,8 @@ A language server for librime
     },
     {
         "rachartier/tiny-inline-diagnostic.nvim",
-        event = "LspAttach", -- Or `LspAttach`
-        priority = 1000,     -- needs to be loaded in first
+        event = "LspAttach",
+        priority = 1000,
         config = function()
             require('tiny-inline-diagnostic').setup()
         end
@@ -205,7 +205,7 @@ A language server for librime
     },
     {
         "ray-x/lsp_signature.nvim",
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+        event = "LspAttach",
         opts = { hint_prefix = "" },
     }
 }

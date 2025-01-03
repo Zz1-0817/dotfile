@@ -11,8 +11,6 @@ return {
             lualine_require.require = require
             local lualine = require('lualine')
 
-            local start_time = os.time()
-
             local colors = {
                 bg       = '#202328',
                 fg       = '#bbc2cf',
@@ -176,15 +174,6 @@ return {
                                 removed = { fg = colors.red },
                             },
                             cond = conditions.hide_in_width,
-                        },
-                        {
-                            function()
-                                local difftime = os.difftime(os.time(), start_time)
-                                local hours = math.floor(difftime / 3600)
-                                local minutes = math.floor((difftime % 3600) / 60)
-                                return utils.icons.lualine.timer .. string.format("%02d:%02d", hours, minutes)
-                            end,
-                            color = { fg = colors.gray }
                         },
                         {
                             function()

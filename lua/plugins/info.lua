@@ -12,26 +12,9 @@ return {
             },
         }
     },
-    {
-        'kevinhwang91/nvim-hlslens',
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-        opts = {}
-    },
     { "romainl/vim-cool" },
     {
         "j-hui/fidget.nvim",
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-        opts = {
-            notification = {
-                override_vim_notify = true,
-                window = {
-                    max_width = 45,
-                    align = "top"
-                }
-            }
-        },
-        config = function(_, opts)
-            require("fidget").setup(opts)
-        end
+        opts = {},
     },
 }

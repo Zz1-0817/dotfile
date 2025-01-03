@@ -22,6 +22,8 @@ opt.pumblend = 15
 opt.laststatus = 3
 opt.splitkeep = "screen"
 opt.mousemoveevent = true
+opt.foldmethod = "expr"
+opt.foldexpr = "nvim_treesitter#foldexpr()"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

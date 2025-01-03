@@ -10,12 +10,9 @@ return {
             on_attach = function(buffer)
                 local gs = package.loaded.gitsigns
 
-                local function map(mode, l, r, desc)
-                    vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-                end
+                vim.keymap.set('n', ']h', gs.next_hunk, { buffer = buffer, desc = "Next Hunk" })
+                vim.keymap.set('n', '[h', gs.prev_hunk, { buffer = buffer, desc = "Prev Hunk" })
 
-                map("n", "]h", gs.next_hunk, "Next Hunk")
-                map("n", "[h", gs.prev_hunk, "Prev Hunk")
             end
         }
     }

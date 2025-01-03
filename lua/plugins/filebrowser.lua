@@ -1,10 +1,7 @@
 return {
     {
         'stevearc/oil.nvim',
-        ---@module 'oil'
-        ---@type oil.SetupOpts
-        opts = {},
-        config = function(opts)
+        config = function()
             -- https://github.com/stevearc/oil.nvim/blob/master/doc/recipes.md#hide-gitignored-files-and-show-git-tracked-hidden-files
             local function parse_output(proc)
                 local result = proc:wait()

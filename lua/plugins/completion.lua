@@ -7,8 +7,8 @@ end
 return {
     {
         "L3MON4D3/LuaSnip",
-        build = vim.loop.os_uname().version:match("Windows")
-            and "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
+        build = jit.os == "Windows" and
+            "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
             or "make install_jsregexp",
         keys = {},
         config = function()
