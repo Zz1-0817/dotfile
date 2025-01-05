@@ -9,7 +9,7 @@ return {
         },
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<cr>",   desc = "Find files(root dir)" },
-            { "<leader>fb", "<cmd>Telescope file_browser<CR>", desc = "File browser" },
+            { "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "File browser" },
             { "<leader>fg", "<cmd>Telescope live_grep<cr>",    desc = "Grep(root dir)" },
             { "<leader>fh", "<cmd>Telescope help_tags<cr>",    desc = "Help tags" },
             { "<leader>fr", "<cmd>Telescope oldfiles<cr>",     desc = "Recent" },
