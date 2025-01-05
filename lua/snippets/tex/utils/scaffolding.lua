@@ -29,8 +29,10 @@ local k = require("luasnip.nodes.key_indexer").new_key
 local line_begin = require("luasnip.extras.conditions.expand").line_begin
 local autosnippet = ls.extend_decorator.apply(s, { snippetType = "autosnippet" })
 
-local jsregexpOk = false
-local trigEngine = jsregexpOk and "ecma" or "pattern"
+local jsregexp_ok, jsregexp = pcall(require, "luasnip-jsregexp")
+if not jsregexp_ok then
+    jsregexp_ok, jsregexp = pcall(require, "jsregexp")
+end
 
 ------ Helper Functions ------
 
@@ -59,44 +61,29 @@ M.createPostfixSnippet = function(context, command, opts)
     context.name = context.name or context.dscr
     context.docstring = command.pre .. [[(POSTFIX_MATCH|VISUAL|<1>)]] .. command.post
     context.match_pattern = context.match_pattern or [[[%w%.%_%-%"%']*$]]
-    context.trigEngine = trigEngine
-    local start, _ = string.find(command.pre, context.trig)
-    if start == 2 then
-        if trigEngine == "ecma" then
-            context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-        elseif trigEngine == "pattern" then
-            context.trig = "\\?" .. context.trig
-        end
-    end
     return postfix(context, { d(1, generatePostfixDynamicNode, {}, { user_args = { command.pre, command.post } }) },
         opts)
 end
 
 M.createOptionEnvSnippet = function(context, opts)
-    opts = opts or { stored = { ["user_text"] = i(1, "default_text") } }
+    opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
     context.docstring = context.dscr or ""
     return s(
         context,
-        c(1, {
-            sn(nil, fmta(
-                [[
-                \begin{<>}
-                  <>
-                \end{<>}
-                ]],
-                { t(context.name), r(1, "user_text"), t(context.name) })),
-            sn(nil, fmta(
-                [[
-                \begin{<>}[<>]
-                  <><>
-                \end{<>}
-                ]],
-                { t(context.name), i(1), r(2, "user_text"), i(3), t(context.name) }
-            ))
-        }),
+        fmta(
+            [[
+            \begin{<>}<><><>
+              <>
+            \end{<>}
+            ]],
+            {
+                t(context.name), f(function(args) return args[1][1] == '' and '' or '[' end, { 1 }),
+                i(1), f(function(args) return args[1][1] == '' and '' or ']' end, { 1 }),
+                i(2), t(context.name) }
+        ),
         opts
     )
 end
@@ -105,31 +92,45 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     local envName = context.name or context.trig
-    local choices = { t("*"), t("") }
-    context.name = envName .. "(|*"
+    local suffixes = { "*", "" }
     context.dscr = context.dscr or context.name or ""
     if extraSuffix then
         if type(extraSuffix) == "string" then
-            table.insert(choices, t(extraSuffix))
-            context.name = context.name .. "|" .. extraSuffix
+            if extraSuffix == "" or extraSuffix == "*" then
+                return s(fmta([[
+                \begin{<>}
+                  <>
+                \end{<>}
+                ]],
+                    { t(envName), i(1), t(envName) }), opts
+                )
+            end
+            table.insert(suffixes, extraSuffix)
         elseif type(extraSuffix) == "table" then
-            for _, v in ipairs(extraSuffix) do
-                table.insert(choices, t(v))
-                context.name = context.name .. '|' .. v .. ')'
+            if vim.tbl_contains(extraSuffix, "") or vim.tbl_contains(extraSuffix, "*") then
+                suffixes = extraSuffix
+            else
+                for _, v in ipairs(extraSuffix) do
+                    table.insert(suffixes, v)
+                end
             end
         else
             error("suffix should be a string or a table")
         end
         context.name = context.name .. ')'
     end
-    return s(context,
-        fmta([[
-            \begin{<><>}
+    local choices = {}
+    for _, suffix in ipairs(suffixes) do
+        table.insert(choices, sn(nil, fmta(
+            [[
+            \begin{<>}
               <>
-            \end{<><>}
-    ]],
-            { t(envName), c(1, choices), i(2), t(envName), rep(1) }),
-        opts)
+            \end{<>}
+            ]],
+            { t(envName .. suffix), i(1), t(envName .. suffix) })
+        ))
+    end
+    return s(context, c(1, choices), opts)
 end
 
 M.createSymbolSnippet = function(context, command, opts)
@@ -138,6 +139,9 @@ M.createSymbolSnippet = function(context, command, opts)
     context.dscr = context.dscr or command
     context.name = context.name or command
     context.docstring = context.docstring or command
+    if context.trigEngine and context.trigEngine == "ecma" and jsregexp_ok then
+        context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
+    end
     return autosnippet(context, t(command), opts)
 end
 
@@ -162,11 +166,6 @@ M.createAutoBackslashSnippet = function(context, opts)
     context.docstring = context.docstring or ([[\]] .. context.trig)
     context.trigEngine = trigEngine
     local text = "\\" .. context.trig
-    if trigEngine == "ecma" then
-        context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-    elseif trigEngine == "pattern" then
-        context.trig = "\\?" .. context.trig
-    end
     return autosnippet(context, { t(text) }, opts)
 end
 

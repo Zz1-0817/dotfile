@@ -108,11 +108,7 @@ return {
                         end
                     end),
                     ['<C-e>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() and ls.choice_active() then
-                            ls.change_choice(1)
-                        else
-                            fallback()
-                        end
+                        fallback()
                     end),
                     ["<C-n>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then

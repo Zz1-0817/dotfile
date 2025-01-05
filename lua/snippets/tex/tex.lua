@@ -90,7 +90,7 @@ local M = {
         }),
         { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
-    autosnippet({ trig = "inv", wordTrig = false }, { t("^{-1}") }, { condition = conditions.isInMathZone }),
+    autosnippet({ trig = "ivs", wordTrig = false }, { t("^{-1}") }, { condition = conditions.isInMathZone }),
     autosnippet({ trig = "(%d?)cases", name = "cases", dscr = "cases", trigEngine = "pattern", hidden = true },
         fmta([[
     \begin{cases}
@@ -129,6 +129,7 @@ local starredEnvSpecs = {
         context = {
             name = "equation",
         },
+        extra_suffix = { "", "*" }
     },
 }
 
@@ -212,7 +213,7 @@ local postfixMathSpecs = {
             post = [[}]]
         }
     },
-    dot = {
+    dt = {
         context = {
             name = "dot",
             dscr = "dot",
@@ -388,7 +389,7 @@ local symbolSpecs = {
     phi = { context = { name = "ϕ" }, command = [[\phi]] },
     Phi = { context = { name = "ϕ" }, command = [[\Phi]] },
     psi = { context = { name = "Ψ" }, command = [[\psi]] },
-    inn = { context = { name = "∈" }, command = [[\in]] },
+    inn = { context = { name = "∈", trigEngine = "ecma" }, command = [[\in]] },
     oo = { context = { name = "○" }, command = [[\circ]] },
     OO = { context = { name = "⊕" }, command = [[\oplus]] },
     xx = { context = { name = "×" }, command = [[\times]] },
