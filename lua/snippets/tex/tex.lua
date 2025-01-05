@@ -5,12 +5,8 @@ local conditions = require("snippets.tex.utils.conditions")
 local helper = require("snippets.tex.utils.helper")
 local scaffolding = require("snippets.tex.utils.scaffolding")
 
---- FIX:
---- 1. snippet `inverse' should be triggerred by `emca', decide to disable `emca.
---- 2. `sup' conflict with `supp': type \sup in manual
---- 3. `inn` BUG, can not be fixed right now, since symbols like '+-' will induce unpredictable BUGs.
 --- TODO:
---- 1. determine whether expand autobackslash snippet after `_`: environment are complicated, do not expand
+--- 1. reformat expanding method
 
 local M = {
     autosnippet(
@@ -338,6 +334,10 @@ local postfixMathSpecs = {
 
 local autobackslashSpecs = {
     "pi",
+    "phi",
+    "Phi",
+    "Psi",
+    "psi",
     "nu",
     "xi",
     "mu",
@@ -386,9 +386,6 @@ local symbolSpecs = {
     chi = { context = { name = "χ" }, command = [[\chi]] },
     vep = { context = { name = "ε" }, command = [[\varepsilon]] },
     vph = { context = { name = "φ" }, command = [[\varphi]] },
-    phi = { context = { name = "ϕ" }, command = [[\phi]] },
-    Phi = { context = { name = "ϕ" }, command = [[\Phi]] },
-    psi = { context = { name = "Ψ" }, command = [[\psi]] },
     inn = { context = { name = "∈", trigEngine = "ecma" }, command = [[\in]] },
     oo = { context = { name = "○" }, command = [[\circ]] },
     OO = { context = { name = "⊕" }, command = [[\oplus]] },

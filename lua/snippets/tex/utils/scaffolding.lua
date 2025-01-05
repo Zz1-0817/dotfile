@@ -164,8 +164,12 @@ M.createAutoBackslashSnippet = function(context, opts)
     context.dscr = context.dscr or (context.trig .. "with automatic backslash")
     context.name = context.name or context.trig
     context.docstring = context.docstring or ([[\]] .. context.trig)
-    context.trigEngine = trigEngine
     local text = "\\" .. context.trig
+    if jsregexp_ok then
+        context.trigEngine = "ecma"
+        context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
+    end
+    context.wordTrig = false
     return autosnippet(context, { t(text) }, opts)
 end
 
