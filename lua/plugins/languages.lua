@@ -48,6 +48,7 @@ return {
             }
             vim.g.vimtex_imaps_enabled = false
             vim.g.vimtex_fold_enabled = true
+            vim.g.vimtex_fold_bib_enabled = true
             vim.g.vimtex_mappings_disable = {
                 i = { "]]" }
             }
