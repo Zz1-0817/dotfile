@@ -19,7 +19,7 @@ return {
         opts = {
             highlight = {
                 groups = {
-                    label = "Cursor"
+                    label = "Search"
                 }
             }
         }
