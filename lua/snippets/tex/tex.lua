@@ -5,9 +5,6 @@ local conditions = require("snippets.tex.utils.conditions")
 local helper = require("snippets.tex.utils.helper")
 local scaffolding = require("snippets.tex.utils.scaffolding")
 
---- TODO:
---- 1. reformat expanding method
-
 local M = {
     autosnippet(
         { trig = "jj", dscr = "inline math" },
@@ -113,19 +110,19 @@ local starredEnvSpecs = {
         context = {
             name = "align",
         },
-        extra_suffix = "ed",
+        extraSuffix = "ed",
     },
     gat = {
         context = {
             name = "gather",
         },
-        extra_suffix = "ed",
+        extraSuffix = "ed",
     },
     eqn = {
         context = {
             name = "equation",
         },
-        extra_suffix = { "", "*" }
+        extraSuffix = { "", "*" }
     },
 }
 
@@ -334,6 +331,7 @@ local postfixMathSpecs = {
 
 local autobackslashSpecs = {
     "pi",
+    "chi",
     "phi",
     "Phi",
     "Psi",
@@ -383,7 +381,6 @@ local autobackslashSpecs = {
 }
 
 local symbolSpecs = {
-    chi = { context = { name = "χ" }, command = [[\chi]] },
     vep = { context = { name = "ε" }, command = [[\varepsilon]] },
     vph = { context = { name = "φ" }, command = [[\varphi]] },
     inn = { context = { name = "∈", trigEngine = "ecma" }, command = [[\in]] },
@@ -459,12 +456,14 @@ local thmSpecs = {
             name = "example",
             dscr = "example",
         },
+        named = true
     },
     thm = {
         context = {
             name = "theorem",
             dscr = "theorem",
         },
+        named = true
     },
     lem = {
         context = {
@@ -477,6 +476,7 @@ local thmSpecs = {
             name = "corollary",
             dscr = "corollary",
         },
+        named = true
     },
     prp = {
         context = {
@@ -519,22 +519,40 @@ local enumSpecs = {
     }
 }
 
-helper.extendScaffoldingSnippet(M, starredEnvSpecs, scaffolding.createStarredEnvSnippet, line_begin, "extra_suffix",
-    { hidden = true })
-helper.extendScaffoldingSnippet(M, sectionSpecs, scaffolding.createCommandSnippet, line_begin, "command",
-    { hidden = true })
-helper.extendScaffoldingSnippet(M, textCommandSpecs, scaffolding.createCommandSnippet, conditions.isInTextZone,
-    "command", { hidden = true })
-helper.extendScaffoldingSnippet(M, postfixMathSpecs, scaffolding.createPostfixSnippet, conditions.isInMathZone,
-    "command", { snippetType = "autosnippet" })
-helper.extendScaffoldingSnippet(M, autobackslashSpecs, scaffolding.createAutoBackslashSnippet, conditions.isInMathZone)
-helper.extendScaffoldingSnippet(M, symbolSpecs, scaffolding.createSymbolSnippet, conditions.isInMathZone, "command")
-helper.extendScaffoldingSnippet(M, imapSpecs, scaffolding.createImapSnippet, conditions.isInMathZone, "",
-    { snippetType = "autosnippet", wordTrig = false }, '`')
-helper.extendScaffoldingSnippet(M, thmSpecs, scaffolding.createOptionEnvSnippet, conditions.isNotInTheorem, "",
-    { hidden = true })
-helper.extendScaffoldingSnippet(M, enumSpecs, scaffolding.createEnumSnippet, conditions.isInTextZone, "",
-    { hidden = true })
+local expandSnippet = function(specs, scaffold, extraContext, extraOpts)
+    local tbl = {}
+    for trig, spec in pairs(specs) do
+        local context = { trig = trig }
+        local opts = extraOpts or {}
+        local arguments = {}
+        for k, v in pairs(spec) do
+            if k == 'context' then
+                context = vim.tbl_deep_extend("keep", context, v, extraContext)
+            elseif k == "opts" then
+                opts = vim.tbl_deep_extend("force", opts, v)
+            else
+                table.insert(arguments, v)
+            end
+        end
+        table.insert(tbl, scaffold(context, opts, unpack(arguments)))
+    end
+    vim.list_extend(M, tbl)
+end
+
+expandSnippet(starredEnvSpecs, scaffolding.createStarredEnvSnippet, { hidden = true }, { condition = line_begin })
+expandSnippet(sectionSpecs, scaffolding.createCommandSnippet, { hidden = true }, { condition = line_begin })
+expandSnippet(textCommandSpecs, scaffolding.createCommandSnippet, { hidden = true },
+    { condition = conditions.isInTextZone })
+expandSnippet(postfixMathSpecs, scaffolding.createPostfixSnippet, { snippetType = "autosnippet" },
+    { condition = conditions.isInMathZone })
+expandSnippet(helper.decorateAutobackslashSpecs(autobackslashSpecs), scaffolding.createAutoBackslashSnippet, {},
+    { condition = conditions.isInMathZone })
+expandSnippet(symbolSpecs, scaffolding.createSymbolSnippet, {}, { condition = conditions.isInMathZone })
+expandSnippet(helper.prefixImapSpecs(imapSpecs), scaffolding.createImapSnippet,
+    { snippetType = "autosnippet", wordTrig = false },
+    { condition = conditions.isInMathZone })
+expandSnippet(thmSpecs, scaffolding.createOptionEnvSnippet, { hidden = true }, { condition = conditions.isNotInTheorem })
+expandSnippet(enumSpecs, scaffolding.createEnumSnippet, { hidden = true }, { condition = conditions.isInTextZone })
 
 --------------------------------------------------
 

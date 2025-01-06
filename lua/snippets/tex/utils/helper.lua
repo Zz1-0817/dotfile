@@ -91,39 +91,22 @@ M.getLabelPrefix = function(_, snip)
     return ""
 end
 
-M.extendScaffoldingSnippet = function(snippetTable, specs, scaffold, condition, requireArgument, contextExtra, preTrig)
-    preTrig = preTrig or ""
-    requireArgument = requireArgument or ""
-    contextExtra = contextExtra or {}
-    local extendingItems = {}
+M.prefixImapSpecs = function (specs)
+    local tbl = {}
+    assert(type(specs) == "table", "Specs should be a table")
     for k, v in pairs(specs) do
-        local context = { trig = v }
-        local opts = { condition = condition }
-        if type(v) == "table" then
-            context = vim.tbl_deep_extend(
-                "keep",
-                vim.tbl_deep_extend("keep", { trig = preTrig .. k }, contextExtra),
-                v.context
-            )
-            opts = vim.tbl_deep_extend("keep", v.opts or {}, { condition = condition })
-        end
-        if requireArgument == "command" then
-            table.insert(
-                extendingItems,
-                scaffold(context, v.command, opts)
-            )
-        elseif requireArgument == "extra_suffix" then
-            table.insert(
-                extendingItems,
-                scaffold(context, v.extra_suffix or nil, opts)
-            )
-        else
-            table.insert(
-                extendingItems,
-                scaffold(context, opts)
-            )
-        end
+        tbl['`' .. k] = v
     end
-    vim.list_extend(snippetTable, extendingItems)
+    return tbl
 end
+
+M.decorateAutobackslashSpecs = function (specs)
+    local tbl = {}
+    assert(type(specs) == "table", "Specs should be a table")
+    for k, v in ipairs(specs) do
+        tbl[v] = {}
+    end
+    return tbl
+end
+
 return M

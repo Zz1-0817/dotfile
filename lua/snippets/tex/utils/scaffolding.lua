@@ -54,7 +54,7 @@ end
 
 ------------------------------
 
-M.createPostfixSnippet = function(context, command, opts)
+M.createPostfixSnippet = function(context, opts, command)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
@@ -65,30 +65,44 @@ M.createPostfixSnippet = function(context, command, opts)
         opts)
 end
 
-M.createOptionEnvSnippet = function(context, opts)
+M.createOptionEnvSnippet = function(context, opts, withOption)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or ""
     context.name = context.name or context.dscr
     context.docstring = context.dscr or ""
-    return s(
-        context,
-        fmta(
-            [[
+    if withOption then
+        return s(
+            context,
+            fmta(
+                [[
             \begin{<>}<><><>
               <>
             \end{<>}
             ]],
-            {
-                t(context.name), f(function(args) return args[1][1] == '' and '' or '[' end, { 1 }),
-                i(1), f(function(args) return args[1][1] == '' and '' or ']' end, { 1 }),
-                i(2), t(context.name) }
+                {
+                    t(context.name), f(function(args) return args[1][1] == '' and '' or '[' end, { 1 }),
+                    i(1), f(function(args) return args[1][1] == '' and '' or ']' end, { 1 }),
+                    i(2), t(context.name) }
+            ),
+            opts
+        )
+    end
+    return s(
+        context,
+        fmta(
+            [[
+        \begin{<>}
+          <>
+        \end{<>}
+        ]],
+            { t(context.name), i(0), t(context.name) }
         ),
         opts
     )
 end
 
-M.createStarredEnvSnippet = function(context, extraSuffix, opts)
+M.createStarredEnvSnippet = function(context, opts, extraSuffix)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     local envName = context.name or context.trig
@@ -133,7 +147,7 @@ M.createStarredEnvSnippet = function(context, extraSuffix, opts)
     return s(context, c(1, choices), opts)
 end
 
-M.createSymbolSnippet = function(context, command, opts)
+M.createSymbolSnippet = function(context, opts, command)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
@@ -145,7 +159,7 @@ M.createSymbolSnippet = function(context, command, opts)
     return autosnippet(context, t(command), opts)
 end
 
-M.createCommandSnippet = function(context, command, opts)
+M.createCommandSnippet = function(context, opts, command)
     opts = opts or {}
     assert(context.trig, "context must include a 'trig' key")
     context.dscr = context.dscr or command
