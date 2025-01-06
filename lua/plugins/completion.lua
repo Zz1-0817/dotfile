@@ -79,14 +79,14 @@ return {
                     }
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ["<C-b>"] = cmp.mapping(function(fallback)
+                    ["<C-u>"] = cmp.mapping(function(fallback)
                         if cmp.visible_docs() then
                             cmp.scroll_docs(-4)
                         else
                             fallback()
                         end
                     end),
-                    ["<C-f>"] = cmp.mapping(function(fallback)
+                    ["<C-d>"] = cmp.mapping(function(fallback)
                         if cmp.visible_docs() then
                             cmp.scroll_docs(4)
                         else
@@ -108,6 +108,9 @@ return {
                         end
                     end),
                     ['<C-e>'] = cmp.mapping(function(fallback)
+                        fallback()
+                    end),
+                    ['<C-y>'] = cmp.mapping(function (fallback)
                         fallback()
                     end),
                     ["<C-n>"] = cmp.mapping(function(fallback)
