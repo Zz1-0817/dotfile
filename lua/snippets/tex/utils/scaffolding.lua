@@ -183,7 +183,6 @@ M.createAutoBackslashSnippet = function(context, opts)
         context.trigEngine = "ecma"
         context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
     end
-    context.wordTrig = false
     return autosnippet(context, { t(text) }, opts)
 end
 
