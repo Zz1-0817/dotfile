@@ -44,9 +44,17 @@ local M = {
     ),
     autosnippet(
         { trig = "ff", dscr = "fractional" },
-        fmta([[
-        \frac{<>}{<>}
-        ]], { i(1), i(0) }),
+        c(1, {
+            fmta([[
+            \frac{<>}{<>}
+            ]], { i(1), i(2) }),
+            fmta([[
+            \frac{\dif <>}{\dif <>}
+            ]], { i(1), i(2) }),
+            fmta([[
+            \frac{\partial <>}{\partial <>}
+            ]], { i(1), i(2) })
+        }),
         { condition = conditions.isInMathZone }
     ),
     autosnippet(
@@ -72,14 +80,6 @@ local M = {
         c(1, {
             sn(nil, { t("\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}") }),
             sn(nil, { t("\\left.\\frac{\\partial "), i(1), t("}{\\partial "), i(2), t("}\\right\\vert") })
-        }),
-        { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
-    ),
-    autosnippet(
-        { trig = "fdif", name = "differential fraction", dscr = "differential fraction" },
-        c(1, {
-            sn(nil, { t("\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}") }),
-            sn(nil, { t("\\left.\\frac{\\dif "), i(1), t("}{\\dif "), i(2), t("}\\right\\vert") })
         }),
         { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
@@ -256,6 +256,16 @@ local postfixMathSpecs = {
             post = [[}]]
         }
     },
+    mbf = {
+        context = {
+            name = "mathbf",
+            dscr = "math bold"
+        },
+        command = {
+            pre = [[\mathbf{]],
+            post = [[}]]
+        }
+    },
     mcl = {
         context = {
             name = "mathcal",
@@ -421,6 +431,7 @@ local imapSpecs = {
     k = { context = { name = "kappa", } },
     l = { context = { name = "lambda", } },
     n = { context = { name = "nabla", } },
+    p = { context = { name = "partial", } },
     q = { context = { name = "theta", } },
     r = { context = { name = "rho", }, },
     s = { context = { name = "sigma", } },
@@ -436,7 +447,6 @@ local imapSpecs = {
     X = { context = { name = "Xi", } },
     ['\\'] = { context = { name = "setminus" } },
     ['0'] = { context = { name = "varnothing" } },
-    ['6'] = { context = { name = "partial", } },
     ['8'] = { context = { name = "infty" } },
     ['.'] = { context = { name = "cdot" } },
     ['['] = { context = { name = "subseteq" } },
