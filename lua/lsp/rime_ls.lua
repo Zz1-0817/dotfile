@@ -13,7 +13,26 @@ local rime_on_attach = function(client, _)
     vim.keymap.set('i', '<C-x>', toggle_rime, { desc = 'Toggle Rime' })
 end
 
-local M = {
+local M = {}
+
+M.config = {
+    default_config = {
+        name = "rime_ls",
+        cmd = { 'rime_ls' },
+        filetypes = { 'markdown' },
+        single_file_support = true,
+    },
+    settings = {},
+    docs = {
+        description = [[
+    https://www.github.com/wlh320/rime-ls
+
+    A language server for librime
+    ]],
+    }
+}
+
+M.options = {
     name = "rime_ls",
     cmd = { 'rime_ls' },
     filetypes = { 'markdown' },

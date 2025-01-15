@@ -1,3 +1,8 @@
+local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+local capabilities = has_cmp and
+    cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
+    vim.lsp.protocol.make_client_capabilities()
+
 return {
     {
         "williamboman/mason.nvim",
@@ -40,73 +45,45 @@ return {
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+        config = function()
+            local servers = { "rime_ls" }
+
+            local lspconfig = require("lspconfig")
+            local configs = require("lspconfig.configs")
+
+            for _, server_name in pairs(servers) do
+                local has_server, server = pcall(require, "lsp." .. server_name)
+                if has_server then
+                    if not configs[server_name] then
+                        configs[server_name] = server.config
+                        local opts = { capabilities = vim.deepcopy(capabilities) }
+                        opts = vim.tbl_deep_extend("force", opts, server.options or {})
+                        lspconfig[server_name].setup(opts)
+                    end
+                else
+                    error(server_name .. "can not be found!")
+                end
+            end
+        end
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         dependencies = {
             "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
+            "neovim/nvim-lspconfig",
         },
-        opts = function()
-            local specified_lsp = require("lsp")
-            return {
-                servers = {
-                    lua_ls = {},
-                    clangd = {},
-                    pyright = {},
-                    html = { filetypes = { "html", "htmldjango" } },
-                    cssls = {},
-                    ts_ls = {},
-                    rime_ls = specified_lsp.rime_ls
-                },
-                setup = {
-                    rime_ls = function()
-                        local configs = require('lspconfig.configs')
-                        if not configs.rime_ls then
-                            configs.rime_ls = {
-                                default_config = {
-                                    name = "rime_ls",
-                                    cmd = { 'rime_ls' },
-                                    filetypes = { 'markdown' },
-                                    single_file_support = true,
-                                },
-                                settings = {},
-                                docs = {
-                                    description = [[
-https://www.github.com/wlh320/rime-ls
+        config = function()
+            local mason_servers = {}
 
-A language server for librime
-]],
-                                }
-                            }
-                        end
-                    end
-                }
-            }
-        end,
-        config = function(_, opts)
-            local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-            local capabilities = has_cmp and
-                cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
-                vim.lsp.protocol.make_client_capabilities()
-
-            local servers = opts.servers
-            local lspconfig = require("lspconfig")
-
-            local function setup(server)
-                local server_opts = vim.tbl_deep_extend("force", {
-                    capabilities = vim.deepcopy(capabilities),
-                }, servers[server] or {})
-
-                if opts.setup[server] then
-                    opts.setup[server](server_opts)
-                else
-                    lspconfig[server].setup(server_opts)
+            require("mason-lspconfig").setup()
+            require("mason-lspconfig").setup_handlers({
+                function(server_name)
+                    local opts = { capabilities = vim.deepcopy(capabilities) }
+                    opts = vim.tbl_deep_extend("force", opts, mason_servers[server_name] or {})
+                    require("lspconfig")[server_name].setup(opts)
                 end
-            end
-
-            for server, server_opts in pairs(servers) do
-                if server_opts.enabled ~= false then
-                    setup(server)
-                end
-            end
+            })
         end
     },
     {
