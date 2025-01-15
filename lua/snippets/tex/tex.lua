@@ -94,12 +94,17 @@ local M = {
         { condition = conditions.isInMathZone, show_condition = conditions.isInMathZone }
     ),
     s({ trig = "env", hidden = true, name = "begin env", dscr = "begin/end environment" },
-        fmta([[
-    \begin{<>}<>
-      <>
-    \end{<>}
-    ]],
-            { i(1), i(2), i(0), rep(1) })
+        fmta(
+            [[
+            \begin{<>}<><><>
+              <>
+            \end{<>}
+            ]],
+            {
+                i(1), f(function(args) return (args[1][1] == '' or args[1][1]:sub(1, 1) == '{') and '' or '[' end, { 2 }),
+                i(2), f(function(args) return (args[1][1] == '' or args[1][1]:sub(1, 1) == '{') and '' or ']' end, { 2 }),
+                i(3), rep(1) }
+        )
     ),
 }
 

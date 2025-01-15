@@ -5,23 +5,21 @@ return {
         build = ":MasonUpdate",
         config = function()
             local ensure_installed = {
-                "black",
+                "black", -- formatter
                 "lua-language-server",
                 "clangd",
                 "shfmt",
                 "pyright",
-                "marksman",
-                "markdownlint",
+                "ruff",         -- formatter
+                "markdownlint", -- formatter
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({
-                PATH = "prepend",
-                github = {
-                    download_url_template =
-                    "https://github.abskoop.workers.dev/github.com/%s/releases/download/%s/%s"
+                pip = {
+                    install_args = { "--proxy", "http://127.0.0.1:10809" }
                 }
             })
             local function install_packages()
@@ -44,61 +42,13 @@ return {
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         dependencies = {
             "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim"
+            "williamboman/mason-lspconfig.nvim",
         },
         opts = function()
             local specified_lsp = require("lsp")
             return {
-                diagnostics = {
-                    underline = true,
-                    update_in_insert = false,
-                    virtual_text = false,
-                    signs = {
-                        text = {
-                            [vim.diagnostic.severity.ERROR] = utils.icons.diagnostics.Error,
-                            [vim.diagnostic.severity.WARN] = utils.icons.diagnostics.Warn,
-                            [vim.diagnostic.severity.HINT] = utils.icons.diagnostics.Hint,
-                            [vim.diagnostic.severity.INFO] = utils.icons.diagnostics.Info,
-                        }
-                    },
-                    linehl = {
-                        [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
-                    },
-                    numhl = {
-                        [vim.diagnostic.severity.WARN] = 'WarningMsg',
-                    },
-                    severity_sort = true,
-                    document_highlight = {
-                        enabled = true,
-                    },
-                },
                 servers = {
-                    lua_ls = {
-                        settings = {
-                            Lua = {
-                                workspace = {
-                                    checkThirdParty = false,
-                                },
-                                codeLens = {
-                                    enable = true,
-                                },
-                                completion = {
-                                    callSnippet = "Replace",
-                                },
-                                doc = {
-                                    privateName = { "^_" },
-                                },
-                                hint = {
-                                    enable = true,
-                                    setType = false,
-                                    paramType = true,
-                                    paramName = "Disable",
-                                    semicolon = "Disable",
-                                    arrayIndex = "Disable",
-                                },
-                            },
-                        }
-                    },
+                    lua_ls = {},
                     clangd = {},
                     pyright = {},
                     html = { filetypes = { "html", "htmldjango" } },
@@ -132,16 +82,10 @@ A language server for librime
             }
         end,
         config = function(_, opts)
-            vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
-
             local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-            local capabilities = vim.tbl_deep_extend(
-                "force",
-                {},
-                vim.lsp.protocol.make_client_capabilities(),
-                has_cmp and cmp_nvim_lsp.default_capabilities() or {},
-                opts.capabilities or {}
-            )
+            local capabilities = has_cmp and
+                cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
+                vim.lsp.protocol.make_client_capabilities()
 
             local servers = opts.servers
             local lspconfig = require("lspconfig")
@@ -152,12 +96,10 @@ A language server for librime
                 }, servers[server] or {})
 
                 if opts.setup[server] then
-                    if opts.setup[server](server_opts) then
-                        return
-                    end
+                    opts.setup[server](server_opts)
+                else
+                    lspconfig[server].setup(server_opts)
                 end
-
-                lspconfig[server].setup(server_opts)
             end
 
             for server, server_opts in pairs(servers) do
@@ -188,11 +130,9 @@ A language server for librime
     },
     {
         "rachartier/tiny-inline-diagnostic.nvim",
-        event = "LspAttach",
+        event = "VeryLazy",
         priority = 1000,
-        config = function()
-            require('tiny-inline-diagnostic').setup()
-        end
+        opts = { preset = "minimal" },
     },
     {
         "hedyhli/outline.nvim",
@@ -203,9 +143,4 @@ A language server for librime
         },
         opts = {},
     },
-    {
-        "ray-x/lsp_signature.nvim",
-        event = "LspAttach",
-        opts = { hint_prefix = "" },
-    }
 }

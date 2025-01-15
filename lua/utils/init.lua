@@ -11,9 +11,4 @@ setmetatable(M, {
     end
 })
 
-function M.has(plugin)
-    local tmp = require("lazy.core.config").spec.plugins[plugin]
-    return tmp ~= nil
-end
-
 return M
