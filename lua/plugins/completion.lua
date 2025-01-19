@@ -110,7 +110,7 @@ return {
                     ['<C-e>'] = cmp.mapping(function(fallback)
                         fallback()
                     end),
-                    ['<C-y>'] = cmp.mapping(function (fallback)
+                    ['<C-y>'] = cmp.mapping(function(fallback)
                         fallback()
                     end),
                     ["<C-n>"] = cmp.mapping(function(fallback)

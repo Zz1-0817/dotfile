@@ -1,23 +1,43 @@
 return {
     {
         "windwp/nvim-autopairs",
-        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
-        config = function()
+        event = "InsertEnter",
+        opts = {
+            disable_filetype = { "TelescopePrompt" },
+            enable_moveright = false,
+            map_c_h = true,
+            map_c_w = true,
+            enable_bracket_in_quote = false,
+        },
+        config = function(_, options)
+            local tex_not_in_math = function()
+                if vim.fn['vimtex#syntax#in_mathzone']() == 1 then
+                    return false
+                end
+            end
+
             local npairs = require("nvim-autopairs")
             local Rule = require("nvim-autopairs.rule")
             local cond = require("nvim-autopairs.conds")
+            local basic_rule = require('nvim-autopairs.rules.basic')
+
             local brackets = {
                 { '(', ')' },
                 { '[', ']' },
                 { '{', '}' },
             }
-            npairs.setup({
-                disable_filetype = { "TelescopePrompt" },
-                enable_moveright = false,
-                map_c_h = true,
-                map_c_w = true,
-                map_cr = true,
-            })
+
+            npairs.setup(options)
+
+            local quote = basic_rule.quote_creator(npairs.config)
+            local bracket = basic_rule.bracket_creator(npairs.config)
+
+
+            require('nvim-autopairs').remove_rule('`')
+            require('nvim-autopairs').remove_rule("'")
+            require('nvim-autopairs').remove_rule("(")
+            require('nvim-autopairs').remove_rule("[")
+
             npairs.add_rules {
                 Rule(' ', ' ')
                     :with_pair(function(opts)
@@ -38,40 +58,40 @@ return {
                             brackets[2][1] .. '  ' .. brackets[2][2],
                             brackets[3][1] .. '  ' .. brackets[3][2]
                         }, context)
+                    end),
+                Rule("$", "$", { "tex", "latex" })
+                    :with_pair(tex_not_in_math)
+                    :with_move(function(opts) return opts.char == '$' end)
+                    :with_del(cond.done()),
+                quote("'", "'", { "-rust", "-nix", "-tex", "-latex" })
+                    :with_pair(function(opts)
+                        -- python literals string
+                        local str = require('nvim-autopairs.utils').text_sub_char(opts.line, opts.col - 1, 1)
+                        if vim.bo.filetype == 'python' and str:match("[frbuFRBU]") then
+                            return true
+                        end
                     end)
+                    :with_pair(cond.not_before_regex("%w")),
+                quote("'", "'", "rust"):with_pair(cond.not_before_regex("[%w<&]")):with_pair(cond.not_after_text(">")),
+                bracket("(", ")", { "-tex", "-latex" }),
+                bracket("(", ")", { "tex", "latex" })
+                    :with_pair(tex_not_in_math),
+                bracket("[", "]", { "-tex", "-latex" }),
+                bracket("[", "]", { "tex", "latex" })
+                    :with_pair(tex_not_in_math),
+                quote("`", "`", "-markdown"),
             }
-
-
-            npairs.add_rules {
-                Rule('<', '>')
-                    :with_pair(cond.none())
-                    :with_move(function(opts) return opts.char == '>' end)
-                    :with_cr(cond.none())
-                    :with_del(cond.none())
-                    :use_key('>')
-            }
-
-            npairs.add_rules({
-                    Rule("$", "$", { "tex", "latex" })
-                        :with_pair(function(opts)
-                            print(vim.inspect(opts))
-                            if opts.line == "aa $$" then
-                                -- don't add pair on that line
-                                return false
-                            end
-                        end)
-                        :with_move(function(opts) return opts.char == '$' end) -- no work, since disable rightmove
-                        :with_del(cond.not_after_regex("xx"))
-                        :with_cr(cond.none())
-                },
-                Rule("a", "a", "-vim")
-            )
-
-            npairs.get_rule("'")[1].not_filetypes = { "tex", "latex" }
-            npairs.get_rule('"')[1].not_filetypes = { "tex", "latex" }
-            npairs.get_rule('[').not_filetypes = { "tex", "latex" }
-            npairs.get_rule('`').not_filetypes = { "tex", "latex", "markdown" }
         end
+    },
+    {
+        "windwp/nvim-ts-autotag",
+        ft = {
+            "astro", "glimmer", "handlebars", "html",
+            "javascript", "jsx", "markdown", "php",
+            "rescript", "svelte", "tsx", "twig",
+            "typescript", "vue", "xml",
+        },
+        opts = {}
     },
     {
         "kylechui/nvim-surround",

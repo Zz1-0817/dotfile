@@ -20,6 +20,7 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
+                "vue-language-server"
             }
             local mason_registry = require("mason-registry")
             require("mason").setup({

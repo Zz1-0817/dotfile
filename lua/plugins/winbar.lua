@@ -4,7 +4,7 @@ return {
         event = "VeryLazy",
         keys = {
             {
-                "<leader>wp",
+                "<leader>dk",
                 function()
                     require("dropbar.api").pick()
                 end,
