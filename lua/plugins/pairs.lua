@@ -31,6 +31,7 @@ return {
             local quote = basic_rule.quote_creator(npairs.config)
             local bracket = basic_rule.bracket_creator(npairs.config)
 
+            require('nvim-autopairs').remove_rule("`")
             require('nvim-autopairs').remove_rule("'")
             require('nvim-autopairs').remove_rule("(")
             require('nvim-autopairs').remove_rule("[")
@@ -76,6 +77,7 @@ return {
                 bracket("[", "]", { "-tex", "-latex" }),
                 bracket("[", "]", { "tex", "latex" })
                     :with_pair(tex_not_in_math),
+                quote("`", "`", { "-tex", "-latex" })
             }
         end
     },
