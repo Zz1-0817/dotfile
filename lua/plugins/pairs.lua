@@ -4,7 +4,6 @@ return {
         event = "InsertEnter",
         opts = {
             disable_filetype = { "TelescopePrompt" },
-            enable_moveright = false,
             map_c_h = true,
             map_c_w = true,
             enable_bracket_in_quote = false,
@@ -32,8 +31,6 @@ return {
             local quote = basic_rule.quote_creator(npairs.config)
             local bracket = basic_rule.bracket_creator(npairs.config)
 
-
-            require('nvim-autopairs').remove_rule('`')
             require('nvim-autopairs').remove_rule("'")
             require('nvim-autopairs').remove_rule("(")
             require('nvim-autopairs').remove_rule("[")
@@ -79,7 +76,6 @@ return {
                 bracket("[", "]", { "-tex", "-latex" }),
                 bracket("[", "]", { "tex", "latex" })
                     :with_pair(tex_not_in_math),
-                quote("`", "`", "-markdown"),
             }
         end
     },
