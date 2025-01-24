@@ -68,8 +68,7 @@ return {
                         if vim.bo.filetype == 'python' and str:match("[frbuFRBU]") then
                             return true
                         end
-                    end)
-                    :with_pair(cond.not_before_regex("%w")),
+                    end),
                 quote("'", "'", "rust"):with_pair(cond.not_before_regex("[%w<&]")):with_pair(cond.not_after_text(">")),
                 bracket("(", ")", { "-tex", "-latex" }),
                 bracket("(", ")", { "tex", "latex" })
