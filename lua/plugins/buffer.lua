@@ -58,6 +58,17 @@ return {
                     enabled = true,
                     delay = 200,
                     reveal = { 'close' }
+                },
+                groups = {
+                    items = {
+                        {
+                            name = "Terms",
+                            auto_close = true,
+                            matcher = function(buf)
+                                return buf.path:match("term")
+                            end
+                        }
+                    }
                 }
             },
         },
