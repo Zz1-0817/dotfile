@@ -7,8 +7,8 @@ return {
             vim.g.lualine_laststatus = vim.o.laststatus
         end,
         config = function()
-            local lualine_require = require("lualine_require")
-            lualine_require.require = require
+            -- local lualine_require = require("lualine_require")
+            -- lualine_require.require = require
             local lualine = require('lualine')
 
             local colors = {
@@ -71,7 +71,7 @@ return {
                 options = {
                     component_separators = '',
                     section_separators = '',
-                    theme = "auto",
+                    -- theme = "auto",
                 },
                 sections = {
                     lualine_a = {},
