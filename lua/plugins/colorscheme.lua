@@ -1,4 +1,5 @@
 return {
+    { "norcalli/nvim-colorizer.lua", opts = {} },
     {
         "catppuccin/nvim",
         name     = "catppuccin",

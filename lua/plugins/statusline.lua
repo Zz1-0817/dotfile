@@ -23,6 +23,7 @@ return {
                 red      = '#ec5f67',
                 purple   = '#a020f0',
                 gray     = '#A9A9A9',
+
             }
 
             local conditions = {
@@ -89,7 +90,7 @@ return {
                             cond = conditions.buffer_not_empty,
                         },
                         { 'location' },
-                        { 'progress', color = { fg = colors.fg, gui = 'bold' } },
+                        { 'progress' },
                         {
                             'filename',
                             cond = conditions.buffer_not_empty,
@@ -137,7 +138,7 @@ return {
                                 return msg
                             end,
                             icon = utils.icons.lualine.server,
-                            color = { fg = "#32CD32", gui = 'bold' },
+                            color = 'WarningMsg'
                         }
 
                     },
@@ -146,13 +147,11 @@ return {
                             'o:encoding',       -- option component same as &encoding in viml
                             fmt = string.upper, -- I'm not sure why it's upper case either ;)
                             cond = conditions.hide_in_width,
-                            color = { fg = colors.green, gui = 'bold' },
                         },
                         {
                             'fileformat',
                             fmt = string.upper,
                             icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-                            color = { fg = colors.green, gui = 'bold' },
                         },
                         {
                             'branch',
@@ -178,7 +177,6 @@ return {
                                 os.setlocale("C", "time")
                                 return utils.icons.lualine.week .. os.date("%A")
                             end,
-                            color = { fg = colors.purple }
                         },
                         {
                             function()
