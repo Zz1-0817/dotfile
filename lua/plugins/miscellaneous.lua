@@ -12,10 +12,4 @@ return {
         -- lazy = false,
         version = "*", -- or branch = "dev", to use the latest commit
     },
-    {
-        "folke/todo-comments.nvim",
-        event = { "bufreadpost", "bufwritepost", "bufnewfile" },
-        dependencies = { "nvim-lua/plenary.nvim" },
-        opts = {}
-    }
 }
