@@ -7,8 +7,6 @@ return {
             vim.g.lualine_laststatus = vim.o.laststatus
         end,
         config = function()
-            -- local lualine_require = require("lualine_require")
-            -- lualine_require.require = require
             local lualine = require('lualine')
 
             local colors = {
@@ -71,7 +69,7 @@ return {
                 options = {
                     component_separators = '',
                     section_separators = '',
-                    -- theme = "auto",
+                    theme = "auto",
                 },
                 sections = {
                     lualine_a = {},
@@ -187,7 +185,7 @@ return {
                                 return utils.icons.lualine.separator
                             end,
                             color = separator_color,
-                            padding = { left = 1 },
+                            padding = { right = 0 }
                         }
                     },
                 },

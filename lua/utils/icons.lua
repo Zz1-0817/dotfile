@@ -1,7 +1,7 @@
 ---@class utils.icons
 local M = {
     lualine = {
-        separator = '▊',
+        separator = '█',
         server = ' ',
         week = '󱨴 '
     },
