@@ -61,14 +61,13 @@ return {
                     :with_pair(tex_not_in_math)
                     :with_move(function(opts) return opts.char == '$' end)
                     :with_del(cond.done()),
-                quote("'", "'", { "-rust", "-nix", "-tex", "-latex" })
-                    :with_pair(function(opts)
-                        -- python literals string
-                        local str = require('nvim-autopairs.utils').text_sub_char(opts.line, opts.col - 1, 1)
-                        if vim.bo.filetype == 'python' and str:match("[frbuFRBU]") then
-                            return true
-                        end
-                    end),
+                quote("'", "'", { "-rust", "-nix", "-tex", "-latex", "-python" }):with_pair(cond.not_before_regex("%w")),
+                quote("'", "'", "python"):with_pair(function(opts)
+                    local str = require('nvim-autopairs.utils').text_sub_char(opts.line, opts.col - 1, 1)
+                    if str:match("[frbuFRBU]") then
+                        return true
+                    end
+                end),
                 quote("'", "'", "rust"):with_pair(cond.not_before_regex("[%w<&]")):with_pair(cond.not_after_text(">")),
                 bracket("(", ")", { "-tex", "-latex" }),
                 bracket("(", ")", { "tex", "latex" })
