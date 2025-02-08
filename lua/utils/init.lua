@@ -1,7 +1,7 @@
 ---@class utils utils core
----@field startup utils.startup
 ---@field icons utils.icons
 ---@field functions utils.functions
+---@field config utils.config
 local M = {}
 
 setmetatable(M, {

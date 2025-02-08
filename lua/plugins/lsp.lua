@@ -16,6 +16,7 @@ return {
                 "shfmt",
                 "pyright",
                 "ruff",         -- formatter
+                "marksman",
                 "markdownlint", -- formatter
                 "html-lsp",
                 "css-lsp",
@@ -23,11 +24,7 @@ return {
                 "vue-language-server"
             }
             local mason_registry = require("mason-registry")
-            require("mason").setup({
-                pip = {
-                    install_args = { "--proxy", "http://127.0.0.1:10809" }
-                }
-            })
+            require("mason").setup(utils.config.mason)
             local function install_packages()
                 for _, pkg in ipairs(ensure_installed) do
                     local package = mason_registry.get_package(pkg)
@@ -47,12 +44,10 @@ return {
         "neovim/nvim-lspconfig",
         event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         config = function()
-            local servers = { "rime_ls" }
-
             local lspconfig = require("lspconfig")
             local configs = require("lspconfig.configs")
 
-            for _, server_name in pairs(servers) do
+            for _, server_name in pairs(utils.config.servers) do
                 local has_server, server = pcall(require, "lsp." .. server_name)
                 if has_server then
                     if not configs[server_name] then
@@ -62,7 +57,7 @@ return {
                         lspconfig[server_name].setup(opts)
                     end
                 else
-                    error(server_name .. "can not be found!")
+                    error(server_name .. "'s config can not be found!")
                 end
             end
         end
@@ -119,6 +114,6 @@ return {
         keys = {
             { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
         },
-        opts = {},
+        opts = { outline_window = { auto_close = true } },
     },
 }
