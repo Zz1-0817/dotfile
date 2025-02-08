@@ -2,7 +2,7 @@
 local M = {}
 
 -- `zz' in normal mode
-M.centerCurrentLine = function()
+function M.centerCurrentLine()
     local win = vim.api.nvim_get_current_win()
     local row, column = unpack(vim.api.nvim_win_get_cursor(win))
     vim.api.nvim_command("normal! zz")
@@ -10,38 +10,49 @@ M.centerCurrentLine = function()
 end
 
 -- `<M-f>' and `<M-b>' in emacs
-local ptn = "[\u{4e00}-\u{9fa5}%w%p]+"
+local ptn = "[%s%p]+"
 
----@param str string original string
----@param _init integer initial position
----@param pattern string pattern to match
-local function findPatternReverse(str, _init, pattern)
-    local reversedStr = string.reverse(str)
-    local init = string.len(str) - _init + 1
-    local _, pos = string.find(reversedStr, pattern, init)
-    if pos == nil then
-        return _init
-    end
-    local originalPos = string.len(str) - pos
-    return originalPos
-end
-
----@param is_forward boolean true for forward search, vice versa.
-M.moveSingleWord = function(is_forward)
+---@param forward boolean true for forward search, vice versa.
+function M.moveSingleWord(forward)
     local win = vim.api.nvim_get_current_win()
-    local buf = vim.api.nvim_win_get_buf(win)
     local row, col = unpack(vim.api.nvim_win_get_cursor(win))
-    local line =
-        vim.api.nvim_buf_get_lines(buf, vim.fn.line('.') - 1, vim.fn.line('.'), false)[1]
-    local pos
-    if is_forward then
-        _, pos = string.find(line, ptn, col + 1)
-        if pos == nil then
-            pos = col
+    local line = vim.fn.getline(".")
+    local line_begin = 0
+    local line_end = #line
+    local i, j, s, pos
+
+    if forward then
+        s = line
+        i, j = string.find(s, ptn, col + 1)
+        if not i then
+            pos = line_end
+        elseif i == col + 1 then
+            i = string.find(s, ptn, j + 1)
+            if not i then
+                pos = line_end
+            else
+                pos = i - 1
+            end
+        else
+            pos = i - 1
         end
     else
-        pos = findPatternReverse(line, col, ptn)
+        s = string.reverse(line)
+        i, j = string.find(s, ptn, #line - col + 2)
+        if not i then
+            pos = line_begin
+        elseif i == #line - col + 2 then
+            i = string.find(s, ptn, j + 1)
+            if not i then
+                pos = line_begin
+            else
+                pos = #line - i + 1
+            end
+        else
+            pos = #line - i + 1
+        end
     end
+
     vim.api.nvim_win_set_cursor(win, { row, pos })
 end
 
