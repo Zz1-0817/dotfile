@@ -4,6 +4,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- For other keybindings, see https://neovim.io/doc/user/lsp.html#grr
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
         local opts = { buffer = ev.buf }
+        if not vim.version().prerelease then
+            vim.keymap.set('n', 'grn', vim.lsp.buf.rename, opts)
+            vim.keymap.set('n', 'gra', vim.lsp.buf.code_action, opts)
+            vim.keymap.set('n', 'grr', vim.lsp.buf.references, opts)
+            vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, opts)
+        end
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
