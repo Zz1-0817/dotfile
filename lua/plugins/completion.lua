@@ -19,7 +19,7 @@ return {
                 enable_autosnippets = true,
             })
 
-            local snippets_path = vim.fn.stdpath('config') .. [[\lua\snippets]]
+            local snippets_path = vim.fn.stdpath('config') .. [[/lua/snippets]]
             require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
         end
     },
@@ -31,21 +31,41 @@ return {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
+            "hrsh7th/cmp-cmdline",
             "micangl/cmp-vimtex",
             "saadparwaiz1/cmp_luasnip",
         },
         opts = function()
             local cmp = require("cmp")
             local ls = require("luasnip")
-            local compare = require("cmp.config.compare")
+            local kind_icons = {
+                Text = "",
+                Method = "󰆧",
+                Function = "󰊕",
+                Constructor = "",
+                Field = "󰇽",
+                Variable = "󰂡",
+                Class = "󰠱",
+                Interface = "",
+                Module = "",
+                Property = "󰜢",
+                Unit = "",
+                Value = "󰎠",
+                Enum = "",
+                Keyword = "󰌋",
+                Snippet = "",
+                Color = "󰏘",
+                File = "󰈙",
+                Reference = "",
+                Folder = "󰉋",
+                EnumMember = "",
+                Constant = "󰏿",
+                Struct = "",
+                Event = "",
+                Operator = "󰆕",
+                TypeParameter = "󰅲",
+            }
             return {
-                performance = {
-                    debounce = 100,
-                    throttle = 50,
-                },
-                completion = {
-                    completeopt = "menu, menuone, noinsert",
-                },
                 snippet = {
                     expand = function(args)
                         require("luasnip").lsp_expand(args.body)
@@ -53,10 +73,12 @@ return {
                 },
                 formatting = {
                     format = function(entry, vim_item)
-                        vim_item.kind = string.format('%s %s', utils.icons.kinds[vim_item.kind], vim_item.kind)
+                        vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
                         vim_item.menu = ({
                             vimtex = "[Vimtex]",
                             buffer = "[Buffer]",
+                            lazydev = "[Lazydev]",
+                            path = "[Path]",
                             luasnip = "[LuaSnip]",
                             nvim_lsp = "[LSP]",
                             nvim_lua = "[Lua]",
@@ -65,18 +87,6 @@ return {
                         return vim_item
                     end,
                     fields = { 'kind', 'abbr', 'menu' },
-                },
-                sorting = {
-                    comparators = {
-                        compare.recently_used,
-                        compare.sort_text,
-                        compare.offset,
-                        compare.exact,
-                        compare.score,
-                        compare.kind,
-                        compare.length,
-                        compare.order,
-                    }
                 },
                 mapping = cmp.mapping.preset.insert({
                     ["<C-u>"] = cmp.mapping(function(fallback)
@@ -194,6 +204,20 @@ return {
                     { name = "nvim_lsp" },
                     { name = "buffer" },
                 }
+            })
+            cmp.setup.cmdline({ '/', '?' }, {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = {
+                    { name = 'buffer' }
+                }
+            })
+            cmp.setup.cmdline(':', {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = 'path' }
+                }, {
+                    { name = 'cmdline' }
+                }),
             })
         end
     }
