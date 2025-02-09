@@ -1,6 +1,8 @@
 return {
     {
         "keaising/im-select.nvim",
-        config = true
+        opts = {
+            set_default_events = { "InsertLeave" },
+        }
     }
 }
