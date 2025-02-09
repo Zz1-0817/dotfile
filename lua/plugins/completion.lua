@@ -32,7 +32,8 @@ return {
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
-            "micangl/cmp-vimtex",
+            "hrsh7th/cmp-omni",
+            -- "micangl/cmp-vimtex",
             "saadparwaiz1/cmp_luasnip",
         },
         opts = function()
@@ -75,6 +76,7 @@ return {
                     format = function(entry, vim_item)
                         vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
                         vim_item.menu = ({
+                            omni = (vim.inspect(vim_item.menu):gsub('%"', "")),
                             vimtex = "[Vimtex]",
                             buffer = "[Buffer]",
                             lazydev = "[Lazydev]",
@@ -177,9 +179,8 @@ return {
             cmp.setup(opts)
             cmp.setup.filetype({ "tex", "bib", "sty", "cls" }, {
                 sources = {
-                    { name = "vimtex" },
-                    { name = "luasnip",  keyword_length = 2 },
-                    { name = "nvim_lsp", keyword_length = 2 },
+                    { name = "omni",    trigger_characters = { "{", "\\" } },
+                    { name = "luasnip", keyword_length = 2 },
                     {
                         name = "buffer",
                         option = {
