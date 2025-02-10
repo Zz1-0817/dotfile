@@ -56,4 +56,13 @@ function M.moveSingleWord(forward)
     vim.api.nvim_win_set_cursor(win, { row, pos })
 end
 
+function M.enterLastTerminal()
+    if vim.g.last_terminal_buf and vim.api.nvim_buf_is_valid(vim.g.last_terminal_buf) then
+        vim.api.nvim_set_current_buf(vim.g.last_terminal_buf)
+    else
+        vim.cmd.terminal()
+        vim.cmd.startinsert()
+    end
+end
+
 return M

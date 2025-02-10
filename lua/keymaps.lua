@@ -26,3 +26,5 @@ keyset("n", "<leader>qd", function()
         title = "Diagnostics",
     })
 end, { desc = "populate quickfix with diagnostics" })
+
+keyset("n", "<C-\\>", utils.functions.enterLastTerminal, opts)
