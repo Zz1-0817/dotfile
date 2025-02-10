@@ -65,7 +65,7 @@ return {
                             name = "Terms",
                             auto_close = true,
                             matcher = function(buf)
-                                return buf.path:match("term")
+                                return buf.buftype == "terminal"
                             end
                         }
                     }
