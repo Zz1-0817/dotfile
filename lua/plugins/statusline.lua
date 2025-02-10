@@ -1,3 +1,4 @@
+local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }
 return {
     {
         "nvim-lualine/lualine.nvim",
@@ -174,8 +175,7 @@ return {
                         },
                         {
                             function()
-                                os.setlocale("C", "time")
-                                return utils.icons.lualine.week .. os.date("%A")
+                                return utils.icons.lualine.week .. days[tonumber(os.date("%w")) + 1]
                             end,
                         },
                         {
