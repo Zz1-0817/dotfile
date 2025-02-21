@@ -181,10 +181,10 @@ M.createAutoBackslashSnippet = function(context, opts)
     local text = "\\" .. context.trig
     if jsregexp_ok then
         context.trigEngine = "ecma"
-        context.trig = "(?<!\\\\)" .. "([a-zA-Z0-9]*_)?" .. "(" .. context.trig .. ")"
-        return autosnippet(context, { f(function (_, snippet)
-            if #snippet.captures[1] >= 1 then
-                return snippet.captures[1] .. "{\\" .. snippet.captures[2] .. "}"
+        context.trig = "(?<!\\\\)" .. "([a-zA-Z0-9]*)(_?)" .. context.trig
+        return autosnippet(context, { f(function(_, snippet)
+            if #snippet.captures[2] > 0 then
+                return snippet.captures[1] .. snippet.captures[2] .. "{" .. text .. "}"
             end
             return text
         end) }, opts)
