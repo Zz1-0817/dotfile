@@ -46,7 +46,7 @@ return {
                 numbers = "none",
                 indicator = { style = 'underline', },
                 diagnostics = "nvim_lsp",
-                diagnostics_indicator = function(count, level, diagnostics_dict, context)
+                diagnostics_indicator = function(count, _, _, context)
                     if not context.buffer:current() then
                         return ''
                     end
@@ -59,17 +59,22 @@ return {
                     delay = 200,
                     reveal = { 'close' }
                 },
-                groups = {
-                    items = {
-                        {
-                            name = "Terms",
-                            auto_close = true,
-                            matcher = function(buf)
-                                return buf.buftype == "terminal"
-                            end
-                        }
-                    }
-                }
+                custom_filter = function (buf_number, _)
+                    if vim.bo[buf_number].buftype ~= "terminal" then
+                        return true
+                    end
+                end
+                -- groups = {
+                --     items = {
+                --         {
+                --             name = "Terms",
+                --             auto_close = true,
+                --             matcher = function(buf)
+                --                 return buf.buftype == "terminal"
+                --             end
+                --         }
+                --     }
+                -- }
             },
         },
     }

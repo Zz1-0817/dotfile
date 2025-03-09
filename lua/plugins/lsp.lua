@@ -21,7 +21,9 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
-                "vue-language-server"
+                "vue-language-server",
+                "omnisharp",
+                "rust-analyzer",
             }
             local mason_registry = require("mason-registry")
             require("mason").setup(utils.config.mason)
@@ -108,12 +110,25 @@ return {
         opts = { preset = "minimal" },
     },
     {
-        "hedyhli/outline.nvim",
-        lazy = true,
-        cmd = { "Outline", "OutlineOpen" },
-        keys = {
-            { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
+        'stevearc/aerial.nvim',
+        opts = {
+            backends = { "treesitter", "lsp", "markdown", "asciidoc", "man" },
+            close_automatic_events = { "unfocus", "switch_buffer", "unsupported" },
+            on_attach = function(bufnr)
+                vim.keymap.set("n", "<leader>o", "<CMD>AerialToggle<CR>", { buffer = bufnr })
+            end,
         },
-        opts = { outline_window = { auto_close = true } },
-    },
+    }
+    -- {
+    --     "hedyhli/outline.nvim",
+    --     event = "VeryLazy",
+    --     config = function()
+    --         require("outline").setup({ outline_window = { auto_close = true } })
+    --         vim.api.nvim_create_autocmd("LspAttach", {
+    --             callback = function(ev)
+    --                 vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle outline", buffer = ev.buf })
+    --             end
+    --         })
+    --     end
+    -- },
 }

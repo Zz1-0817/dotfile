@@ -10,9 +10,11 @@ return {
         },
         config = function(_, options)
             local tex_not_in_math = function()
-                if vim.fn['vimtex#syntax#in_mathzone']() == 1 then
-                    return false
-                end
+                return not utils.external.latex.in_math()
+            end
+
+            local md_not_in_math = function()
+                return not utils.external.markdown.in_math()
             end
 
             local npairs = require("nvim-autopairs")
@@ -35,6 +37,7 @@ return {
             require('nvim-autopairs').remove_rule("'")
             require('nvim-autopairs').remove_rule("(")
             require('nvim-autopairs').remove_rule("[")
+            require('nvim-autopairs').remove_rule("{")
 
             npairs.add_rules {
                 Rule(' ', ' ')
@@ -69,13 +72,16 @@ return {
                     end
                 end),
                 quote("'", "'", "rust"):with_pair(cond.not_before_regex("[%w<&]")):with_pair(cond.not_after_text(">")),
-                bracket("(", ")", { "-tex", "-latex" }),
-                bracket("(", ")", { "tex", "latex" })
-                    :with_pair(tex_not_in_math),
-                bracket("[", "]", { "-tex", "-latex" }),
+                bracket("(", ")", { "-markdown" }),
+                Rule("(", ")", { "markdown" }):with_pair(cond.not_before_text('`')),
+                bracket("{", "}", { "-markdown" }),
+                Rule("{", "}", { "markdown" }),
+                bracket("[", "]", { "-tex", "-latex", "-markdown" }),
                 bracket("[", "]", { "tex", "latex" })
-                    :with_pair(tex_not_in_math),
-                quote("`", "`", { "-tex", "-latex" })
+                    :with_pair(cond.not_before_regex('`')),
+                Rule("[", "]", { "markdown" }):with_pair(cond.not_before_text('`')),
+                quote("`", "`", { "-tex", "-latex", "-markdown" }),
+                quote("`", "`", { "markdown" }):with_pair(md_not_in_math)
             }
         end
     },

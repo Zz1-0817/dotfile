@@ -8,6 +8,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.keymap.set('n', 'grn', vim.lsp.buf.rename, opts)
             vim.keymap.set('n', 'gra', vim.lsp.buf.code_action, opts)
             vim.keymap.set('n', 'grr', vim.lsp.buf.references, opts)
+            vim.keymap.set('n', 'gri', vim.lsp.buf.implementation, opts)
+            vim.keymap.set('n', 'gO', vim.lsp.buf.document_symbol, opts)
             vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, opts)
         end
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -64,16 +66,16 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
     end,
 })
-
-vim.api.nvim_create_autocmd("TermEnter", {
-    pattern = "*",
-    callback = function()
-        local buf = vim.api.nvim_get_current_buf() -- 获取当前缓冲区 ID
-        local buftype = vim.api.nvim_get_option_value("buftype", { buf = buf })
-
-        if buftype == "terminal" then
-            vim.g.last_terminal_buf = buf -- 更新全局变量
-            print("Recorded terminal buffer:", buf)
-        end
-    end,
-})
+--
+-- vim.api.nvim_create_autocmd("TermEnter", {
+--     pattern = "*",
+--     callback = function()
+--         local buf = vim.api.nvim_get_current_buf() -- 获取当前缓冲区 ID
+--         local buftype = vim.api.nvim_get_option_value("buftype", { buf = buf })
+--
+--         if buftype == "terminal" then
+--             vim.g.last_terminal_buf = buf -- 更新全局变量
+--             print("Recorded terminal buffer:", buf)
+--         end
+--     end,
+-- })

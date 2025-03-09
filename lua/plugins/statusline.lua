@@ -81,7 +81,7 @@ return {
                     lualine_c = {
                         {
                             function()
-                                return utils.icons.lualine.separator
+                                return utils.icons.statusline.separator
                             end,
                             padding = { left = 0, right = 1 },
                             color = separator_color
@@ -138,7 +138,7 @@ return {
                                 end
                                 return msg
                             end,
-                            icon = utils.icons.lualine.server,
+                            icon = utils.icons.statusline.server,
                             color = 'WarningMsg'
                         }
 
@@ -175,12 +175,12 @@ return {
                         },
                         {
                             function()
-                                return utils.icons.lualine.week .. days[tonumber(os.date("%w")) + 1]
+                                return utils.icons.statusline.week .. days[tonumber(os.date("%w")) + 1]
                             end,
                         },
                         {
                             function()
-                                return utils.icons.lualine.separator
+                                return utils.icons.statusline.separator
                             end,
                             color = separator_color,
                             padding = { right = 0 }

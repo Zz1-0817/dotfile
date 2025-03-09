@@ -19,7 +19,7 @@ return {
                 enable_autosnippets = true,
             })
 
-            local snippets_path = vim.fn.stdpath('config') .. [[/lua/snippets]]
+            local snippets_path = vim.fn.stdpath('config') .. [[/lua/snippets/languages/]]
             require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
         end
     },
@@ -194,8 +194,13 @@ return {
                 sources = {
                     { name = "luasnip" },
                     { name = "nvim_lsp" },
-                    { name = "buffer" },
-                    { name = "obsidian.nvim" }
+                    {
+                        name = "buffer",
+                        option = {
+                            keyword_pattern = [[[a-zA-Z0-9]\+]]
+                        },
+                        keyword_length = 4
+                    },
                 }
             })
             cmp.setup.filetype("lua", {

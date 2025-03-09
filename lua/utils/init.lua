@@ -2,6 +2,7 @@
 ---@field icons utils.icons
 ---@field functions utils.functions
 ---@field config utils.config
+---@field external utils.external
 local M = {}
 
 setmetatable(M, {

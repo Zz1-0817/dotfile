@@ -14,7 +14,7 @@ keyset('i', "<C-l>", utils.functions.centerCurrentLine, opts)
 keyset('i', "<C-e>", "<End>", opts)
 keyset('i', "<C-a>", "<Home>", opts)
 keyset('i', "<C-y>", '<C-r>"', opts)
-keyset("n", "<leader>w", "<CMD>w<CR>", opts)
+keyset("n", "<leader>w", function() vim.cmd('write') end, opts)
 keyset('i', "<C-space>", " ", opts) -- for gui, avoid touching by mistake
 
 keyset({ 'n', 'o', 'x' }, "<C-a>", "^", opts)
@@ -27,4 +27,4 @@ keyset("n", "<leader>qd", function()
     })
 end, { desc = "populate quickfix with diagnostics" })
 
-keyset("n", "<C-\\>", utils.functions.enterLastTerminal, opts)
+keyset({ 'n', 't' }, "<C-\\>", utils.functions.toggleTerminal, opts)

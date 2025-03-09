@@ -1,6 +1,6 @@
 ---@class utils.icons
 local M = {
-    lualine = {
+    statusline = {
         separator = '█',
         server = ' ',
         week = '󱨴 '
