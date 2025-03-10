@@ -21,8 +21,7 @@ vim.opt.pumblend = 15
 vim.opt.laststatus = 3
 vim.opt.splitkeep = "screen"
 vim.opt.mousemoveevent = true
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldmethod = "indent"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

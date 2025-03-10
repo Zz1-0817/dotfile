@@ -1,4 +1,3 @@
-local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }
 return {
     {
         "nvim-lualine/lualine.nvim",
@@ -10,6 +9,7 @@ return {
         config = function()
             local lualine = require('lualine')
 
+            local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }
             local colors = {
                 bg       = '#202328',
                 fg       = '#bbc2cf',

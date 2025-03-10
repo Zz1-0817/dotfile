@@ -1,7 +1,9 @@
-local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-local capabilities = has_cmp and
-    cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
-    vim.lsp.protocol.make_client_capabilities()
+local genCapabilities = function()
+    local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    return has_cmp and
+        cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
+        vim.lsp.protocol.make_client_capabilities()
+end
 
 return {
     {
@@ -16,7 +18,7 @@ return {
                 "shfmt",
                 "pyright",
                 "ruff",         -- formatter
-                "marksman",
+                -- "marksman",
                 "markdownlint", -- formatter
                 "html-lsp",
                 "css-lsp",
@@ -54,7 +56,7 @@ return {
                 if has_server then
                     if not configs[server_name] then
                         configs[server_name] = server.config
-                        local opts = { capabilities = vim.deepcopy(capabilities) }
+                        local opts = { capabilities = vim.deepcopy(genCapabilities()) }
                         opts = vim.tbl_deep_extend("force", opts, server.options or {})
                         lspconfig[server_name].setup(opts)
                     end
@@ -77,7 +79,7 @@ return {
             require("mason-lspconfig").setup()
             require("mason-lspconfig").setup_handlers({
                 function(server_name)
-                    local opts = { capabilities = vim.deepcopy(capabilities) }
+                    local opts = { capabilities = vim.deepcopy(genCapabilities()) }
                     opts = vim.tbl_deep_extend("force", opts, mason_servers[server_name] or {})
                     require("lspconfig")[server_name].setup(opts)
                 end
@@ -86,7 +88,17 @@ return {
     },
     {
         'stevearc/conform.nvim',
-        event = "LspAttach",
+        event = { "BufWritePre" },
+        cmd = { "ConformInfo" },
+        keys = {
+            {
+                "<leader>f",
+                function()
+                    require("conform").format({ async = true })
+                end,
+                desc = "Format buffer",
+            },
+        },
         opts = {
             formatters_by_ft = {
                 python = function(bufnr)
@@ -105,7 +117,7 @@ return {
     },
     {
         "rachartier/tiny-inline-diagnostic.nvim",
-        event = "VeryLazy",
+        event = "LspAttach",
         priority = 1000,
         opts = { preset = "minimal" },
     },
@@ -119,16 +131,4 @@ return {
             end,
         },
     }
-    -- {
-    --     "hedyhli/outline.nvim",
-    --     event = "VeryLazy",
-    --     config = function()
-    --         require("outline").setup({ outline_window = { auto_close = true } })
-    --         vim.api.nvim_create_autocmd("LspAttach", {
-    --             callback = function(ev)
-    --                 vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle outline", buffer = ev.buf })
-    --             end
-    --         })
-    --     end
-    -- },
 }
