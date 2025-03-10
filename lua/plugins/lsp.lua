@@ -18,7 +18,7 @@ return {
                 "shfmt",
                 "pyright",
                 "ruff",         -- formatter
-                -- "marksman",
+                "marksman",
                 "markdownlint", -- formatter
                 "html-lsp",
                 "css-lsp",

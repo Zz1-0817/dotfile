@@ -22,13 +22,13 @@ local M = {
         ]], { i(0) }),
         { condition = notin_math }
     ),
-    s({ trig = "tt", dscr = "text in math" },
+    s({ trig = "tt", dscr = "text in math", snippetType = "autosnippet" },
         fmta([[
         \text{<>}
         ]], { i(0) }),
         { condition = utils.external.markdown.in_math }
     ),
-    s({ trig = "ff", dscr = "fractional" },
+    s({ trig = "ff", dscr = "fractional", snippetType = "autosnippet" },
         c(1, {
             fmta([[
             \frac{<>}{<>}
@@ -42,6 +42,5 @@ local M = {
 }
 
 vim.list_extend(M, require("snippets.latex").load({ in_math = utils.external.markdown.in_math }))
--- vim.list_extend(M, require("snippets.latex").load())
 
 return M

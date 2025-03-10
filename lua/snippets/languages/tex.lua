@@ -101,7 +101,7 @@ local M = {
         ]], { i(0) }),
         { condition = in_math }
     ),
-    s({ trig = "ivs", wordTrig = false },
+    s({ trig = "ivs", wordTrig = false, snippetType = "autosnippet" },
         { t("^{-1}") },
         { condition = in_math }
     ),

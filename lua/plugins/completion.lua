@@ -1,10 +1,10 @@
 return {
     {
         "L3MON4D3/LuaSnip",
-        lazy = true,
-        build = jit.os == "Windows" and
-            "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
-            or "make install_jsregexp",
+        -- lazy = true,
+        -- build = jit.os == "Windows" and
+        --     "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
+        --     or "make install_jsregexp",
         config = function()
             local ls = require("luasnip")
 
@@ -13,8 +13,8 @@ return {
                 enable_autosnippets = true,
             })
 
-            local snippets_path = vim.fn.stdpath('config') .. [[/lua/snippets/languages/]]
-            require("luasnip.loaders.from_lua").load({ paths = { snippets_path } })
+            ls.add_snippets("tex", require("snippets.languages.tex"))
+            ls.add_snippets("markdown", require("snippets.languages.markdown"))
         end
     },
     {
