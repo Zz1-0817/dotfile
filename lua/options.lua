@@ -22,6 +22,8 @@ vim.opt.laststatus = 3
 vim.opt.splitkeep = "screen"
 vim.opt.mousemoveevent = true
 vim.opt.foldmethod = "indent"
+vim.opt.foldlevel = 64
+vim.o.foldlevelstart = 64
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

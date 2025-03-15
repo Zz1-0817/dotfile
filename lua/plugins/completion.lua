@@ -1,7 +1,7 @@
 return {
     {
         "L3MON4D3/LuaSnip",
-        -- lazy = true,
+        lazy = true,
         -- build = jit.os == "Windows" and
         --     "make install_jsregexp CC=gcc.exe SHELL=sh .SHELLFLAGS=-c"
         --     or "make install_jsregexp",

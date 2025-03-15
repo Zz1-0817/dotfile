@@ -4,8 +4,6 @@ return {
         init = function()
             vim.o.fillchars = [[eob: ,fold: ,foldopen:󰅀,foldsep: ,foldclose:]]
             vim.o.foldcolumn = "1"
-            vim.o.foldlevel = 64
-            vim.o.foldlevelstart = 64
             vim.o.foldenable = true
         end,
         config = function()

@@ -93,11 +93,6 @@ return {
                         { 'location' },
                         { 'progress' },
                         {
-                            'filename',
-                            cond = conditions.buffer_not_empty,
-                            color = { fg = colors.magenta, gui = 'bold' },
-                        },
-                        {
                             'diagnostics',
                             sources = { 'nvim_diagnostic' },
                             symbols = {
@@ -117,30 +112,10 @@ return {
                             end,
                         },
                         {
-                            function()
-                                local msg = 'No Active Lsp'
-                                local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
-                                local latex_files = { "tex", "bib", "cls", "sty" }
-                                for _, name in ipairs(latex_files) do
-                                    if buf_ft == name and vim.g.vimtex_compiler_enabled then
-                                        return "vimtex"
-                                    end
-                                end
-                                local clients = vim.lsp.get_clients()
-                                if next(clients) == nil then
-                                    return msg
-                                end
-                                for _, client in ipairs(clients) do
-                                    local filetypes = client.config.filetypes
-                                    if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                                        return client.name
-                                    end
-                                end
-                                return msg
-                            end,
-                            icon = utils.icons.statusline.server,
-                            color = 'WarningMsg'
-                        }
+                            'filename',
+                            cond = conditions.buffer_not_empty,
+                            color = { fg = colors.magenta, gui = 'bold' },
+                        },
 
                     },
                     lualine_x = {
@@ -153,6 +128,10 @@ return {
                             'fileformat',
                             fmt = string.upper,
                             icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+                        },
+                        {
+                            "lsp_status",
+                            icon = utils.icons.statusline.server,
                         },
                         {
                             'branch',

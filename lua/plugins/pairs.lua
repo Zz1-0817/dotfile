@@ -64,6 +64,10 @@ return {
                     :with_pair(tex_not_in_math)
                     :with_move(function(opts) return opts.char == '$' end)
                     :with_del(cond.done()),
+                Rule("$", "$", { "markdown" })
+                    :with_pair(md_not_in_math)
+                    :with_move(function(opts) return opts.char == '$' end)
+                    :with_del(cond.done()),
                 quote("'", "'", { "-rust", "-nix", "-tex", "-latex", "-python" }):with_pair(cond.not_before_regex("%w")),
                 quote("'", "'", "python"):with_pair(function(opts)
                     local str = require('nvim-autopairs.utils').text_sub_char(opts.line, opts.col - 1, 1)
@@ -72,8 +76,8 @@ return {
                     end
                 end),
                 quote("'", "'", "rust"):with_pair(cond.not_before_regex("[%w<&]")):with_pair(cond.not_after_text(">")),
-                bracket("(", ")", { "-markdown" }),
-                Rule("(", ")", { "markdown" }):with_pair(cond.not_before_text('`')),
+                bracket("(", ")" ),
+                -- Rule("(", ")", { "markdown" }):with_pair(cond.not_before_text('`')),
                 bracket("{", "}", { "-markdown" }),
                 Rule("{", "}", { "markdown" }),
                 bracket("[", "]", { "-tex", "-latex", "-markdown" }),
