@@ -64,17 +64,6 @@ return {
                         return true
                     end
                 end
-                -- groups = {
-                --     items = {
-                --         {
-                --             name = "Terms",
-                --             auto_close = true,
-                --             matcher = function(buf)
-                --                 return buf.buftype == "terminal"
-                --             end
-                --         }
-                --     }
-                -- }
             },
         },
     }

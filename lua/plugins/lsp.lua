@@ -25,6 +25,7 @@ return {
                 "typescript-language-server",
                 "vue-language-server",
                 "omnisharp",
+                "gopls",
                 "rust-analyzer",
             }
             local mason_registry = require("mason-registry")
@@ -117,7 +118,7 @@ return {
     },
     {
         "rachartier/tiny-inline-diagnostic.nvim",
-        event = "LspAttach",
+        event = "VeryLazy", -- event "LspAttach" works wierd.
         priority = 1000,
         opts = { preset = "minimal" },
     },

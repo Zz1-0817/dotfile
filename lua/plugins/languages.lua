@@ -17,7 +17,10 @@ return {
                 "Package tcolorbox Warning: Using nobreak failed",
                 "Empty bibliography",
                 "You have requested",
-                "Overfull"
+                "Overfull",
+                "Underfull",
+                "Package unicode-math",
+                "Some font shapes were not available"
             }
             vim.g.vimtex_imaps_enabled = false
             vim.g.vimtex_fold_enabled = true

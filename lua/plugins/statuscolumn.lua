@@ -1,6 +1,7 @@
 return {
     {
         "luukvbaal/statuscol.nvim",
+        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
         init = function()
             vim.o.fillchars = [[eob: ,fold: ,foldopen:󰅀,foldsep: ,foldclose:]]
             vim.o.foldcolumn = "1"
