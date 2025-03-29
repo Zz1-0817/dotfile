@@ -6,10 +6,10 @@ keyset('i', "<C-b>", "<left>", opts)
 keyset('i', "<C-n>", "<down>", opts)
 keyset('i', "<C-p>", "<up>", opts)
 
-keyset('i', "<M-f>", function() utils.functions.moveSingleWord(true) end, opts)
-keyset('i', "<M-b>", function() utils.functions.moveSingleWord(false) end, opts)
+keyset('i', "<M-f>", function() utils.keybinds.moveSingleWord(true) end, opts)
+keyset('i', "<M-b>", function() utils.keybinds.moveSingleWord(false) end, opts)
 
-keyset('i', "<C-l>", utils.functions.centerCurrentLine, opts)
+keyset('i', "<C-l>", utils.keybinds.centerCurrentLine, opts)
 
 keyset('i', "<C-e>", "<End>", opts)
 keyset('i', "<C-a>", "<Home>", opts)
@@ -27,4 +27,4 @@ keyset("n", "<leader>qf", function()
     })
 end, { desc = "populate quickfix with diagnostics" })
 
-keyset({ 'n', 't' }, "<C-\\>", utils.functions.toggleTerminal, opts)
+keyset({ 'n', 't' }, "<C-\\>", utils.keybinds.toggleTerminal, opts)
