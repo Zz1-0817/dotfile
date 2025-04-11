@@ -12,7 +12,7 @@ keyset('i', "<M-b>", function() utils.keybinds.moveSingleWord(false) end, opts)
 keyset('i', "<C-l>", utils.keybinds.centerCurrentLine, opts)
 
 keyset('i', "<C-e>", "<End>", opts)
-keyset('i', "<C-a>", "<Home>", opts)
+keyset('i', "<C-a>", utils.keybinds.goLineBegin, opts)
 keyset('i', "<C-y>", '<C-r>"', opts)
 keyset("n", "<leader>w", function() vim.cmd('write') end, opts)
 keyset('i', "<C-space>", " ", opts) -- for gui, avoid touching by mistake

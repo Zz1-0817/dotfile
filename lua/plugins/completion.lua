@@ -181,13 +181,6 @@ return {
                 sources = {
                     { name = "omni",    trigger_characters = { "{", "\\" } },
                     { name = "luasnip", keyword_length = 2 },
-                    {
-                        name = "buffer",
-                        option = {
-                            keyword_pattern = [[[a-zA-Z0-9]\+]]
-                        },
-                        keyword_length = 4
-                    },
                 }
             })
             cmp.setup.filetype("markdown", {

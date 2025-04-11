@@ -1,5 +1,5 @@
 return {
-    { "jannis-baum/vivify.vim" },
+    { "jannis-baum/vivify.vim", cond = vim.fn.executable('viv'), },
     {
         "lervag/vimtex",
         init = function()

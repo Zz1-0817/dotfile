@@ -9,7 +9,6 @@ return {
         config = function()
             local lualine = require('lualine')
 
-            local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }
             local colors = {
                 bg       = '#202328',
                 fg       = '#bbc2cf',
@@ -120,20 +119,6 @@ return {
                     },
                     lualine_x = {
                         {
-                            'o:encoding',       -- option component same as &encoding in viml
-                            fmt = string.upper, -- I'm not sure why it's upper case either ;)
-                            cond = conditions.hide_in_width,
-                        },
-                        {
-                            'fileformat',
-                            fmt = string.upper,
-                            icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-                        },
-                        {
-                            "lsp_status",
-                            icon = utils.icons.statusline.server,
-                        },
-                        {
                             'branch',
                             icon = utils.icons.git.branch,
                             color = { fg = colors.violet, gui = 'bold' },
@@ -153,7 +138,23 @@ return {
                             cond = conditions.hide_in_width,
                         },
                         {
+                            "lsp_status",
+                            icon = utils.icons.statusline.server,
+                        },
+                        {
+                            'o:encoding',       -- option component same as &encoding in viml
+                            fmt = string.upper, -- I'm not sure why it's upper case either ;)
+                            cond = conditions.hide_in_width,
+                        },
+                        {
+                            'fileformat',
+                            fmt = string.upper,
+                            icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+                        },
+                        {
                             function()
+                                local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+                                    "Saturday" }
                                 return utils.icons.statusline.week .. days[tonumber(os.date("%w")) + 1]
                             end,
                         },
