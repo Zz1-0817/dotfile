@@ -13,7 +13,8 @@ return {
                 ensure_installed = { "c", "lua", "vim", "query", "bash", "c", "diff",
                     "html", "javascript", "jsdoc", "json", "jsonc", "lua", "luadoc",
                     "luap", "markdown", "markdown_inline", "python", "query", "regex",
-                    "toml", "tsx", "typescript", "vim", "vimdoc", "xml", "yaml", },
+                    "rust", "toml", "tsx", "typescript", "vim", "vimdoc", "xml", "yaml",
+                },
                 ignore_install = {},
                 highlight = {
                     enable = true,

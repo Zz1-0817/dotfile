@@ -12,7 +12,6 @@ return {
         build = ":MasonUpdate",
         config = function()
             local ensure_installed = {
-                "black", -- formatter
                 "lua-language-server",
                 "clangd",
                 "shfmt",
@@ -23,8 +22,6 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
-                "vue-language-server",
-                "omnisharp",
                 "gopls",
                 "rust-analyzer",
             }
