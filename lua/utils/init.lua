@@ -1,7 +1,6 @@
 ---@class utils utils core
 ---@field icons utils.icons
 ---@field keybinds utils.keybinds
----@field config utils.config
 ---@field external utils.external
 local M = {}
 

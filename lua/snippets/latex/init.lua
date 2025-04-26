@@ -9,7 +9,6 @@ local fmta = require("luasnip.extras.fmt").fmta
 local make_condition = require("luasnip.extras.conditions").make_condition
 local postfix = require("luasnip.extras.postfix").postfix
 local commands = require("snippets.latex.commands")
-local conditions = require("snippets.latex.conditions")
 
 local getPostfixDynamicNode = function(_, parent, _, user_arg1, user_arg2)
     local capture = parent.snippet.env.POSTFIX_MATCH
@@ -51,45 +50,65 @@ local M = {
         config = vim.tbl_extend("force", default, config or {})
         local latex_specs = {}
         local in_math = nil
+
+
+        local text_snippet_condition = make_condition(function(_, _, captures)
+            if (#captures[2] > 0) or (#captures[1] == 0) then
+                return true
+            end
+            return false
+        end)
+
+        local text_snippet_format = function(context, opts, command)
+            context.trigEngine = "pattern"
+            context.trig = "([%w\\]*)(_?)" .. context.trig
+
+            opts.condition = in_math and in_math * text_snippet_condition or text_snippet_condition
+            return f(function(_, snippet)
+                if #snippet.captures[2] > 0 then
+                    return snippet.captures[1] .. snippet.captures[2] .. "{" .. command .. "}"
+                else
+                    return command
+                end
+            end)
+        end
+
         if config.in_math then
             in_math = make_condition(config.in_math)
         end
+
         if config.autobackslash then
             for _, spec in ipairs(commands.autobackslash) do
                 local context = vim.deepcopy(spec.context)
                 local opts = { condition = in_math }
-                context.trigEngine = "pattern"
                 context.snippetType = "autosnippet"
-                context.trig = "([%w\\]*)(_?)" .. context.trig
-                if in_math then
-                    opts.condition = opts.condition * conditions.valid_prefix_backslash
-                else
-                    opts.condition = conditions.valid_prefix_backslash
-                end
                 table.insert(
                     latex_specs,
-                    s(context, f(function(_, snippet)
-                        if #snippet.captures[2] > 0 then
-                            return snippet.captures[1] .. snippet.captures[2] .. "{" .. spec.command .. "}"
-                        else
-                            return spec.command
-                        end
-                    end), opts)
+                    s(context, text_snippet_format(context, opts, spec.command), opts)
                 )
             end
         end
+
         if config.imap then
             for _, spec in ipairs(commands.imap) do
                 local context = vim.deepcopy(spec.context)
                 local opts = { condition = in_math }
-                context.wordTrig = false
                 context.snippetType = "autosnippet"
-                table.insert(
-                    latex_specs,
-                    s(context, t(spec.command), opts)
-                )
+                if context.trigEngine == "plain" then
+                    context.wordTrig = false
+                    table.insert(
+                        latex_specs,
+                        s(context, t(spec.command), opts)
+                    )
+                else
+                    table.insert(
+                        latex_specs,
+                        s(context, text_snippet_format(context, opts, spec.command), opts)
+                    )
+                end
             end
         end
+
         if config.symbol then
             for _, spec in ipairs(commands.symbol) do
                 local context = vim.deepcopy(spec.context)
@@ -97,21 +116,19 @@ local M = {
                 context.snippetType = "autosnippet"
                 if context.trigEngine == "plain" then
                     context.wordTrig = false
+                    table.insert(
+                        latex_specs,
+                        s(context, t(spec.command), opts)
+                    )
                 else
-                    context.trigEngine = "pattern"
-                    context.trig = "([\\]?)" .. context.trig
+                    table.insert(
+                        latex_specs,
+                        s(context, text_snippet_format(context, opts, spec.command), opts)
+                    )
                 end
-                if in_math and context.trigEngine == "pattern" then
-                    opts.condition = opts.condition * conditions.not_prefix_backslash
-                elseif context.trigEngine == "pattern" then
-                    opts.condition = conditions.not_prefix_backslash
-                end
-                table.insert(
-                    latex_specs,
-                    s(context, t(spec.command), opts)
-                )
             end
         end
+
         if config.postfixmath then
             for _, spec in ipairs(commands.postfixmath) do
                 local context = vim.deepcopy(spec.context)
@@ -125,6 +142,7 @@ local M = {
                 )
             end
         end
+
         if config.bracket then
             local context = {
                 trig = "lr([abpvBV])",
@@ -155,6 +173,7 @@ local M = {
                     end), }), opts)
             )
         end
+
         if config.cases then
             local context = {
                 trig = "(%d?)cases",

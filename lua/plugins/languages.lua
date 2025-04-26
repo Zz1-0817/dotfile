@@ -28,6 +28,13 @@ return {
             vim.g.vimtex_mappings_disable = {
                 i = { "]]" }
             }
+            -- vim.g.vimtex_env_toggle_math_map = {
+            --     equation =  "\\(",
+            --     ['$'] =  '\\(',
+            --     ['$$'] =  '\\[',
+            --     ['\\['] =  "equation",
+            --     ['\\('] =  "\\["
+            -- }
         end,
     },
     {

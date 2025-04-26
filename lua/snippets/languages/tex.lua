@@ -73,7 +73,7 @@ local M = {
         fmta([[
         \item
         ]], {}),
-        { condition = in_enum }
+        { condition = in_enum * line_begin }
     ),
     s({ trig = "ll", dscr = "label", snippetType = "autosnippet" },
         fmta([[
@@ -353,8 +353,24 @@ for _, spec in ipairs(thms) do
               <>
             \end{<>}
             ]],
-                    { t(context.name), f(function(args) return args[1][1] == '' and '' or '[' end, { 1 }),
-                        i(1), f(function(args) return args[1][1] == '' and '' or ']' end, { 1 }),
+                    { t(context.name), f(function(args)
+                            if #args[1][1] > 0 and
+                                string.sub(args[1][1], 1, 1) ~= '[' and
+                                string.sub(args[1][1], #args[1][1]) ~= ']' then
+                                return '['
+                            end
+                            return ''
+                        end,
+                        { 1 }),
+                        i(1), f(function(args)
+                        if #args[1][1] > 0 and
+                            string.sub(args[1][1], 1, 1) ~= '[' and
+                            string.sub(args[1][1], #args[1][1]) ~= ']' then
+                            return ']'
+                        end
+                        return ''
+                    end
+                    , { 1 }),
                         i(0), t(context.name) }
                 ),
                 { condition = notin_thm }

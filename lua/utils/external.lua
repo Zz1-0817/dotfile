@@ -5,6 +5,9 @@ local M = {
             local row, col = unpack(vim.api.nvim_win_get_cursor(0))
             row = row - 1
             local parser = vim.treesitter.get_parser()
+            if not parser then
+                return false
+            end
             local mkinl = parser:children()["markdown_inline"]
             if not mkinl then
                 return false
@@ -24,7 +27,7 @@ local M = {
         end
     },
     latex = {
-        in_math = function ()
+        in_math = function()
             return vim.fn['vimtex#syntax#in_mathzone']() == 1
         end
     }
