@@ -23,10 +23,10 @@ local env_types = {
     }
 }
 
-local in_math = make_condition(utils.external.latex.in_math)
+local in_math = make_condition(utils.markup.in_math)
 
 local notin_math = make_condition(function()
-    return not utils.external.latex.in_math()
+    return not utils.markup.in_math()
 end)
 
 local function in_type(envs)
@@ -435,6 +435,6 @@ for _, spec in ipairs(enums) do
     )
 end
 
-vim.list_extend(M, require("snippets.latex").load({ in_math = utils.external.latex.in_math }))
+vim.list_extend(M, require("snippets.latex").load({ in_math = utils.markup.in_math }))
 
 return M

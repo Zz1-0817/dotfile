@@ -14,15 +14,15 @@ local getPostfixDynamicNode = function(_, parent, _, user_arg1, user_arg2)
     local capture = parent.snippet.env.POSTFIX_MATCH
     if #capture > 0 then
         return sn(nil, fmta([[
-        <><><><>
+        <><><>
         ]],
-            { t(user_arg1), t(capture), t(user_arg2), i(0) }))
+            { t(user_arg1), t(capture), t(user_arg2) }))
     else
         local visual_placeholder = parent.snippet.env.SELECT_RAW
         return sn(nil, fmta([[
-        <><><><>
+        <><><>
         ]],
-            { t(user_arg1), i(1, visual_placeholder), t(user_arg2), i(0) }))
+            { t(user_arg1), i(1, visual_placeholder), t(user_arg2) }))
     end
 end
 

@@ -59,11 +59,6 @@ return {
                     delay = 200,
                     reveal = { 'close' }
                 },
-                custom_filter = function (buf_number, _)
-                    if vim.bo[buf_number].buftype ~= "terminal" then
-                        return true
-                    end
-                end
             },
         },
     }

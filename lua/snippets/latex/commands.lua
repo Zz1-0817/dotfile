@@ -80,9 +80,9 @@ M.imap = {
     { context = { trig = '`8', name = "infty", trigEngine = "plain" },      command = [[\infty]] },
     { context = { trig = '`.', name = "cdot", trigEngine = "plain" },       command = [[\cdot]] },
     -- { context = { trig = '`(', name = "subset", trigEngine = "plain" },     command = [[\subseteq]] },
-    { context = { trig = '`)', name = "supset", trigEngine = "plain" },     command = [[\supseteq]] },
-    { context = { trig = '`[', name = "subseteq", trigEngine = "plain" },   command = [[\subseteq]] },
-    { context = { trig = '`]', name = "supseteq", trigEngine = "plain" },   command = [[\supseteq]] },
+    -- { context = { trig = '`)', name = "supset", trigEngine = "plain" },     command = [[\supseteq]] },
+    { context = { trig = '`[', name = "subset", trigEngine = "plain" },     command = [[\subset]] },
+    { context = { trig = '`]', name = "supset", trigEngine = "plain" },     command = [[\supset]] },
     { context = { trig = '`=', name = "equiv", trigEngine = "plain" },      command = [[\equiv]] },
 }
 

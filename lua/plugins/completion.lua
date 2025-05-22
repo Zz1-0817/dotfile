@@ -15,6 +15,7 @@ return {
 
             ls.add_snippets("tex", require("snippets.languages.tex"))
             ls.add_snippets("markdown", require("snippets.languages.markdown"))
+            ls.add_snippets("typst", require("snippets.languages.typst"))
         end
     },
     {
@@ -168,13 +169,13 @@ return {
                     { name = "buffer" },
                     { name = "path" },
                 },
-                experimental = {
-                    ghost_text = { hl_group = "CmpGhostText", }
-                }
+                -- experimental = {
+                --     ghost_text = { hl_group = "CmpGhostText", }
+                -- }
             }
         end,
         config = function(_, opts)
-            vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+            -- vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
             local cmp = require("cmp")
             cmp.setup(opts)
             cmp.setup.filetype({ "tex", "bib", "sty", "cls" }, {

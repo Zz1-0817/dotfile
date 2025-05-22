@@ -1,10 +1,3 @@
-local get_capabilities = function()
-    local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-    return has_cmp and
-        cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities()) or
-        vim.lsp.protocol.make_client_capabilities()
-end
-
 return {
     {
         "williamboman/mason.nvim",
@@ -21,8 +14,9 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
-                "gopls",
+                -- "gopls",
                 "rust-analyzer",
+                "tinymist"
             }
             require("mason").setup()
             local mason_registry = require("mason-registry")
@@ -47,18 +41,33 @@ return {
         dependencies = {
             "williamboman/mason.nvim",
             "neovim/nvim-lspconfig",
+            "hrsh7th/cmp-nvim-lsp",
         },
-        config = function()
-            local mason_servers = {}
-
-            require("mason-lspconfig").setup()
-            require("mason-lspconfig").setup_handlers({
-                function(server_name)
-                    local opts = { capabilities = vim.deepcopy(get_capabilities()) }
-                    opts = vim.tbl_deep_extend("force", opts, mason_servers[server_name] or {})
-                    require("lspconfig")[server_name].setup(opts)
-                end
+        opts = {},
+        config = function(_, opts)
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            vim.lsp.config('*', {
+                capabilities = capabilities
             })
+            vim.lsp.config("tinymist", {
+                on_attach = function(client, bufnr)
+                    vim.keymap.set("n", "<leader>tp", function()
+                        client:exec_cmd({
+                            title = "pin",
+                            command = "tinymist.pinMain",
+                            arguments = { vim.api.nvim_buf_get_name(0) },
+                        }, { bufnr = bufnr })
+                    end, { desc = "[T]inymist [P]in", noremap = true })
+                    vim.keymap.set("n", "<leader>tu", function()
+                        client:exec_cmd({
+                            title = "unpin",
+                            command = "tinymist.pinMain",
+                            arguments = { vim.v.null },
+                        }, { bufnr = bufnr })
+                    end, { desc = "[T]inymist [U]npin", noremap = true })
+                end,
+            })
+            require("mason-lspconfig").setup(opts)
         end
     },
     {

@@ -2,6 +2,7 @@ return {
     { "jannis-baum/vivify.vim", cond = vim.fn.executable('viv'), },
     {
         "lervag/vimtex",
+        lazy = false,
         init = function()
             if jit.os ~= 'Windows' then
                 vim.g.vimtex_view_method = 'zathura'
@@ -28,13 +29,6 @@ return {
             vim.g.vimtex_mappings_disable = {
                 i = { "]]" }
             }
-            -- vim.g.vimtex_env_toggle_math_map = {
-            --     equation =  "\\(",
-            --     ['$'] =  '\\(',
-            --     ['$$'] =  '\\[',
-            --     ['\\['] =  "equation",
-            --     ['\\('] =  "\\["
-            -- }
         end,
     },
     {
@@ -46,4 +40,15 @@ return {
             },
         },
     },
+    {
+        'chomosuke/typst-preview.nvim',
+        ft = 'typst',
+        version = '1.*',
+        opts = {
+            dependencies_bin = {
+                ['tinymist'] = 'tinymist',
+                ['websocat'] = '/home/zz1au/.cargo/bin/websocat'
+            }
+        },
+    }
 }

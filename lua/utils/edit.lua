@@ -1,17 +1,17 @@
----@class utils.keybinds
+---@class utils.edit
 local M = {}
 
 -- `zz' in normal mode
-function M.centerCurrentLine()
+function M.center()
     local win = vim.api.nvim_get_current_win()
     local row, column = unpack(vim.api.nvim_win_get_cursor(win))
-    vim.api.nvim_command("normal! zz")
+    vim.cmd("normal! zz")
     vim.api.nvim_win_set_cursor(win, { row, column })
 end
 
 ---Move cursor to the position before next pattern
 ---@param direction boolean true for forward search, vice versa.
-function M.moveSingleWord(direction, ptn)
+function M.next_ptn(direction, ptn)
     if not ptn then
         ptn = "[%s%p]+"
     end
@@ -72,7 +72,7 @@ function M.moveSingleWord(direction, ptn)
     vim.api.nvim_win_set_cursor(win, { row, pos })
 end
 
-function M.goLineBegin()
+function M.begin()
     local win = vim.api.nvim_get_current_win()
     local row = unpack(vim.api.nvim_win_get_cursor(win))
     local line = vim.fn.getline(row)
@@ -81,32 +81,6 @@ function M.goLineBegin()
         vim.api.nvim_win_set_cursor(win, { row, pos - 1 })
     else
         vim.api.nvim_win_set_cursor(win, { row, 0 })
-    end
-end
-
-function M.toggleTerminal()
-    if vim.g.last_terminal_buf and vim.api.nvim_buf_is_valid(vim.g.last_terminal_buf) then
-        local windows = vim.api.nvim_list_wins()
-        local flag = false
-        for _, win in ipairs(windows) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            if buf == vim.g.last_terminal_buf then
-                flag = true
-                vim.api.nvim_win_close(win, false)
-            end
-        end
-        if not flag then
-            vim.api.nvim_open_win(vim.g.last_terminal_buf, true, { split = "below" })
-        end
-    else
-        vim.api.nvim_open_win(0, true, { split = "below" })
-        vim.cmd.terminal()
-        local buf = vim.api.nvim_get_current_buf()
-        local buftype = vim.api.nvim_get_option_value("buftype", { buf = buf })
-        if buftype == "terminal" then
-            vim.g.last_terminal_buf = buf
-        end
-        vim.cmd.startinsert()
     end
 end
 

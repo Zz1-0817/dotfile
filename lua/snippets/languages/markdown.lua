@@ -4,7 +4,7 @@ local f = require("luasnip").function_node
 local i = require("luasnip").insert_node
 local fmta = require("luasnip.extras.fmt").fmta
 local notin_math = function()
-    return not utils.external.markdown.in_math()
+    return not utils.markup.in_math()
 end
 local M = {
     s({ trig = "jj", dscr = "inline math", snippetType = "autosnippet" },
@@ -26,7 +26,7 @@ local M = {
         fmta([[
         \text{<>}
         ]], { i(0) }),
-        { condition = utils.external.markdown.in_math }
+        { condition = utils.markup.in_math }
     ),
     s({ trig = "ff", dscr = "fractional", snippetType = "autosnippet" },
         c(1, {
@@ -37,10 +37,10 @@ local M = {
             \frac{\partial <>}{\partial <>}
             ]], { i(1), i(2) })
         }),
-        { condition = utils.external.markdown.in_math }
+        { condition = utils.markup.in_math }
     )
 }
 
-vim.list_extend(M, require("snippets.latex").load({ in_math = utils.external.markdown.in_math }))
+vim.list_extend(M, require("snippets.latex").load({ in_math = utils.markup.in_math }))
 
 return M

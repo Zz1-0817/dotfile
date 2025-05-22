@@ -1,7 +1,8 @@
 ---@class utils utils core
 ---@field icons utils.icons
----@field keybinds utils.keybinds
----@field external utils.external
+---@field edit utils.edit
+---@field markup utils.markup
+---@field panel utils.panel
 local M = {}
 
 setmetatable(M, {
