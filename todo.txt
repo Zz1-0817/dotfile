@@ -1,0 +1,81 @@
+1. 重写判断是否处于数学模式的函数
+    可能会用到的函数 `vim.fn.trim`, 需要考虑的情形包括:
+    1.
+        ...
+        $$
+            |
+        $$
+        ...
+    2.
+        $$
+            ...
+        $$
+            |
+        $$
+            ...
+        $$
+    3. $$|$$
+    4. $...$|$...$
+    (不处理这种奇怪的写法, 因为这种写法过不了LaTeX编译)
+        ...
+        $$
+
+            |
+        $$
+        ...
+    上一个latex block, 下一个latex block节点位置
+    _重写结果_: 第 3 种没写, 越写感觉要写的东西越多, 感觉不是用户层该做的事情, 就这样差不多够用了
+    ..... 我发现别人写的markdown语法解析插件已经把这些都实现了, 白忙活一天 :(
+    这是我之前写的, 现在用别人的语法插件了
+            local parser = vim.treesitter.get_parser()
+            if not parser then
+                vim.notify("Markdown treesitter parser can't be found!", vim.log.levels.INFO)
+                return false
+            end
+
+            local mkinl = parser:children()["markdown_inline"]
+            if not mkinl then
+                vim.notify("Treesitter 'markdown_inline' can't be found!", vim.log.levels.INFO)
+                return false
+            end
+
+            local in_latex_block = function (i, j)
+                if mkinl:contains({ i, j, i, j }) then
+                    local node = mkinl:named_node_for_range({ i, j, i, j })
+                    if node and node:type() and string.find(node:type(), "latex") then
+                        vim.print(node:type())
+                        return true
+                    end
+                end
+                return false
+            end
+
+            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+            if in_latex_block(row - 1, col) then
+                return true
+            end
+
+            local line = vim.fn.getline(row)
+            if string.sub(line, col, col + 1) == '$$' then
+                return true
+            end
+
+            if row == 0 or row == vim.api.nvim_buf_line_count(0) then
+                return false
+            end
+
+            local previous_line, next_line = vim.fn.getline(row - 1), vim.fn.getline(row + 1)
+            local previous_dollar, next_dollar  = previous_line:reverse():find('$'), next_line:find('$')
+            if previous_dollar == nil or next_dollar == nil then
+                return false
+            end
+
+            previous_dollar = #previous_line - previous_dollar  + 1
+            if not in_latex_block(row - 2, previous_dollar) and not in_latex_block(row, next_dollar) then
+                return true
+            end
+
+            return false
+2. 写一个判断 html tag 的函数, 利用 treesitter
+3. 写 emmet 的 snippet
+4. 简单化 neovim 终端和 quickfix 的管理

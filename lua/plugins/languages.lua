@@ -3,6 +3,7 @@ return {
     {
         "lervag/vimtex",
         lazy = false,
+        tag = "v2.16",
         init = function()
             if jit.os ~= 'Windows' then
                 vim.g.vimtex_view_method = 'zathura'

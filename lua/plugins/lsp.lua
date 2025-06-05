@@ -108,7 +108,7 @@ return {
     {
         'stevearc/aerial.nvim',
         opts = {
-            backends = { "treesitter", "lsp", "markdown", "asciidoc", "man" },
+            backends = { "lsp", "treesitter", "markdown", "asciidoc", "man" },
             close_automatic_events = { "unfocus", "switch_buffer", "unsupported" },
             on_attach = function(bufnr)
                 vim.keymap.set("n", "<leader>o", "<CMD>AerialToggle<CR>", { buffer = bufnr })
