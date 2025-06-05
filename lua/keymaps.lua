@@ -20,13 +20,5 @@ keyset('i', "<C-space>", " ", opts) -- for gui, avoid touching by mistake
 keyset({ 'n', 'o', 'x' }, "<C-a>", "^", opts)
 keyset({ 'n', 'o', 'x' }, "<C-e>", "$", opts)
 
-
--- keyset("n", "<leader>qf", function()
---     vim.diagnostic.setqflist({
---         open = true,
---         title = "ijdasidjisadji",
---     })
--- end, { desc = "populate quickfix with diagnostics" })
-
 keyset({ 'n' }, "<C-_>", function() utils.panel.quickfix.create() end, opts)
 keyset({ 'n', 't' }, "<C-\\>", function () utils.panel.terminal:toggle() end, opts)

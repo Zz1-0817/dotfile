@@ -42,14 +42,11 @@ return {
                         return vim.tbl_contains(spacing.dels, context)
                     end),
                 Rule("$", "$", { "tex", "latex", "markdown", "typst" })
-                    :with_pair(function()
+                    :with_pair(function(opts)
                         return not utils.markup.in_math()
                     end)
                     :with_move(function(opts) return opts.char == '$' end)
                     :with_del(cond.done()),
-                -- Rule("$", "$", { "typst" })
-                --     :with_move(function(opts) return opts.char == '$' end)
-                --     :with_del(cond.done()),
                 quote("'", "'", { "-rust", "-nix", "-tex", "-latex", "-python" }):with_pair(cond.not_before_regex("%w")),
                 quote("'", "'", "python"):with_pair(function(opts)
                     local str = require('nvim-autopairs.utils').text_sub_char(opts.line, opts.col - 1, 1)

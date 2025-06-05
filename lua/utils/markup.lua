@@ -10,32 +10,13 @@ local M = {
                 return false
             end
         elseif ft == "markdown" then
-            local parser = vim.treesitter.get_parser()
-            if not parser then
-                vim.notify("Markdown treesitter parser can't be found!", vim.log.levels.INFO)
-                return false
+            if string.find(vim.o["runtimepath"], "vim-markdown", 0, true) then
+                local syn_ids = vim.fn.synstack(vim.fn.line("."), vim.fn.col("."))
+                local syn_names = vim.tbl_map(function(id)
+                    return vim.fn.synIDattr(id, "name")
+                end, syn_ids)
+                return table.concat(syn_names, ""):find("Math")
             end
-
-            local mkinl = parser:children()["markdown_inline"]
-            if not mkinl then
-                vim.notify("Treesitter 'markdown_inline' can't be found!", vim.log.levels.INFO)
-                return false
-            end
-
-            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-            row = row - 1
-
-            if mkinl:contains({ row, col, row, col }) then
-                local node = mkinl:named_node_for_range({ row, col, row, col })
-                if not node then
-                    return false
-                end
-                local node_type = node:type()
-                if node_type and string.find(node_type, "latex") then
-                    return true
-                end
-            end
-            return false
         end
         return false
     end

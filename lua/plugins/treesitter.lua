@@ -9,16 +9,17 @@ return {
         dependencies = {
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
+        main = 'nvim-treesitter.configs',
         opts = {
-            ensure_installed = { "c", "lua", "vim", "query", "bash", "c", "diff",
+            ensure_installed = { "c", "css", "lua", "vim", "query", "bash", "c", "diff",
                 "html", "javascript", "jsdoc", "json", "jsonc", "lua", "luadoc",
-                "luap", "markdown", "markdown_inline", "python", "query", "regex",
-                "rust", "toml", "tsx", "typescript", "typst", "vim", "vimdoc", "xml", "yaml",
+                "luap", "python", "query", "regex", "rust", "toml", "tsx",
+                "typescript", "typst", "vim", "vimdoc", "xml", "yaml",
             },
             ignore_install = {},
             highlight = {
                 enable = true,
-                disable = { "latex" }
+                disable = { "latex", "markdown", "markdown_inline" }
             },
             incremental_selection = { enable = false },
             textobjects = {

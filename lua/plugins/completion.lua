@@ -13,9 +13,9 @@ return {
                 enable_autosnippets = true,
             })
 
-            luasnip.add_snippets("tex", require("snippets.languages.tex"))
-            luasnip.add_snippets("markdown", require("snippets.languages.markdown"))
-            luasnip.add_snippets("typst", require("snippets.languages.typst"))
+            luasnip.add_snippets("tex", require("snippets.tex"))
+            luasnip.add_snippets("markdown", require("snippets.markdown"))
+            luasnip.add_snippets("typst", require("snippets.typst"))
             -- https://github.com/L3MON4D3/LuaSnip/issues/656
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
@@ -209,7 +209,7 @@ return {
                     },
                 }
             })
-            cmp.setup.filetype("tyspt", {
+            cmp.setup.filetype("typst", {
                 sources = {
                     { name = "nvim_lsp" },
                     { name = "luasnip" },

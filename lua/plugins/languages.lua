@@ -3,7 +3,6 @@ return {
     {
         "lervag/vimtex",
         lazy = false,
-        tag = "v2.16",
         init = function()
             if jit.os ~= 'Windows' then
                 vim.g.vimtex_view_method = 'zathura'
@@ -51,5 +50,17 @@ return {
                 ['websocat'] = '/home/zz1au/.cargo/bin/websocat'
             }
         },
+    },
+    {
+        'barrett-ruth/live-server.nvim',
+        build = 'pnpm add -g live-server',
+        cmd = { 'LiveServerStart', 'LiveServerStop' },
+        config = true
+    },
+    {
+        'preservim/vim-markdown',
+        init = function()
+            vim.g.vim_markdown_math = 1
+        end
     }
 }

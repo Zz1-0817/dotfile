@@ -14,7 +14,7 @@ return {
                 "html-lsp",
                 "css-lsp",
                 "typescript-language-server",
-                -- "gopls",
+                "vue-language-server",
                 "rust-analyzer",
                 "tinymist"
             }
@@ -49,6 +49,14 @@ return {
             vim.lsp.config('*', {
                 capabilities = capabilities
             })
+            vim.lsp.config("html", {
+                init_options = {
+                    embeddedLanguages = {
+                        css = true,
+                        javascript = true
+                    },
+                }
+            })
             vim.lsp.config("tinymist", {
                 on_attach = function(client, bufnr)
                     vim.keymap.set("n", "<leader>tp", function()
@@ -74,6 +82,7 @@ return {
         'stevearc/conform.nvim',
         event = { "BufWritePre" },
         cmd = { "ConformInfo" },
+
         keys = {
             {
                 "<leader>f",
