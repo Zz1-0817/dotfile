@@ -1,28 +1,30 @@
+local servers = {
+    ["lua-language-server"] = "lua_ls",
+    ["clangd"] = "clangd",
+    ["shfmt"] = "shfmt",
+    ["pyright"] = "pyright",
+    ["ruff"] = "ruff",
+    ["marksman"] = "marksman",
+    ["markdownlint"] = "markdownlint",
+    ["html-lsp"] = "html",
+    ["css-lsp"] = "cssls",
+    ["typescript-language-server"] = "ts_ls",
+    ["vue-language-server"] = "vue_ls",
+    ["rust-analyzer"] = "rust_analyzer",
+    ["tinymist"] = "tinymist"
+}
+
+
 return {
     {
         "williamboman/mason.nvim",
         cmd = "Mason",
         config = function()
-            local ensure_installed = {
-                "lua-language-server",
-                "clangd",
-                "shfmt",
-                "pyright",
-                "ruff",         -- formatter
-                "marksman",
-                "markdownlint", -- formatter
-                "html-lsp",
-                "css-lsp",
-                "typescript-language-server",
-                "vue-language-server",
-                "rust-analyzer",
-                "tinymist"
-            }
             require("mason").setup()
             local mason_registry = require("mason-registry")
             local function install_packages()
-                for _, pkg in ipairs(ensure_installed) do
-                    local package = mason_registry.get_package(pkg)
+                for server, _ in pairs(servers) do
+                    local package = mason_registry.get_package(server)
                     if not package:is_installed() then
                         package:install()
                     end
@@ -36,46 +38,27 @@ return {
         end
     },
     {
-        "williamboman/mason-lspconfig.nvim",
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
+        "neovim/nvim-lspconfig",
         dependencies = {
-            "williamboman/mason.nvim",
-            "neovim/nvim-lspconfig",
-            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-nvim-lsp"
         },
-        opts = {},
-        config = function(_, opts)
+        config = function()
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local mason_bin = vim.fn.stdpath("data") .. "/mason/bin/"
             vim.lsp.config('*', {
                 capabilities = capabilities
             })
-            vim.lsp.config("html", {
-                init_options = {
-                    embeddedLanguages = {
-                        css = true,
-                        javascript = true
-                    },
-                }
-            })
-            vim.lsp.config("tinymist", {
-                on_attach = function(client, bufnr)
-                    vim.keymap.set("n", "<leader>tp", function()
-                        client:exec_cmd({
-                            title = "pin",
-                            command = "tinymist.pinMain",
-                            arguments = { vim.api.nvim_buf_get_name(0) },
-                        }, { bufnr = bufnr })
-                    end, { desc = "[T]inymist [P]in", noremap = true })
-                    vim.keymap.set("n", "<leader>tu", function()
-                        client:exec_cmd({
-                            title = "unpin",
-                            command = "tinymist.pinMain",
-                            arguments = { vim.v.null },
-                        }, { bufnr = bufnr })
-                    end, { desc = "[T]inymist [U]npin", noremap = true })
-                end,
-            })
-            require("mason-lspconfig").setup(opts)
+            for _, config_name in pairs(servers) do
+                local cfg = vim.lsp.config[config_name]
+                if cfg ~= nil then
+                    local cmd = vim.deepcopy(cfg["cmd"])
+                    cmd[1] = mason_bin .. cmd[1]
+                    vim.lsp.config(config_name, {
+                        cmd = cmd
+                    })
+                    vim.lsp.enable(config_name)
+                end
+            end
         end
     },
     {

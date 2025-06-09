@@ -9,7 +9,6 @@ return {
     { "romainl/vim-cool" },
     {
         "j-hui/fidget.nvim",
-        event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-        opts = {},
+        config = true
     },
 }

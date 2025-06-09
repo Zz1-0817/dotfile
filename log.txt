@@ -1,3 +1,4 @@
+2025-06
 1. 重写判断是否处于数学模式的函数
     可能会用到的函数 `vim.fn.trim`, 需要考虑的情形包括:
     1.
@@ -79,3 +80,4 @@
 2. 写一个判断 html tag 的函数, 利用 treesitter
 3. 写 emmet 的 snippet
 4. 简单化 neovim 终端和 quickfix 的管理
+5. 不使用 mason-lspconfig 而采用原生 neovim lsp

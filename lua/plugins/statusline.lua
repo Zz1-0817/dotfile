@@ -23,7 +23,8 @@ return {
                 red      = '#ec5f67',
                 purple   = '#a020f0',
                 gray     = '#A9A9A9',
-
+                portland_orange = "#FF5A36",
+                lsp_blue = "#4A90E2"
             }
 
             local conditions = {
@@ -129,9 +130,14 @@ return {
                             icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
                         },
                         {
+                            "lsp_status",
+                            icon = utils.icons.statusline.server,
+                            color = { fg = colors.lsp_blue, gui = "bold" }
+                        },
+                        {
                             'branch',
                             icon = utils.icons.git.branch,
-                            color = { fg = colors.violet, gui = 'bold' },
+                            color = { fg = colors.portland_orange, gui = 'bold' },
                         },
                         {
                             'diff',
@@ -148,15 +154,7 @@ return {
                             cond = conditions.hide_in_width,
                         },
                         {
-                            "lsp_status",
-                            icon = utils.icons.statusline.server,
-                        },
-                        {
-                            function()
-                                local days = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-                                    "Saturday" }
-                                return utils.icons.statusline.week .. days[tonumber(os.date("%w")) + 1]
-                            end,
+                            'filetype'
                         },
                         {
                             function()
