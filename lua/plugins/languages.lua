@@ -46,8 +46,8 @@ return {
         version = '1.*',
         opts = {
             dependencies_bin = {
-                ['tinymist'] = 'tinymist',
-                ['websocat'] = '/home/zz1au/.cargo/bin/websocat'
+                ['tinymist'] = vim.fn.stdpath("data") .. '/mason/bin/tinymist',
+                ['websocat'] = os.getenv("HOME") .. '/.cargo/bin/websocat'
             }
         },
     },
