@@ -16,12 +16,6 @@ return {
                 desc = "Flash Treesitter"
             }
         },
-        opts = {
-            highlight = {
-                groups = {
-                    label = "Search"
-                }
-            }
-        }
+        config = true
     }
 }

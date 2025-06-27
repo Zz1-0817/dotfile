@@ -38,4 +38,13 @@ for trig, thm in pairs(thms) do
     end
 end
 
+table.insert(M, s(
+    { trig = "today", name = "datetime for today", dscr = "datetime for today" },
+    fmta([[
+    #datetime(year: <>, month: <>, day: <>).display()
+
+    ]],
+    { t(os.date('%Y')), t(os.date('%m')), t(os.date('%d')) })
+))
+
 return M
