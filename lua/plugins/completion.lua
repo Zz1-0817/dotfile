@@ -16,6 +16,7 @@ return {
             luasnip.add_snippets("tex", require("snippets.tex"))
             luasnip.add_snippets("markdown", require("snippets.markdown"))
             luasnip.add_snippets("typst", require("snippets.typst"))
+            luasnip.add_snippets("cpp", require("snippets.cpp"))
             -- https://github.com/L3MON4D3/LuaSnip/issues/656
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("UnlinkLuaSnipSnippetOnModeChange", {
@@ -179,7 +180,7 @@ return {
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                     { name = "buffer" },
-                    { name = "path" },
+                    -- { name = "path" },
                 },
                 -- experimental = {
                 --     ghost_text = { hl_group = "CmpGhostText", }
