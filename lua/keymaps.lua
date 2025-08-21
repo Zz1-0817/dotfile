@@ -20,5 +20,5 @@ keyset('i', "<C-space>", " ", opts) -- for gui, avoid touching by mistake
 keyset({ 'n', 'o', 'x' }, "<C-a>", "^", opts)
 keyset({ 'n', 'o', 'x' }, "<C-e>", "$", opts)
 
-keyset({ 'n' }, "<C-_>", function() utils.panel.quickfix.create() end, opts)
-keyset({ 'n', 't' }, "<C-\\>", function () utils.panel.terminal:toggle() end, opts)
+-- keyset({ 'n' }, "<C-_>", function() utils.panel.quickfix.create() end, opts)
+-- keyset({ 'n', 't' }, "<C-\\>", function () utils.panel.terminal:toggle() end, opts)
