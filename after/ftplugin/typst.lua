@@ -6,7 +6,5 @@ vim.keymap.set('i', '<M-b>', function()
     utils.edit.next_pattern(false, "[ \t]+")
 end, { buffer = true, noremap = true, silent = true })
 vim.treesitter.start()
-vim.pack.add({
-    { src = "https://github.com/chomosuke/typst-preview.nvim" },
-})
+vim.keymap.set("n", "<M-P>", "<CMD>TypstPreviewToggle<CR>", { buf = 0, noremap = true,  silent = true })
 

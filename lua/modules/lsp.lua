@@ -37,6 +37,11 @@ return {
                 vim.lsp.enable(config_name)
             end
         end
+        vim.lsp.config("tinymist", {
+            settings = {
+                formatterMode = "typstfmt"
+            }
+        })
     end,
     load_manager = function()
         vim.pack.add({ { src = "https://github.com/williamboman/mason.nvim" } })
@@ -81,9 +86,7 @@ return {
         require("aerial").setup({
             backends = { "lsp", "treesitter", "markdown", "asciidoc", "man" },
             close_automatic_events = { "unfocus", "switch_buffer", "unsupported" },
-            on_attach = function(bufnr)
-                vim.keymap.set("n", "<leader>o", "<CMD>AerialToggle<CR>", { buffer = bufnr })
-            end,
+            filter_kind = false,
         })
     end,
     load_messages = function()

@@ -60,7 +60,6 @@ return {
         end
         require("oil").setup({
             keymaps = {
-                ["q"] = { "actions.close", mode = "n" },
                 ["gd"] = {
                     desc = "Toggle file detail view",
                     callback = function()

@@ -24,6 +24,7 @@ vim.opt.mousemoveevent = true
 vim.opt.exrc = true
 vim.opt.foldmethod = "indent"
 vim.opt.foldlevel = 64
+vim.opt.smoothscroll = true
 vim.o.foldlevelstart = 64
 
 vim.g.mapleader = " "
@@ -31,9 +32,6 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-if vim.fn.has("nvim-0.10") == 1 then
-    vim.opt.smoothscroll = true
-end
 
 vim.diagnostic.config({
     underline = true,

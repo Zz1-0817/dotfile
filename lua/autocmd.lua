@@ -19,13 +19,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', "<M-F>", function()
             require("conform").format({ async = true })
         end, opts)
+        vim.keymap.set("n", "<leader>o", "<CMD>AerialToggle<CR>", opts)
     end,
 })
 
 vim.api.nvim_create_autocmd("CmdUndefined", {
     once = true,
     pattern = "Mason",
-    group = vim.api.nvim_create_augroup('lsp_manager_load', { clear = true }),
+    group = vim.api.nvim_create_augroup('load_lsp_manager', { clear = true }),
     callback = function()
         require("modules.lsp").load_manager()
     end
@@ -34,7 +35,7 @@ vim.api.nvim_create_autocmd("CmdUndefined", {
 vim.api.nvim_create_autocmd("CmdUndefined", {
     once = true,
     pattern = "Telescope",
-    group = vim.api.nvim_create_augroup('fuzzy_finder_load', { clear = true }),
+    group = vim.api.nvim_create_augroup('load_fuzzy_finder', { clear = true }),
     callback = function()
         require("modules.fuzzy").load()
     end
@@ -42,7 +43,7 @@ vim.api.nvim_create_autocmd("CmdUndefined", {
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "lua" },
     once = true,
-    group = vim.api.nvim_create_augroup('nvim_config_dev_enter', { clear = true }),
+    group = vim.api.nvim_create_augroup('load_nvim_config_dev_tools', { clear = true }),
     callback = function()
         vim.pack.add({
             { src = "https://github.com/dstein64/vim-startuptime" },
@@ -89,6 +90,31 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    once = true,
+    group = vim.api.nvim_create_augroup('load_typst_previewer', { clear = true }),
+    callback = function()
+        vim.pack.add({
+            { src = "https://github.com/chomosuke/typst-preview.nvim" },
+        })
+        require("typst-preview").setup({
+            dependencies_bin = {
+                ['tinymist'] = vim.fn.stdpath("data") .. '/mason/bin/tinymist'
+            }
+        })
+    end
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    once = true,
+    group = vim.api.nvim_create_augroup('load_markdown_settings', { clear = true }),
+    callback = function()
+        vim.pack.add({
+            { src = "https://github.com/preservim/vim-markdown" },
+        })
+    end
+})
+
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
     group = vim.api.nvim_create_augroup('set_diagnostic_result', { clear = true }),
     callback = function()
@@ -115,7 +141,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 vim.api.nvim_create_autocmd('LspAttach', {
     once = true,
-    group = vim.api.nvim_create_augroup('lsp_once_attach', { clear = true }),
+    group = vim.api.nvim_create_augroup('load_lsp_attach', { clear = true }),
     callback = function()
         require("modules.lsp").load_diagnose()
         require("modules.lsp").load_formatter()
