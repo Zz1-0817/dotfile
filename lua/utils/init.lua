@@ -2,7 +2,6 @@
 ---@field icons utils.icons
 ---@field edit utils.edit
 ---@field markup utils.markup
----@field panel utils.panel
 local M = {}
 
 setmetatable(M, {

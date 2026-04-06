@@ -11,9 +11,9 @@ end
 
 ---Move cursor to the position before next pattern
 ---@param direction boolean true for forward search, vice versa.
-function M.next_ptn(direction, ptn)
-    if not ptn then
-        ptn = "[%s%p]+"
+function M.next_pattern(direction, pattern)
+    if not pattern then
+        pattern = "[%s%p]+"
     end
     local win = vim.api.nvim_get_current_win()
     local row, col = unpack(vim.api.nvim_win_get_cursor(win))
@@ -32,11 +32,11 @@ function M.next_ptn(direction, ptn)
             end
         end
         s = line
-        i, j = string.find(s, ptn, col + 1)
+        i, j = string.find(s, pattern, col + 1)
         if not i then
             pos = line_end
         elseif i == col + 1 then
-            i = string.find(s, ptn, j + 1)
+            i = string.find(s, pattern, j + 1)
             if not i then
                 pos = line_end
             else
@@ -54,11 +54,11 @@ function M.next_ptn(direction, ptn)
             end
         end
         s = string.reverse(line)
-        i, j = string.find(s, ptn, #line - col + 2)
+        i, j = string.find(s, pattern, #line - col + 2)
         if not i then
             pos = line_begin
         elseif i == #line - col + 2 then
-            i = string.find(s, ptn, j + 1)
+            i = string.find(s, pattern, j + 1)
             if not i then
                 pos = line_begin
             else

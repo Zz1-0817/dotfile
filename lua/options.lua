@@ -21,6 +21,7 @@ vim.opt.pumblend = 15
 vim.opt.laststatus = 3
 vim.opt.splitkeep = "screen"
 vim.opt.mousemoveevent = true
+vim.opt.exrc = true
 vim.opt.foldmethod = "indent"
 vim.opt.foldlevel = 64
 vim.o.foldlevelstart = 64
