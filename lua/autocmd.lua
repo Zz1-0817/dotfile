@@ -23,6 +23,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
+vim.api.nvim_create_autocmd("TermOpen", {
+    pattern = "term://*",
+    callback = function()
+        vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], { buffer = true, noremap = true, silent = true })
+    end
+})
+
 vim.api.nvim_create_autocmd("CmdUndefined", {
     once = true,
     pattern = "Mason",

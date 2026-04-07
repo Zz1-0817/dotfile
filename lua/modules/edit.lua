@@ -245,21 +245,10 @@ return {
                 { name = 'cmdline' }
             }),
         })
-
-        require("nvim-ts-autotag").setup({
-            per_filetype = {
-                ['markdown'] = {
-                    enable_close = false,
-                    enable_rename = false,
-                    enable_close_on_slash = false
-                }
-            }
-        })
     end,
     load_pair = function()
         vim.pack.add({
             { src = "https://github.com/windwp/nvim-autopairs" },
-            { src = "https://github.com/windwp/nvim-ts-autotag" },
             { src = "https://github.com/kylechui/nvim-surround" }
         })
         local npairs = require("nvim-autopairs")
@@ -326,14 +315,5 @@ return {
                 return not utils.markup.in_math()
             end)
         }
-        require("nvim-ts-autotag").setup({
-            per_filetype = {
-                ['markdown'] = {
-                    enable_close = false,
-                    enable_rename = false,
-                    enable_close_on_slash = false
-                }
-            }
-        })
     end
 }
