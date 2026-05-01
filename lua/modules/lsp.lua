@@ -6,10 +6,6 @@ local servers = {
     ["ruff"] = "ruff",
     ["marksman"] = "marksman",
     ["markdownlint"] = "markdownlint",
-    ["html-lsp"] = "html",
-    ["css-lsp"] = "cssls",
-    ["typescript-language-server"] = "ts_ls",
-    ["vue-language-server"] = "vue_ls",
     ["rust-analyzer"] = "rust_analyzer",
     ["tinymist"] = "tinymist"
 }
@@ -28,13 +24,15 @@ return {
         })
         for _, config_name in pairs(servers) do
             local cfg = vim.lsp.config[config_name]
-            if cfg ~= nil then
-                local cmd = vim.deepcopy(cfg["cmd"])
-                cmd[1] = mason_bin .. cmd[1]
-                vim.lsp.config(config_name, {
-                    cmd = cmd
-                })
-                vim.lsp.enable(config_name)
+            if type(cfg) == "table" then
+                if type(cfg["cmd"]) == "table" then
+                    local cmd = vim.deepcopy(cfg["cmd"])
+                    cmd[1] = mason_bin .. cmd[1]
+                    vim.lsp.config(config_name, {
+                        cmd = cmd
+                    })
+                    vim.lsp.enable(config_name)
+                end
             end
         end
         vim.lsp.config("tinymist", {
